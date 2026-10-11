@@ -18,6 +18,7 @@ Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see do
   (reviews, verdict, tasks, claim, handover, alive, me and status work the same in both modes)
 
 Maintainers:
+  anyp5 setup [--test "CMD"] [--push] [--dry-run]   install git mode on this checkout's repository
   anyp5 serve --db ledger.sqlite [--repo owner/name] [--port 8455] [--dry-run]
   anyp5 admin join LOGIN | task TITLE [TIER] | reverted CHANGE_ID
   anyp5 seal-canaries RECIPES_JSON --ledger DIR   seal project canary recipes into DIR/canaries/
@@ -141,6 +142,17 @@ def main(argv=None):
     s.add_argument("--ledger", required=True); s.add_argument("--project", required=True)
     s.add_argument("--branch", default="main"); s.add_argument("--issue", type=int, required=True)
     s.add_argument("--admin", action="append", default=[])
+    s = sub.add_parser("setup", help="maintainers: install git mode on this checkout's repository (inbox issue, "
+                                     "ledger branch, coordinator key secret, workflows)")
+    s.add_argument("--admin", action="append", default=[], help="maintainer login (repeatable; default: gh's)")
+    s.add_argument("--test", help="test command run by the merge queue (writes anyp5-ci.yml)")
+    s.add_argument("--push", action="store_true", help="also push the workflow commit to the project branch")
+    s.add_argument("--architects", nargs="*", default=[], help="logins that approve member task proposals")
+    s.add_argument("--dry-run", action="store_true", help="print every step, change nothing")
+    s.add_argument("--force-new-key", action="store_true",
+                   help="start over when anyp5-ledger exists: new key, new ledger, no members")
+    s.add_argument("--repo", help="owner/name (default: the checkout's GitHub repository)")
+    s.add_argument("--branch", help="project branch (default: the repository's default branch)")
     s = sub.add_parser("serve"); s.add_argument("--db", default="ledger.sqlite"); s.add_argument("--repo")
     s.add_argument("--host", default="127.0.0.1"); s.add_argument("--port", type=int, default=8455)
     s.add_argument("--dry-run", action="store_true", help="log forge actions without running them")
@@ -156,7 +168,7 @@ def main(argv=None):
             except ValueError as error:
                 p.error(str(error))
     client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted",
-                                                 "seal-canaries") else None
+                                                 "seal-canaries", "setup") else None
     if client and git_main(a, client):
         return
 
@@ -220,6 +232,13 @@ def main(argv=None):
         init_ledger(a.ledger, key, a.admin, a.project, a.branch, a.issue)
         print("store this as the ANYP5_COORDINATOR_KEY secret, nowhere else:")
         print(json.dumps(key))
+    elif a.cmd == "setup":
+        from .install import Installer, SetupError
+        try:
+            Installer(dry_run=a.dry_run).setup(a.admin, a.test, a.push, a.architects, a.force_new_key, a.repo,
+                                               a.branch)
+        except (SetupError, RuntimeError) as error:
+            sys.exit(f"anyp5 setup: {error}")
     elif a.cmd == "coordinate":
         from .gitmode import CI, Coordinator, GitHubCI, GitHubInbox, Project
         key = json.loads(os.environ["ANYP5_COORDINATOR_KEY"])
