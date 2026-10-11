@@ -583,3 +583,20 @@ class SmallTeamTest(unittest.TestCase):
                     e.verdict(row["reviewer"], row["id"], "approve", t * H + 60, reason="read it")
             change = e.one("select tier, state from changes where id=?", cid)
             self.assertEqual((change["tier"], change["state"]), ("amber", "approved"), members)
+
+
+class IdCollisionTest(unittest.TestCase):
+    def test_reviewing_a_task_proposal_does_not_bar_a_change_with_the_same_number(self):
+        e = Engine(config={"canary_every": 1e9})
+        e.join("maint", 0)
+        e.join("alice", 0)
+        first = e.add_task("Add a clamp helper", "green", 0)
+        e.add_task("Document the build", "green", 60, proposer="alice")
+        e.tick(120)
+        proposal = e.one("select * from assignments")
+        e.verdict(proposal["reviewer"], proposal["id"], "approve", 130)
+        e.claim("alice", first, 200)
+        change = change_of(e, "alice", now=250)
+        e.tick(300)
+        self.assertEqual([r["reviewer"] for r in e.q("select reviewer from assignments where change_id=?", change)],
+                         ["maint"])

@@ -364,8 +364,9 @@ class Engine:
     def related(self, change):
         """The same change in several versions (a pending change and its canary copies): one reviewer each,
         so nobody can compare two versions and spot the planted defect."""
-        root = change["source"] or change["id"]
-        return [r["id"] for r in self.q("select id from changes where id=? or source=?", root, root)]
+        # `source` also holds a task id on task proposals and progress checks: only canaries are versions of a change.
+        root = change["source"] if "kind" in change.keys() and change["kind"] == "canary" else change["id"]
+        return [r["id"] for r in self.q("select id from changes where id=? or (source=? and kind='canary')", root, root)]
 
     def pending_checks(self, login):
         return self.q("select * from assignments where reviewer=? and verdict is null", login)
