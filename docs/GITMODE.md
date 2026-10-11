@@ -87,6 +87,43 @@ anyp5 me                              # your changes, their state and commit, yo
 
 The CLI uses your `gh` login to post comments and read the ledger branch.
 
+## Project canaries
+
+The built-in mutations (`anyp5/canary.py`) are generic, and a reviewer who has seen a few can recognise them.
+A project can add its own **recipes**. When a recipe applies to the pending change, it is drawn before the
+built-in mutations. The canary is still a copy of a pending change, the defect is still reported as
+`(path:line)`, and clean canaries are unchanged.
+
+```json
+[{"name": "short copy length", "glob": "core/libs/*.cpp",
+  "match": "(\\w+)\\.size\\(\\)\\s*\\*\\s*sizeof\\((\\w+)\\)", "replace": "(\\1.size() - 1) * sizeof(\\2)",
+  "defect": "the copy drops the last element"},
+ {"name": "missing queue fence", "glob": "*/Queue*.cpp", "match": "^\\s*(\\w+)->WaitIdle\\(\\);\\s*$",
+  "drop": true, "defect": "removed the wait before the buffer is reused"}]
+```
+
+A recipe has a `glob` on the file path (`*` also matches `/`), a regex `match` on an added line, and either a
+`replace` (regex replacement) or `"drop": true` (the line is removed). In server mode, a recipe can instead
+name a Python `hook` (`"module:function"`, called with the line, the path and a seed, returning the mutated
+line and the defect). Git mode refuses hooks, because the Action never runs code from the ledger. A fuller
+example is in [templates/canaries/example.json](../templates/canaries/example.json).
+
+Keep recipes private. A public recipe tells reviewers what to look for, and tells a ring which canaries to
+skip. `anyp5 seal-canaries recipes.json --ledger .` checks the file and seals it to the coordinator as
+`canaries/recipes.sealed` on the ledger branch. Plain `canaries/*.json` files also load, and so does
+`"canaries": [...]` in `anyp5.json` (`config`) or in a server `--config` file.
+
+**Writing good canaries.** A good canary looks like a bug this project really had:
+- Mine the fix commits (`git log --grep '^fix'`, reverts, regression tests). For each one, write the recipe
+  that turns the fixed line back into the bug. An agent can do this: give it the fix commits and ask for one
+  recipe per bug class, with a glob as narrow as the files where the bug lived.
+- Prefer defects that change behaviour on one line: a bound, a missing wait or lock, a wrong mask, a dropped
+  error check, a swapped argument. A reviewer must be able to name the line.
+- Have many recipes and replace them over time, so that no single one becomes familiar. With one recipe that
+  applies to most changes, every planted canary carries the same defect.
+- Never use a recipe that makes the diff fail to compile or reads like a joke. Those are found from their
+  look, not from review.
+
 ## Limits
 
 - Latency: each command triggers a coordinator run (about 20 s on GitHub-hosted runners). There is also a

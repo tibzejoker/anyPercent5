@@ -342,3 +342,79 @@ class SeedTest(unittest.TestCase):
                 e.tick(1)
             picks.append([r["reviewer"] for r in e.q("select reviewer from assignments order by id")])
         self.assertNotEqual(picks[0], picks[1])
+
+
+RECIPE = {"name": "buffer not cleared", "glob": "src/*.c", "match": r"b->data\[k\] = 0;",
+          "replace": "b->data[k] = 1;", "defect": "fills the buffer with ones instead of clearing it"}
+
+
+def double_write_hook(line, path, seed):
+    if "b->data[i] = c;" in line:
+        return line.replace("b->data[i]", "b->data[i + 1]"), "writes one slot past the index"
+    return None
+
+
+class ProjectCanaryTest(unittest.TestCase):
+    def test_a_project_recipe_goes_first_and_names_its_line(self):
+        from anyp5.canary import names_line
+        for seed in map(str, range(6)):
+            diff, defect = plant(DIFF, seed, recipes=[RECIPE])
+            self.assertIn("+        b->data[k] = 1;", diff)
+            self.assertTrue(defect.startswith("buffer not cleared: fills the buffer"))
+            self.assertTrue(defect.endswith("(src/buf.c:13)"))
+            self.assertTrue(names_line(defect, "src/buf.c:13 sets ones"))
+            self.assertFalse(names_line(defect, "src/buf.c:40 style"))
+
+    def test_recipes_that_do_not_apply_fall_back_to_built_in_mutations(self):
+        elsewhere = dict(RECIPE, glob="lib/*.py")
+        unmatched = dict(RECIPE, match="never present")
+        for recipe in (elsewhere, unmatched):
+            self.assertEqual(plant(DIFF, "3", recipes=[recipe]), plant(DIFF, "3"))
+
+    def test_drop_and_hook_recipes(self):
+        drop = {"name": "guard removed", "match": r"^\s*if \(i >= b->size\)", "drop": True,
+                "defect": "removed the bound check"}
+        diff, defect = plant(DIFF, "1", recipes=[drop])
+        self.assertNotIn("if (i >= b->size)", diff)
+        self.assertIn("@@ -10,3 +10,6 @@", diff)
+        self.assertTrue(defect.endswith("(src/buf.c:11)"))
+        hook = {"name": "off by one write", "hook": f"{__name__}:double_write_hook"}
+        diff, defect = plant(DIFF, "1", recipes=[hook])
+        self.assertIn("+    b->data[i + 1] = c;", diff)
+        self.assertEqual(defect, "off by one write: writes one slot past the index (src/buf.c:14)")
+
+    def test_recipes_from_a_directory_plain_or_sealed_and_hooks_refused(self):
+        import json, shutil, tempfile
+        from pathlib import Path
+        from anyp5 import seal
+        from anyp5.canary import load_recipes
+        root = Path(tempfile.mkdtemp(prefix="anyp5-canaries-"))
+        try:
+            key = seal.keygen()
+            (root / "a.json").write_text(json.dumps([RECIPE]))
+            (root / "b.sealed").write_text(seal.seal(seal.public(key)["box"], json.dumps(dict(RECIPE, name="x")).encode()))
+            (root / "README.md").write_text("ignored")
+            self.assertEqual([r["name"] for r in load_recipes(root)], ["buffer not cleared"])
+            self.assertEqual([r["name"] for r in load_recipes(root, key=key)], ["buffer not cleared", "x"])
+            (root / "c.json").write_text(json.dumps({"name": "h", "hook": "os:system"}))
+            with self.assertRaises(ValueError):
+                load_recipes(root)
+            with self.assertRaises(ValueError):
+                Engine(config={"canaries": [{"name": "no defect", "match": "x", "replace": "y"}]})
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+    def test_engine_plants_project_canaries_and_keeps_clean_ones_clean(self):
+        for share, planted in ((0, True), (1, False)):
+            e = Engine(config={"canary_every": 1, "clean_canary_share": share, "canaries": [RECIPE]})
+            for login in ("alice", "bob", "carol", "dave"):
+                e.join(login, 0)
+            change_of(e, "alice")
+            e.tick(1)
+            canary = e.one("select * from changes where kind='canary'")
+            if planted:
+                self.assertIn("buffer not cleared", canary["defect"])
+                self.assertIn("b->data[k] = 1;", canary["diff"])
+            else:
+                self.assertIsNone(canary["defect"])
+                self.assertEqual(canary["diff"], DIFF)

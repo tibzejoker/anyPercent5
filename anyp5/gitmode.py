@@ -198,7 +198,12 @@ class Coordinator:
         sealed = self.ledger / "state.sealed"
         if sealed.exists():
             Path(db).write_bytes(seal.unseal(key, sealed.read_text()))
-        self.e = Engine(db, config={**self.meta.get("config", {}), **(config or {})})
+        merged = {**self.meta.get("config", {}), **(config or {})}
+        # Project canaries are data here (no script hooks: the Action never runs code from the ledger).
+        from .canary import check_recipe, load_recipes
+        merged["canaries"] = [check_recipe(r, hooks=False) for r in merged.get("canaries", [])] + \
+            load_recipes(self.ledger / "canaries", key=key)
+        self.e = Engine(db, config=merged)
         self.e.db.executescript(EXTRA)
         self.public_log = []
         self.joined = set()

@@ -152,6 +152,20 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(sorted(rows), [(0, 0), (1, 1)])
         self.assertEqual(self.box("alice")["changes"][0]["state"], "review")
 
+    def test_project_canaries_in_the_ledger_are_planted_first(self):
+        (self.ledger / "canaries").mkdir()
+        recipe = {"name": "bound off by one", "glob": "src/*.c", "match": r"i >= size", "replace": "i > size",
+                  "defect": "lets i == size through"}
+        (self.ledger / "canaries" / "bounds.sealed").write_text(
+            seal.seal(seal.public(self.keys["coord"])["box"], json.dumps([recipe]).encode()))
+        self.post("alice", "submit", patch=self.patch())
+        self.run_coordinator(config={"canary_every": 0.5, "clean_canary_share": 0})
+        defect = self.state().execute("select defect from changes where kind='canary'").fetchone()[0]
+        self.assertEqual(defect, "bound off by one: lets i == size through (src/buf.c:3)")
+        (self.ledger / "canaries" / "hook.json").write_text(json.dumps({"name": "h", "hook": "os:system"}))
+        with self.assertRaises(ValueError):
+            self.run_coordinator()
+
     def second_patch(self, name):
         work = self.tmp / f"{name}-work"
         git(self.tmp, "clone", "-q", "project.git", work.name)

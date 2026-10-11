@@ -24,7 +24,7 @@ fixed code.
 | high | **Fake inbox issues.** Anyone can open an issue titled "anyp5 inbox" (1) | Only issues opened by the bot or an admin are read | Test passes |
 | medium | **Canaries recognised by waiting.** A reviewer keeps the copy until the original lands, then compares (3, 4) | A canary is withdrawn unscored when its original leaves review. An expired canary counts as missed | Test passes |
 | medium | **Calibration visible in each member's box.** Watching it change reveals which reviews were canaries (2) | Never shown to members | Test passes |
-| medium | **Canary mutations too recognisable** (one fixed `getenv("CI_DEBUG")` string) (2, 4, 5) | Eight mutation kinds with varied names. Projects should still add their own canaries | Open, see limits |
+| medium | **Canary mutations too recognisable** (one fixed `getenv("CI_DEBUG")` string) (2, 4, 5) | Eight mutation kinds with varied names. Projects can add their own recipes, sealed in the ledger, drawn first | Recipes exist; their quality is up to each project |
 | medium | **Comment size and timing leak who submitted what** (3) | Sealed sizes padded to powers of two | Timing still leaks within a pass |
 | medium | **Prompt injection in diffs aimed at reviewer agents** (5) | The reviewer skill treats the diff as untrusted, and text aimed at the reviewer is a reason to reject | Depends on each agent |
 | medium | **Server mode defaulted to merged-diff canaries** (4, 5) | Pending copies everywhere | Fixed |
@@ -55,6 +55,8 @@ fixed code.
 - **Rings recognise their own diffs.** A ring can watermark its patches, for example with an HMAC in a
   comment. Blind review does not hide a diff from the people who wrote it. The random draw keeps such rings
   near their share of reviews.
-- Built-in canaries are generic. Projects should add their own, hand-made or agent-made.
+- Built-in canaries are generic. Projects can now add their own recipes (hand-made or mined from fix commits
+  by an agent), but a project that adds none, or only a few, still serves recognisable canaries. Nothing
+  measures how much project recipes help.
 - **Maintainers keep no say over direction**, beyond opening tasks and reviewing CI changes. Projects that
   need an architecture owner should keep one as a reviewer of task proposals.

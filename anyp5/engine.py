@@ -30,6 +30,7 @@ DEFAULTS = {
     "max_extensions": 2,
     "max_open_proposals": 3,
     "ban_needs_admin_below": 100,
+    "canaries": [],
 }
 
 SCHEMA = """
@@ -87,6 +88,10 @@ class Engine:
         for key, value in (config or {}).items():
             self.cfg[key] = value
         self.rules = rules
+        from .canary import check_recipe, load_recipes
+        recipes = self.cfg["canaries"]
+        self.cfg["canaries"] = load_recipes(recipes, hooks=True) if isinstance(recipes, str) else \
+            [check_recipe(r) for r in recipes]
         self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
@@ -528,7 +533,7 @@ class Engine:
         if chance(f"clean:{made}", self.cfg["clean_canary_share"], self.seed(now)[1]):
             diff, defect = source[0]["diff"], None
         else:
-            planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}")
+            planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}", recipes=self.cfg["canaries"])
             if planted is None:
                 return
             diff, defect = planted

@@ -131,5 +131,6 @@ pool and act as backdoor auditors. Past about 2,000 merges/day into one branch, 
   the soak. Raising the per-look catch rate (smaller diffs, risk tiers by capability, sandboxed builds,
   evidence bundles) is the next lever. The simulator cannot credit it.
 - Canary quality matters: mutated diffs are a zero-effort default. Projects should add hand-made or
-  agent-made canaries that look like their real defects.
+  agent-made canaries that look like their real defects, as sealed recipes in the ledger
+  ([project canaries](GITMODE.md#project-canaries)). How much they raise the catch rate is not measured.
 - The ledger server is a trusted component: run it with audit logs, back it up, and publish its event log.

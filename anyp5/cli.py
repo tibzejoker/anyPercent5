@@ -19,6 +19,7 @@ Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see do
 Maintainers:
   anyp5 serve --db ledger.sqlite [--repo owner/name] [--port 8455] [--dry-run]
   anyp5 admin join LOGIN | task TITLE [TIER] | reverted CHANGE_ID
+  anyp5 seal-canaries RECIPES_JSON --ledger DIR   seal project canary recipes into DIR/canaries/
 """
 import argparse
 import json
@@ -121,6 +122,8 @@ def main(argv=None):
     s.add_argument("task", type=int); s.add_argument("days", type=float)
     s = sub.add_parser("extend", help="at the cap: ask a reviewer to confirm progress (branch diff on stdin)")
     s.add_argument("task", type=int); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("seal-canaries", help="check project canary recipes and seal them into the ledger")
+    s.add_argument("recipes"); s.add_argument("--ledger", required=True)
     s = sub.add_parser("wanted", help="print the capability board, or update a README block with --readme")
     s.add_argument("--ledger", required=True); s.add_argument("--readme")
     s = sub.add_parser("admit"); s.add_argument("member"); s.add_argument("keys")
@@ -137,7 +140,8 @@ def main(argv=None):
     s.add_argument("--config", help="JSON file overriding engine defaults")
     s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
     a = p.parse_args(argv)
-    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted") else None
+    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted",
+                                                 "seal-canaries") else None
     if client and git_main(a, client):
         return
 
@@ -175,6 +179,16 @@ def main(argv=None):
         CONFIG.write_text(json.dumps({"mode": "git", "repo": a.repo, "branch": a.branch, "login": login, "key": key}))
         Client(a.repo, a.branch, login, key).send("join", keys=seal.public(key))
         print(f"key saved to {CONFIG} (keep it private); join request sent as {login}")
+    elif a.cmd == "seal-canaries":
+        from . import seal
+        from .canary import check_recipe
+        data = json.loads(Path(a.recipes).read_text(encoding="utf-8"))
+        recipes = [check_recipe(r, hooks=False) for r in (data if isinstance(data, list) else [data])]
+        box = json.loads((Path(a.ledger) / "anyp5.json").read_text())["coordinator"]["box"]
+        out = Path(a.ledger) / "canaries" / (Path(a.recipes).stem + ".sealed")
+        out.parent.mkdir(exist_ok=True)
+        out.write_text(seal.seal(box, json.dumps(recipes).encode()))
+        print(f"{len(recipes)} recipes sealed to the coordinator in {out}")
     elif a.cmd == "wanted":
         from .gitmode import update_readme
         block = (Path(a.ledger) / "wanted.md").read_text(encoding="utf-8")
