@@ -26,8 +26,20 @@ that no rule can influence, so a design cannot win just by delaying them.
 | Best of 6 independent designs (fastest) | 2356 | 2 | 12.4 / 11.8 / 4.8 |
 | **any%5** | **2370** | **2** | **8.2 / 6.6 / 2.8** |
 
-any%5 matches the fastest design and is the safest under all three attacker profiles. It ships about 3x fewer
-backdoors than the trust-level baseline, and merges 5x faster. Full table, method and how to reproduce: [docs/RESULTS.md](docs/RESULTS.md).
+**What this shows, and what it does not** ([red team](docs/REDTEAM.md)):
+
+- **Throughput is the solid result.** About 2,400 merges/day at 10,000 members, 2 h median, linear from 10
+  to 100,000 members, with no maintainer in the loop. It comes from jury duty and spare reviewers, not from
+  the attacker model.
+- **Safety: about 2x better, against noisy attackers only.** The shipped-per-10k-merges column flatters
+  any%5, because well-calibrated attackers spend time reviewing and attempt fewer backdoors. Per attempt,
+  backdoors ship 13.6 % of the time against 27.5 % for the baseline.
+- **No advantage against an xz-style attacker.** Against a one-shot attacker whose backdoor most reviewers
+  miss for the same reason, every design ships about 43 % of attempts. Calibration helps catch careless
+  reviewers. It does not help catch a backdoor nobody can see.
+- **The status-quo row is a worst case.** It assumes insiders can never be replaced.
+
+Full table, method and how to reproduce: [docs/RESULTS.md](docs/RESULTS.md).
 
 ## The method in six rules
 
@@ -41,7 +53,10 @@ backdoors than the trust-level baseline, and merges 5x faster. Full table, metho
    (CI, build, dependencies, network, process execution, memory protection…). Riskier tiers get more
    reviewers and post-merge audits.
 4. **Blind, calibrated reviewers.** Reviewers see a diff without its author or title. Mixed into their work
-   are *canaries*: copies of pending changes with one planted defect, never anything public. Catching them ranks reviewers, and reviews go
+   are *canaries*: copies of pending changes, never anything public. Some have one planted defect, which
+   counts as caught only when the reject names its line. Others are left clean, and rejecting them counts
+   against the reviewer. Reviews are drawn at random among the better-calibrated half, so rejecting
+   everything, or ranking first, buys no control. Catching them ranks reviewers, and reviews go
    to the best-ranked people who are free. This is the biggest single lever measured.
 5. **Merge fast, ship after a soak.** Changes merge on approval (2 h median). Releases include only changes
    that spent 14 days on main and finished their post-merge checks.

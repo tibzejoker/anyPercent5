@@ -33,12 +33,28 @@ ranking, and the share of backdoor attempts that ship goes from 16 % to 36 %. So
 
 ## Security model
 
+Reviewed by five independent red-team agents ([docs/REDTEAM.md](REDTEAM.md)). The breaks they found are
+fixed and covered by tests:
+
 - **Identity**: joining is posted by the GitHub account it names, so GitHub vouches for the login. That same
   comment registers the member's keys. After that, every command is signed with the member's Ed25519 key and
   carries an increasing sequence number. Forged and replayed commands are refused (see `tests/test_gitmode.py`).
 - **Confidentiality**: X25519 + HKDF-SHA256 + ChaCha20-Poly1305 (`anyp5/seal.py`, `cryptography` package).
-- **The Action never runs contributor code.** Comments are parsed as data, and patches are applied with `git am`.
-  Patches touching `.github/` are tier red like any other change.
+- **What merges is what was reviewed.** A patch holding more than one commit is refused. After `git am`,
+  exactly one commit must have landed, with the same files and lines as the reviewed diff. Renames, binary
+  content, mode changes and symlinks are tier red. The commit is attributed to the member who sent it.
+- **CI changes wait for a maintainer.** Approved changes under `.github/` are never pushed by the
+  coordinator, so merged code cannot rewrite the workflow that holds the key. Never give the Action a token
+  that can push workflows.
+- **One bad comment cannot stop it.** Every command error is contained and the inbox always moves on. Sealed
+  messages over 8 MiB uncompressed are refused, and sealed sizes are padded to powers of two, so a comment's
+  length does not reveal its patch.
+- **Only trusted inbox issues are read.** These are issues opened by the bot or an admin; anyone can open
+  an issue with the same title.
+- Commands carry the project name, and a login that already has keys cannot be re-keyed by posting a new
+  join.
+- **The Action never runs contributor code.** Comments are parsed as data, and patches are applied with
+  `git am`.
 - **The coordinator key is the trust root.** Keep it only in the `ANYP5_COORDINATOR_KEY` secret. Whoever holds
   it can read the state, including which reviews are canaries.
 - `admit` (maintainers only, listed in `anyp5.json`) adds a member who has no GitHub account, such as a bot.

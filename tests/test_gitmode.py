@@ -47,7 +47,7 @@ class GitModeTest(unittest.TestCase):
 
     def post(self, name, cmd, author=None, key=None, **args):
         meta = json.loads((self.ledger / "anyp5.json").read_text())
-        body = command(key or self.keys[name], name, cmd, **args)
+        body = command(key or self.keys[name], name, cmd, project=meta["project"], **args)
         self.inbox.post(author or name, seal.seal(meta["coordinator"]["box"], body.encode()), self.now)
 
     def run_coordinator(self, config=None, hours=1, project=None):
@@ -59,6 +59,23 @@ class GitModeTest(unittest.TestCase):
             return c.e.q("select id, state, patch is null pruned from changes where kind='pr' order by id")
         finally:
             c.close()
+
+    def state(self):
+        import sqlite3
+        path = self.tmp / "state.sqlite"
+        path.write_bytes(seal.unseal(self.keys["coord"], (self.ledger / "state.sealed").read_text()))
+        return sqlite3.connect(path)
+
+    def test_a_forged_or_oversized_comment_never_stops_the_coordinator(self):
+        import base64, os, zlib
+        meta = json.loads((self.ledger / "anyp5.json").read_text())
+        self.inbox.post("mallory", seal.PREFIX + base64.b64encode(os.urandom(200)).decode(), self.now)
+        self.inbox.post("mallory", seal.seal(meta["coordinator"]["box"], b"{" + b" " * (20 << 20)), self.now)
+        self.inbox.post("mallory", seal.seal(meta["coordinator"]["box"], b"not json"), self.now)
+        self.post("alice", "task", title=["not", "a", "string"])
+        self.post("alice", "submit", patch=self.patch())
+        self.run_coordinator()
+        self.assertEqual(len(self.box("alice")["changes"]), 1)
 
     def box(self, name):
         path = self.ledger / "boxes" / f"{name}.sealed"
@@ -92,7 +109,7 @@ class GitModeTest(unittest.TestCase):
         self.post(drawn[0], "verdict", assignment=job["assignment"], verdict="approve")
         self.run_coordinator()
         log = git(self.tmp / "project.git", "log", "--format=%an %s", "main")
-        self.assertIn("t fix: bound check in put", log)
+        self.assertIn("alice fix: bound check in put", log)
         self.assertEqual(self.box("alice")["changes"][0]["state"], "merged")
         self.assertIn('"merged"', (self.ledger / "log.jsonl").read_text())
 
@@ -108,7 +125,7 @@ class GitModeTest(unittest.TestCase):
         self.assertFalse((self.ledger / "members" / "mallory.json").exists())
 
         meta = json.loads((self.ledger / "anyp5.json").read_text())
-        old = command(self.keys["maint"], "maint", "task", title="again")
+        old = command(self.keys["maint"], "maint", "task", project=meta["project"], title="again")
         self.inbox.post("maint", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
         self.inbox.post("maint", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
         self.run_coordinator()
@@ -117,7 +134,7 @@ class GitModeTest(unittest.TestCase):
 
     def test_pending_canary_goes_to_someone_who_never_sees_the_original(self):
         self.post("alice", "submit", patch=self.patch())
-        self.run_coordinator(config={"canary_every": 0.5, "canary_source": "pending"})
+        self.run_coordinator(config={"canary_every": 0.5, "canary_source": "pending", "clean_canary_share": 0})
         drawn = self.reviewers()
         self.assertEqual(len(drawn), 2)
         self.assertNotIn("alice", drawn)
@@ -127,11 +144,13 @@ class GitModeTest(unittest.TestCase):
             self.assertEqual(set(self.box(n)["reviews"][0]), {"assignment", "diff"})
         for n in drawn:
             job = self.box(n)["reviews"][0]
-            self.post(n, "verdict", assignment=job["assignment"], verdict="reject", reason="looks wrong")
-        self.run_coordinator(config={"canary_every": 1e9, "canary_source": "pending"})
-        calibration = {n: self.box(n)["calibration"] for n in drawn}
-        self.assertEqual(sorted(calibration.values()), [[0, 0], [1, 1]])
-        self.assertEqual(self.box("alice")["changes"][0]["state"], "rejected")
+            self.post(n, "verdict", assignment=job["assignment"], verdict="reject",
+                      reason="src/buf.c:1-7 the bound or guard looks wrong")
+        self.run_coordinator(config={"canary_every": 1e9, "canary_source": "pending", "clean_canary_share": 0})
+        self.assertNotIn("calibration", self.box(drawn[0]))
+        rows = self.state().execute("select cal_hits, cal_seen from members where login in (?, ?)", drawn).fetchall()
+        self.assertEqual(sorted(rows), [(0, 0), (1, 1)])
+        self.assertEqual(self.box("alice")["changes"][0]["state"], "review")
 
     def second_patch(self, name):
         work = self.tmp / f"{name}-work"
@@ -174,6 +193,34 @@ class GitModeTest(unittest.TestCase):
         self.assertIn("bound check in put", log)
         self.assertEqual([c["state"] for c in self.box("bob")["changes"]], ["merged"])
 
+    def test_a_patch_with_several_commits_is_refused(self):
+        work = self.tmp / "multi"
+        git(self.tmp, "clone", "-q", "project.git", "multi")
+        (work / "src" / "a.c").write_text("int a;\n")
+        git(work, "add", ".")
+        git(work, "commit", "-qm", "harmless")
+        (work / "src" / "b.c").write_text("int b(void) { return system(\"x\"); }\n")
+        git(work, "add", ".")
+        git(work, "commit", "-qm", "hidden")
+        self.post("alice", "submit", patch=git(work, "format-patch", "-2", "--stdout"))
+        self.run_coordinator()
+        self.assertEqual(self.box("alice")["changes"], [])
+
+    def test_ci_changes_wait_for_a_maintainer(self):
+        work = self.tmp / "ci"
+        git(self.tmp, "clone", "-q", "project.git", "ci")
+        (work / ".github" / "workflows").mkdir(parents=True)
+        (work / ".github" / "workflows" / "ci.yml").write_text("on: push\n")
+        git(work, "add", ".")
+        git(work, "commit", "-qm", "ci")
+        self.post("alice", "submit", patch=git(work, "format-patch", "-1", "--stdout"))
+        self.run_coordinator()
+        for _ in range(3):
+            self.approve_all()
+            self.run_coordinator()
+        self.assertEqual(self.box("alice")["changes"][0]["state"], "maintainer")
+        self.assertNotIn("ci", git(self.tmp / "project.git", "log", "--format=%s", "main").split())
+
     def test_capability_board_and_member_task_proposals(self):
         self.post("maint", "task", title="capture shader dumps", requires=["game", "windows"])
         self.post("maint", "task", title="replay dumped shaders")
@@ -206,14 +253,19 @@ class GitHubInboxTest(unittest.TestCase):
         comments = [{"id": i, "issue_url": f"https://api.github.com/repos/o/r/issues/{1 if i < 150 else 7 if i % 5 else 3}",
                      "user": {"login": f"u{i}"}, "body": f"b{i}", "created_at": "2026-10-11T06:00:00Z"}
                     for i in range(1, 260)]
+        comments += [{"id": i, "issue_url": "https://api.github.com/repos/o/r/issues/9", "user": {"login": "mallory"},
+                      "body": "decoy", "created_at": "2026-10-11T06:00:00Z"} for i in range(260, 270)]
         calls = []
 
         def gh(*args):
             calls.append(args)
             if "search/issues" in args:
-                return json.dumps({"items": [{"number": 7, "title": "anyp5 inbox", "comments": 90, "state": "open"},
-                                             {"number": 1, "title": "anyp5 inbox", "comments": 2000, "state": "closed"},
-                                             {"number": 3, "title": "anyp5 inbox please", "comments": 1, "state": "open"}]})
+                bot = {"login": "github-actions[bot]"}
+                return json.dumps({"items": [
+                    {"number": 9, "title": "anyp5 inbox", "comments": 10, "state": "open", "user": {"login": "mallory"}},
+                    {"number": 7, "title": "anyp5 inbox", "comments": 90, "state": "open", "user": bot},
+                    {"number": 1, "title": "anyp5 inbox", "comments": 2000, "state": "closed", "user": bot},
+                    {"number": 3, "title": "anyp5 inbox please", "comments": 1, "state": "open", "user": bot}]})
             page = int(args[1].split("page=")[-1])
             newest = sorted(comments, key=lambda c: -c["id"])
             return json.dumps(newest[(page - 1) * 100:page * 100])

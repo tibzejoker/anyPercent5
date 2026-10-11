@@ -71,10 +71,20 @@ A spare reviewer is drawn when one is slow (more than 6 h). The change merges on
   ranking and the share of backdoor attempts that ship doubles (16 % to 36 %, [canary
   gaming](../sim/eval/canary_gaming.md)). Nobody receives two versions of one change, and authors never
   receive copies of their own change.
-  Rejecting it counts as a catch. A reviewer's score is `(catches + 1) / (canaries seen + 2)`.
+- **Two-sided score.** 40 % of canaries are left clean. A planted canary counts as caught only when the reject
+  cites its line (`file:line`, ±3 lines). Clean canaries count when approved. The score is
+  `(catches + 1) / (planted seen + 2) × (clean approved + 1) / (clean seen + 2)`. The red team showed that
+  with a catch-only score, rejecting everything ranked first: 5 accounts took 68 % of the reviews and
+  rejected half the honest changes. With the two-sided score they got 3.4 %, and 1 % of honest changes were
+  rejected.
+- A canary still open when its original leaves review is withdrawn without scoring, so waiting for the
+  original to land and then comparing tells nothing. An expired canary counts as missed. Members never see
+  their own score, since watching it change would reveal which reviews were canaries.
 - New members get canaries first (up to 5) until their score is established.
-- Reviews and audits go to **idle members with the best score**. Ties, and the coin that picks which changes
-  get a post-merge review, use a **hidden weekly seed** known only to the coordinator. With a public hash, an
+- Reviews and audits are drawn **at random among the better-calibrated half of idle members**, not
+  strictly from the top. Calibration keeps careless reviewers out, and no account, however well it scores,
+  can hold most reviews. The draw, and the coin that picks which changes get a post-merge review, use a
+  **hidden weekly seed** known only to the coordinator. With a public hash, an
   author could retouch their patch (a blank line, a comment) until the draw picked an accomplice or skipped
   the post-merge review. `sha256(seed)` is published when the week starts and the seed is revealed 4 weeks
   later, so every draw can be checked once it no longer matters.
@@ -95,9 +105,12 @@ compared with shipping on merge, for every design tested.
 
 ## 6. When something is found
 
+- **A lone reject asks a second opinion.** Each reject adds one required approval, and two rejects close the
+  change. One reviewer can no longer veto a change.
 - A defect found after merge becomes a fix task. Honest bugs never cost anyone their membership.
-- A **backdoor claim** (`--backdoor`) never acts alone: two independent top-calibrated auditors are drawn.
-  If both confirm:
+- A **backdoor claim** (`--backdoor`) never acts alone. The change is held, and two auditors are drawn at
+  random from the better-calibrated half. While the project has fewer than 100 active members, a maintainer
+  must also confirm the ban (`confirm-ban`). If they all confirm:
   - the author is banned and **all their merged changes are reverted** before the next release;
   - every change their approvers approved is re-audited;
   - nobody else is banned. Measured: banning approvers too ("full contagion") banned honest people with no

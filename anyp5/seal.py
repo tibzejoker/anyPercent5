@@ -14,7 +14,9 @@ from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 
-PREFIX = "anyp5-sealed-v1:"
+PREFIX = "anyp5-sealed-v2:"
+MAX_PLAIN = 8 << 20        # refuse "zip bombs": anyone can seal to the public coordinator key
+BUCKETS = [1 << k for k in range(10, 27)]   # sealed sizes are padded to a power of two (1 KiB .. 64 MiB)
 RAW = dict(encoding=serialization.Encoding.Raw, format=serialization.PublicFormat.Raw)
 
 
@@ -51,7 +53,10 @@ def seal(box_pub, data):
     eph_pub = eph.public_key().public_bytes(**RAW)
     shared = eph.exchange(X25519PublicKey.from_public_bytes(recipient))
     nonce = os.urandom(12)
-    body = _cipher(shared, eph_pub, recipient).encrypt(nonce, zlib.compress(data, 9), None)
+    packed = zlib.compress(data, 9)
+    size = next((b for b in BUCKETS if b >= len(packed) + 4), len(packed) + 4)
+    padded = len(packed).to_bytes(4, "big") + packed + bytes(size - len(packed) - 4)
+    body = _cipher(shared, eph_pub, recipient).encrypt(nonce, padded, None)
     return PREFIX + b64(eph_pub + nonce + body)
 
 
@@ -61,7 +66,13 @@ def unseal(key, text):
     priv = X25519PrivateKey.from_private_bytes(unb64(key["box"]))
     recipient = priv.public_key().public_bytes(**RAW)
     shared = priv.exchange(X25519PublicKey.from_public_bytes(eph_pub))
-    return zlib.decompress(_cipher(shared, eph_pub, recipient).decrypt(nonce, body, None))
+    padded = _cipher(shared, eph_pub, recipient).decrypt(nonce, body, None)
+    packed = padded[4:4 + int.from_bytes(padded[:4], "big")]
+    inflate = zlib.decompressobj()
+    data = inflate.decompress(packed, MAX_PLAIN)
+    if inflate.unconsumed_tail:
+        raise ValueError("sealed message too large")
+    return data
 
 
 def is_sealed(text):

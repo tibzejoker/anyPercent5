@@ -5,6 +5,7 @@ the GitHub adapter and the tests all drive the same code.
 """
 import hashlib
 import hmac
+import re
 import json
 import secrets
 import sqlite3
@@ -24,12 +25,17 @@ DEFAULTS = {
     "canary_confirm_max": 5,
     "active_hours": 48,
     "escalation_auditors": 2,
-    "canary_source": "merged",
+    "canary_source": "pending",
+    "clean_canary_share": 0.4,
+    "max_extensions": 2,
+    "max_open_proposals": 3,
+    "ban_needs_admin_below": 100,
 }
 
 SCHEMA = """
 create table if not exists members(login text primary key, token text unique, joined real, last_seen real,
-    banned int default 0, cal_seen int default 0, cal_hits int default 0, caps text default '[]');
+    banned int default 0, cal_seen int default 0, cal_hits int default 0, caps text default '[]',
+    clean_seen int default 0, clean_ok int default 0);
 create table if not exists tasks(id integer primary key, title text, tier text, state text default 'open',
     holder text, lease_until real, branch text, created real, claimed real, cap_until real,
     requires text default '[]', deps text default '[]', critical int default 0, proposer text);
@@ -62,7 +68,11 @@ def review_item(row):
 
 
 def score(m):
-    return (m["cal_hits"] + 1) / (m["cal_seen"] + 2)
+    """Catches on planted canaries times approvals of clean ones: rejecting everything scores near zero."""
+    keys = m.keys()
+    clean_seen = m["clean_seen"] if "clean_seen" in keys else 0
+    clean_ok = m["clean_ok"] if "clean_ok" in keys else 0
+    return (m["cal_hits"] + 1) / (m["cal_seen"] + 2) * (clean_ok + 1) / (clean_seen + 2)
 
 
 def chance(key, p, seed=b""):
@@ -87,7 +97,8 @@ class Engine:
                                  ("tasks", "claimed", "real"), ("tasks", "cap_until", "real"),
                                  ("tasks", "requires", "text default '[]'"), ("tasks", "deps", "text default '[]'"),
                                  ("tasks", "critical", "int default 0"), ("tasks", "proposer", "text"),
-                                 ("members", "caps", "text default '[]'"), ("changes", "task", "int")):
+                                 ("members", "caps", "text default '[]'"), ("changes", "task", "int"),
+                                 ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0")):
             if col not in {r["name"] for r in self.q(f"pragma table_info({table})")}:
                 self.db.execute(f"alter table {table} add column {col} {kind}")
 
@@ -142,6 +153,9 @@ class Engine:
     # ------------------------------------------------------------ tasks (work is leased, never owned)
     def add_task(self, title, tier, now, requires=(), deps=(), critical=False, proposer=None):
         """A task from a maintainer opens at once; one proposed by a member is reviewed first, like a change."""
+        if proposer and self.one("select count(*) n from tasks where proposer=? and state='proposed'",
+                                 proposer)["n"] >= self.cfg["max_open_proposals"]:
+            raise ValueError("too many proposals waiting for review")
         state = "proposed" if proposer else "open"
         cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer) "
                               "values(?,?,?,?,?,?,?,?)", (title, tier, now, json.dumps(sorted(set(requires))),
@@ -196,9 +210,12 @@ class Engine:
         self.log(now, "claim", login=login, task=task_id)
         self.db.commit()
 
-    def handover(self, task_id, branch, now):
+    def handover(self, task_id, branch, now, login=None):
         """Pushed work renews the lease (and ends an absence), never past the cap; the next holder resumes the
         branch. The cap moves only when a reviewer confirms real progress (`extend`)."""
+        if login is not None and self.one("select id from tasks where id=? and holder=? and state='leased'",
+                                          task_id, login) is None:
+            raise ValueError("only the holder can hand over a task")
         lease = self.cfg["lease_hours"]
         self.db.execute("update tasks set branch=?, lease_until=min(?, coalesce(cap_until, ?)) "
                         "where id=? and state='leased'", (branch, now + self.hours(lease["task"]), now, task_id))
@@ -236,6 +253,9 @@ class Engine:
         task = self.one("select * from tasks where id=? and holder=? and state='leased'", task_id, login)
         if task is None:
             raise ValueError("you do not hold this task")
+        asked = self.one("select count(*) n from changes where kind='progress' and source=?", task_id)["n"]
+        if asked >= self.cfg["max_extensions"]:
+            raise ValueError("no extension left: hand the task over with its branch")
         cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, source) "
                               "values('progress', ?, 'green', ?, 'review', ?, ?)", (login, diff, now, task_id))
         self.db.commit()
@@ -260,6 +280,8 @@ class Engine:
 
     def submit_patch(self, author, patch, now, task=None):
         """A change sent privately (git mode): reviewers see only its diff, never the author or the message."""
+        if len(re.findall(r"^From [0-9a-f]{40} ", patch, flags=re.M)) > 1:
+            raise ValueError("send exactly one commit per change (squash it)")
         head = hashlib.sha256(patch.encode()).hexdigest()[:40]
         old = self.one("select id from changes where kind='pr' and head=?", head)
         if old:
@@ -291,7 +313,8 @@ class Engine:
         return [m for m in rows if m["login"] not in busy and m["login"] not in exclude]
 
     def draw(self, change, count, kind, now, pool=None, least_tested=False):
-        """Ranked by calibration score; ties broken by a keyed hash of this week's hidden seed."""
+        """At random (hidden weekly seed) among the better-calibrated half of the idle members: calibration
+        keeps careless reviewers out, and nobody, however well scored, can take most of the reviews."""
         ids = self.related(change)
         taken = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
                                                % ",".join("?" * len(ids)), *ids)}
@@ -300,9 +323,10 @@ class Engine:
         epoch, seed = self.seed(now)
         tie = lambda m: hmac.new(seed, f'{salt}:{m["login"]}'.encode(), "sha256").hexdigest()
         if least_tested:
-            pool = sorted(pool, key=lambda m: (m["cal_seen"], tie(m)))
+            pool = sorted(pool, key=lambda m: (m["cal_seen"] + m["clean_seen"], tie(m)))
         else:
-            pool = sorted(pool, key=lambda m: (-score(m), tie(m)))
+            ranked = sorted(pool, key=lambda m: (-score(m), tie(m)))
+            pool = sorted(ranked[:max((len(ranked) + 1) // 2, count)], key=tie)
         chosen = pool[:count]
         for m in chosen:
             self.db.execute("insert into assignments(change_id, reviewer, kind, drawn_at, lease_until) values(?,?,?,?,?)",
@@ -330,19 +354,40 @@ class Engine:
         if change["kind"] in ("task", "progress"):
             self.settle_side(change, verdict, now)
         elif change["kind"] == "canary":
-            hit = verdict == "reject"
-            self.db.execute("update members set cal_seen=cal_seen+1, cal_hits=cal_hits+? where login=?", (int(hit), login))
-            self.log(now, "canary", login=login, hit=hit)
+            self.score_canary(change, login, verdict, reason, now)
         elif a["kind"] == "escalation":
             self.check_escalation(change, now)
         elif verdict == "reject" and severity == "backdoor":
             self.escalate(change, now)
         elif verdict == "reject" and a["kind"] == "review":
-            self.db.execute("update changes set state='rejected' where id=?", (change["id"],))
+            rejects = self.one("select count(*) n from assignments where change_id=? and kind='review' "
+                               "and verdict='reject'", change["id"])["n"]
+            if rejects >= 2:
+                self.db.execute("update changes set state='rejected' where id=?", (change["id"],))
         elif verdict == "reject":
             self.add_task(f'fix: defect found after merge in PR #{change["pr"]}: {reason}', change["tier"], now)
         self.db.commit()
         self.settle(change["id"], now)
+
+    def score_canary(self, change, login, verdict, reason, now):
+        from .canary import names_line
+        if change["defect"]:
+            hit = verdict == "reject" and names_line(change["defect"], reason)
+            self.db.execute("update members set cal_seen=cal_seen+1, cal_hits=cal_hits+? where login=?",
+                            (int(hit), login))
+        else:
+            hit = verdict == "approve"
+            self.db.execute("update members set clean_seen=clean_seen+1, clean_ok=clean_ok+? where login=?",
+                            (int(hit), login))
+        self.log(now, "canary", login=login, hit=hit)
+
+    def needed(self, change):
+        """Approvals a change needs: the tier's count, plus one per reject (a lone reject asks a second opinion)."""
+        if change["kind"] in ("task", "progress"):
+            return 1
+        rejects = self.one("select count(*) n from assignments where change_id=? and kind='review' "
+                           "and verdict='reject'", change["id"])["n"]
+        return self.cfg["reviewers"][change["tier"]] + rejects
 
     def settle_side(self, change, verdict, now):
         """Task proposals and progress checks: one reviewer decides, no calibration involved."""
@@ -366,8 +411,10 @@ class Engine:
 
     def settle(self, change_id, now):
         change = self.one("select * from changes where id=?", change_id)
-        if change["kind"] == "pr" and change["state"] == "review" and \
-                len(self.approvals(change_id)) >= self.cfg["reviewers"][change["tier"]]:
+        auditing = self.one("select count(*) n from assignments where change_id=? and kind='escalation' "
+                            "and verdict is null", change_id)["n"]
+        if change["kind"] == "pr" and change["state"] == "review" and not auditing and \
+                len(self.approvals(change_id)) >= self.needed(change):
             self.db.execute("update changes set state='approved' where id=?", (change_id,))
             self.log(now, "approved", change=change_id, pr=change["pr"])
             self.db.commit()
@@ -398,9 +445,23 @@ class Engine:
         if len(rows) < self.cfg["escalation_auditors"] or any(r["verdict"] is None for r in rows):
             return
         if all(r["verdict"] == "reject" and r["severity"] == "backdoor" for r in rows):
-            self.ban(change["author"], change, now)
+            active = self.one("select count(*) n from members where banned=0")["n"]
+            if active < self.cfg["ban_needs_admin_below"]:
+                self.db.execute("update changes set state='ban-pending' where id=?", (change["id"],))
+                self.log(now, "ban-pending", change=change["id"], author=change["author"])
+            else:
+                self.ban(change["author"], change, now)
         else:
             self.log(now, "escalation-cleared", change=change["id"])
+            self.db.commit()
+            self.settle(change["id"], now)
+
+    def confirm_ban(self, change_id, now):
+        """Small projects: a maintainer confirms a ban that two auditors asked for."""
+        change = self.one("select * from changes where id=? and state='ban-pending'", change_id)
+        if change is None:
+            raise ValueError("no ban waiting on this change")
+        self.ban(change["author"], change, now)
 
     def ban(self, login, change, now):
         """Ban the author, revert everything they merged, re-check everything their approvers passed."""
@@ -428,13 +489,24 @@ class Engine:
                         "and t.critical=1 and m.last_seen<?", relay):
             self.db.execute("update tasks set state='open', holder=null where id=?", (t["id"],))
             self.log(now, "relay", task=t["id"], holder=t["holder"], branch=t["branch"])
-        for a in self.q("select * from assignments where verdict is null and lease_until<?", now):
+        for a in self.q("select a.*, c.kind ckind, c.defect from assignments a join changes c on c.id=a.change_id "
+                        "where a.verdict is null and a.lease_until<?", now):
             self.db.execute("update assignments set verdict='expired', done_at=? where id=?", (now, a["id"]))
+            if a["ckind"] == "canary":
+                column = "cal_seen=cal_seen+1" if a["defect"] else "clean_seen=clean_seen+1"
+                self.db.execute(f"update members set {column} where login=?", (a["reviewer"],))
             self.log(now, "review-expired", assignment=a["id"], reviewer=a["reviewer"])
+        # Once a change leaves review, its open copies and spare reviews end unscored: waiting for the original
+        # to land, then comparing, tells nothing.
+        self.db.execute("update assignments set verdict='withdrawn', done_at=? where verdict is null and kind='review' "
+                        "and change_id in (select c.id from changes c join changes o on o.id=c.source "
+                        "where c.kind='canary' and o.kind='pr' and o.state!='review')", (now,))
+        self.db.execute("update assignments set verdict='withdrawn', done_at=? where verdict is null and kind='review' "
+                        "and change_id in (select id from changes where kind='pr' and state!='review')", (now,))
         for change in self.q("select * from changes where state='review'"):
             live = self.q("select * from assignments where change_id=? and kind='review' "
                           "and (verdict is null or verdict='approve')", change["id"])
-            required = 1 if change["kind"] in ("task", "progress") else self.cfg["reviewers"][change["tier"]]
+            required = self.needed(change)
             if len(live) < required:
                 self.draw(dict(change), required - len(live), "review", now)
             stale = [r for r in live if r["verdict"] is None
@@ -453,10 +525,13 @@ class Engine:
         if real < (made + 1) * self.cfg["canary_every"] or not source:
             return
         from .canary import plant
-        planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}")
-        if planted is None:
-            return
-        diff, defect = planted
+        if chance(f"clean:{made}", self.cfg["clean_canary_share"], self.seed(now)[1]):
+            diff, defect = source[0]["diff"], None
+        else:
+            planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}")
+            if planted is None:
+                return
+            diff, defect = planted
         cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, defect, head, source) "
                               "values('canary','',?,?, 'canary', ?, ?, ?, ?)",
                               (source[0]["tier"], diff, now, defect, hashlib.sha256(diff.encode()).hexdigest(),
@@ -466,7 +541,7 @@ class Engine:
         seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
                                               % ",".join("?" * len(ids)), *ids)}
         tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
-        fresh = [m for m in tested if m["cal_seen"] < self.cfg["canary_confirm_max"]]
+        fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
         self.draw(dict(change), 1, "review", now, pool=fresh or tested, least_tested=True)
 
     def reverted(self, change_id, now):

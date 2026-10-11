@@ -4,7 +4,8 @@ GitHub Action runs the coordinator.
 - Contributors post commands as issue comments, sealed to the coordinator and signed with their key.
 - Changes are sent the same way, as `git format-patch` output, so they stay private until approved. A canary
   is then a copy of a pending change with one planted defect, and nothing public tells them apart.
-- Each member's view (assigned diffs, their changes, calibration) is sealed to them in boxes/<login>.sealed.
+- Each member's view (assigned diffs, their changes, their tasks) is sealed to them in boxes/<login>.sealed.
+  It never shows calibration: watching it change would tell which reviews were canaries.
 - The coordinator applies approved patches to the project branch and pushes; reverts the same way.
 - The engine state is sealed to the coordinator (it knows which reviews are canaries); log.jsonl is public.
 
@@ -37,11 +38,11 @@ ADMIN_ONLY = {"admit"}
 _last_seq = 0
 
 
-def command(key, login, cmd, **args):
+def command(key, login, cmd, project=None, **args):
     """What a contributor posts: a signed command, sealed to the coordinator."""
     global _last_seq
     _last_seq = max(time.time_ns() // 1000, _last_seq + 1)
-    payload = {"login": login, "seq": _last_seq, "cmd": cmd, "args": args}
+    payload = {"login": login, "seq": _last_seq, "cmd": cmd, "args": args, "project": project}
     return json.dumps(seal.sign(key, payload))
 
 
@@ -70,14 +71,17 @@ INBOX_TITLE = "anyp5 inbox"
 INBOX_ROTATE_AT = 2000      # GitHub disables commenting on an issue at 2,500 comments
 
 
-def inbox_issues(repo, gh=None):
-    """Every inbox issue, newest first: [(number, comment count, open)]."""
+def inbox_issues(repo, gh=None, trusted=None):
+    """Every inbox issue opened by the bot or an admin, newest first: [(number, comment count, open)]. Anyone can
+    open an issue with the same title; those are ignored."""
     if gh is None:
         from .forge import gh
     found = json.loads(gh("api", "-X", "GET", "search/issues", "-f",
                           f'q=repo:{repo} is:issue in:title "{INBOX_TITLE}"', "-f", "sort=created",
                           "-f", "order=desc", "-f", "per_page=100") or "{}").get("items", [])
-    return [(i["number"], i["comments"], i["state"] == "open") for i in found if i["title"] == INBOX_TITLE]
+    trusted = set(trusted or ()) | {"github-actions[bot]"}
+    return [(i["number"], i["comments"], i["state"] == "open") for i in found
+            if i["title"] == INBOX_TITLE and i["user"]["login"] in trusted]
 
 
 class GitHubInbox:
@@ -87,12 +91,12 @@ class GitHubInbox:
     about one API call per 100 new comments. An issue stops taking comments at 2,500, so the inbox rotates to a
     new issue at 2,000 (`rotate`); clients post to the newest open one."""
 
-    def __init__(self, repo, issue, gh=None):
+    def __init__(self, repo, issue, gh=None, trusted=()):
         from .forge import gh as default_gh
-        self.repo, self.issue, self.gh = repo, issue, gh or default_gh
+        self.repo, self.issue, self.gh, self.trusted = repo, issue, gh or default_gh, trusted
 
     def fetch(self, after):
-        numbers = {self.issue} | {n for n, _, _ in inbox_issues(self.repo, self.gh)}
+        numbers = {self.issue} | {n for n, _, _ in inbox_issues(self.repo, self.gh, self.trusted)}
         suffixes = tuple(f"/issues/{n}" for n in numbers)
         items, page = [], 1
         while True:
@@ -109,7 +113,7 @@ class GitHubInbox:
     def rotate(self):
         """Open a fresh inbox issue before the current one fills up, and lock the full ones."""
         from .forge import gh
-        issues = inbox_issues(self.repo)
+        issues = inbox_issues(self.repo, trusted=self.trusted)
         current = [i for i in issues if i[2]]
         if current and current[0][1] < INBOX_ROTATE_AT:
             return None
@@ -122,6 +126,25 @@ class GitHubInbox:
         return True
 
 
+def touches_ci(diff):
+    from .tiers import parse_diff
+    paths, _ = parse_diff(diff or "")
+    return any(path.startswith(".github/") for path in paths)
+
+
+def same_change(landed, reviewed):
+    """Same files and same added and removed lines, ignoring index lines and hunk offsets."""
+    def key(diff):
+        out = []
+        for line in diff.splitlines():
+            if line.startswith(("diff --git", "+", "-", "rename ", "copy ", "new file mode", "deleted file mode",
+                                "old mode", "new mode", "GIT binary patch", "Binary files")) or \
+                    line[:1] in ("z",) and False:
+                out.append(line.rstrip())
+        return sorted(out)
+    return key(landed) == key(reviewed)
+
+
 class Project:
     """The project's git checkout: approved patches are applied with `git am`, then pushed once per pass."""
 
@@ -132,10 +155,21 @@ class Project:
         git(self.dir, "fetch", "origin", self.branch)
         git(self.dir, "checkout", "-q", "-B", self.branch, f"origin/{self.branch}")
 
-    def apply(self, patch):
+    def apply(self, patch, reviewed=None, login=None):
+        """git am, then check that exactly one commit landed and that it changes exactly what reviewers saw;
+        the commit is attributed to the member who sent it, whatever the patch claims."""
+        base = git(self.dir, "rev-parse", "HEAD")
         if subprocess.run(["git", "am", "--3way"], cwd=self.dir, input=patch.encode(), capture_output=True).returncode:
             git(self.dir, "am", "--abort", check=False)
             return None
+        landed = git(self.dir, "show", "--format=", "--binary", "HEAD")
+        if git(self.dir, "rev-list", "--count", f"{base}..HEAD") != "1" or \
+                (reviewed is not None and same_change(landed, reviewed) is False):
+            git(self.dir, "reset", "-q", "--hard", base)
+            return None
+        if login:
+            git(self.dir, "commit", "-q", "--amend", "--no-edit", "--no-verify",
+                f"--author={login} <{login}@users.noreply.github.com>")
         return git(self.dir, "rev-parse", "HEAD")
 
     def revert(self, sha):
@@ -179,8 +213,9 @@ class Coordinator:
         for item_id, author, body, at in self.inbox.fetch(last):
             try:
                 self.handle(author, body, at)
-            except (ValueError, KeyError, TypeError) as err:
-                self.e.log(at, "refused", by=author, error=str(err))
+            except Exception as err:   # one bad comment must never stop the coordinator
+                self.e.db.rollback()
+                self.e.log(at, "refused", by=author, error=f"{type(err).__name__}: {err}"[:300])
             last = item_id
         self.e.db.execute("delete from inbox")
         self.e.db.execute("insert into inbox(last) values(?)", (last,))
@@ -195,6 +230,8 @@ class Coordinator:
         message = json.loads(seal.unseal(self.key, body))
         p = message["payload"]
         login, cmd, args = p["login"], p["cmd"], p["args"]
+        if p.get("project") != self.meta.get("project"):
+            raise ValueError("command is for another project")
         if cmd == "join":
             if author != login:
                 raise ValueError("join must be posted by the GitHub account it names")
@@ -228,9 +265,15 @@ class Coordinator:
         elif cmd == "claim":
             e.claim(login, int(args["task"]), at)
         elif cmd == "handover":
-            e.handover(int(args["task"]), args["branch"], at)
+            e.handover(int(args["task"]), str(args["branch"]), at, login=login)
         elif cmd == "finish":
+            if login not in self.meta.get("admins", []):
+                raise ValueError("a task finishes when its change merges")
             e.finish_task(int(args["task"]), at)
+        elif cmd == "confirm-ban":
+            if login not in self.meta.get("admins", []):
+                raise ValueError("admin only")
+            e.confirm_ban(int(args["change"]), at)
         elif cmd == "submit":
             e.submit_patch(login, args["patch"], at, int(args["task"]) if args.get("task") else None)
         elif cmd == "verdict":
@@ -246,6 +289,9 @@ class Coordinator:
     def add_member(self, login, keys, message, at):
         if message is not None and not seal.verify(keys["sign"], message):
             raise ValueError("join not signed by the key it registers")
+        known = self.e.one("select * from keys where login=?", login)
+        if known is not None and message is not None and known["sign"] != keys["sign"]:
+            raise ValueError("this login already has keys; a maintainer must re-admit it")
         if self.e.member(login=login) is None:
             self.e.join(login, at)
         self.e.db.execute("insert or replace into keys(login, box, sign, seq) values(?,?,?,"
@@ -256,38 +302,64 @@ class Coordinator:
 
     # ------------------------------------------------------------ the project branch
     def forge(self, now):
+        """Apply approved changes to the project branch: one push per pass; if that push is refused, each change
+        is retried alone and a change whose own push is refused is marked as a conflict, so one change can never
+        hold `main` still. Changes to the CI configuration are left to a maintainer: code that merges must not
+        be able to rewrite the workflow that holds the coordinator key."""
         e = self.e
         self.prune()
         work = e.q("select * from changes where kind='pr' and ((state='approved' and patch is not null) or "
                    "(state='revert' and id in (select change_id from commits)))")
         if not work:
             return
-        self.project.sync()
-        merged, reverted, conflicts = [], [], []
-        for c in work:
-            if c["state"] == "approved":
-                sha = self.project.apply(c["patch"])
-                (conflicts if sha is None else merged).append((c, sha))
-            else:
-                row = e.one("select sha from commits where change_id=?", c["id"])
-                if self.project.revert(row["sha"]):
-                    reverted.append((c, row["sha"]))
-        if (merged or reverted) and not self.project.publish():
-            e.log(now, "push-refused", changes=len(merged) + len(reverted))
+        for c in [c for c in work if c["state"] == "approved" and touches_ci(c["diff"])]:
+            e.db.execute("update changes set state='maintainer' where id=?", (c["id"],))
+            e.log(now, "needs-maintainer", change=c["id"])
+        work = [c for c in work if not (c["state"] == "approved" and touches_ci(c["diff"]))]
+        if not work:
             e.db.commit()
             return
-        for c, _ in conflicts:
-            e.db.execute("update changes set state='conflict' where id=?", (c["id"],))
-            e.log(now, "conflict", change=c["id"])
-        for c, sha in merged:
-            e.db.execute("insert or replace into commits(change_id, sha) values(?,?)", (c["id"], sha))
-            e.db.execute("update changes set patch=null where id=?", (c["id"],))
-            e.merged(c["id"], now)
-            self.public_log.append({"at": now, "event": "merged", "commit": sha, "tier": c["tier"]})
-        for c, sha in reverted:
-            e.reverted(c["id"], now)
-            self.public_log.append({"at": now, "event": "reverted", "commit": sha})
+        self.project.sync()
+        done = self.land(work)
+        if done is None:
+            done, refused = [], []
+            for c in work:
+                self.project.sync()
+                one = self.land([c])
+                (refused.append(c) if one is None else done.extend(one))
+            if not done:
+                e.log(now, "push-refused", changes=len(work))
+                e.db.commit()
+                return
+            for c in refused:
+                e.db.execute("update changes set state='conflict' where id=?", (c["id"],))
+                e.log(now, "push-refused", change=c["id"])
+        for c, sha in done:
+            if sha is None:
+                e.db.execute("update changes set state='conflict' where id=?", (c["id"],))
+                e.log(now, "conflict", change=c["id"])
+            elif c["state"] == "approved":
+                e.db.execute("insert or replace into commits(change_id, sha) values(?,?)", (c["id"], sha))
+                e.db.execute("update changes set patch=null where id=?", (c["id"],))
+                e.merged(c["id"], now)
+                self.public_log.append({"at": now, "event": "merged", "commit": sha, "tier": c["tier"]})
+            else:
+                e.reverted(c["id"], now)
+                self.public_log.append({"at": now, "event": "reverted", "commit": sha})
         e.db.commit()
+
+    def land(self, changes):
+        """Apply then push; [(change, sha or None)] or None when the push was refused."""
+        out = []
+        for c in changes:
+            if c["state"] == "approved":
+                out.append((c, self.project.apply(c["patch"], c["diff"], c["author"])))
+            else:
+                row = self.e.one("select sha from commits where change_id=?", c["id"])
+                out.append((c, row["sha"] if self.project.revert(row["sha"]) else None))
+        if any(sha for _, sha in out) and not self.project.publish():
+            return None
+        return out
 
     def prune(self):
         """Settled changes keep their metadata but not their text, so the state follows open work, not history."""
@@ -326,7 +398,7 @@ class Coordinator:
             mine.setdefault(c["author"], []).append({"change": c["id"], "tier": c["tier"], "state": c["state"],
                                                      "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])})
         return {m["login"]: {"login": m["login"], "banned": bool(m["banned"]),
-                             "calibration": [m["cal_hits"], m["cal_seen"]], "reviews": reviews.get(m["login"], []),
+                             "reviews": reviews.get(m["login"], []),
                              "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
                 for m in e.q("select * from members")}
 

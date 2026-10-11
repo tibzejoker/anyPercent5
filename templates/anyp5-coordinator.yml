@@ -34,6 +34,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      # Pin to the release commit hash, not the tag: whoever can move the tag would control the coordinator.
       - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.3.0"
       - name: Run one coordinator pass
         env:

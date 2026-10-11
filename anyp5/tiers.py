@@ -5,14 +5,17 @@ import re
 DEFAULT_RULES = {
     "code_globs": ["*.c", "*.cc", "*.cpp", "*.h", "*.hpp", "*.rs", "*.go", "*.py", "*.js", "*.ts", "*.java",
                    "*.cmake", "*CMakeLists.txt", "*.sh", "*.ps1", "*.s", "*.asm"],
-    "red_paths": [".github/*", ".gitmodules", "*.cmake", "cmake/*", "*.sh", "*.ps1", "*.bat", "Makefile",
-                  "package.json", "*.lock", "requirements*.txt", "Cargo.toml", "go.mod", "third_party/*", "3rdparty/*",
-                  "vendor/*"],
+    "red_paths": [".github/*", ".gitmodules", ".gitattributes", "*.cmake", "cmake/*", "*.sh", "*.ps1", "*.bat",
+                  "*.cmd", "Makefile", "*.mk", "*.mak", "meson.build", "*.gradle", "build.rs", "setup.py",
+                  "conftest.py", "pyproject.toml", "setup.cfg", "Dockerfile", "*.dockerfile", "Jenkinsfile",
+                  ".gitlab-ci.yml", ".circleci/*", "package.json", "*.lock", "requirements*.txt", "Cargo.toml",
+                  "go.mod", "third_party/*", "3rdparty/*", "vendor/*", "external/*"],
     "amber_paths": ["*CMakeLists.txt", "tools/*", "scripts/*"],
     "red_patterns": [
         r"FetchContent_Declare|ExternalProject_Add|file\s*\(\s*DOWNLOAD|execute_process|add_custom_command",
         r"\b(WSAStartup|socket|connect|getaddrinfo|WinHttp\w*|InternetOpen\w*|URLDownloadToFile\w*|curl_\w+)\s*\(",
-        r"\b(CreateProcess\w*|ShellExecute\w*|WinExec|system|_?popen|_wpopen|execv\w*|posix_spawn|subprocess\.\w+|os\.system)\s*\(",
+        r"\b(CreateProcess\w*|ShellExecute\w*|WinExec|system|_?popen|_wpopen|exec[lv]\w*|fork|vfork|posix_spawn\w*|"
+        r"subprocess\.\w+|os\.(system|exec\w*|spawn\w*|popen))\s*\(",
         r"\b(WriteProcessMemory|CreateRemoteThread|OpenProcess|SetWindowsHookEx\w*)\s*\(",
         r"\b(Reg(Open|Create|Set|Delete)\w*)\s*\(",
         r"https?://",
@@ -31,22 +34,29 @@ DEFAULT_RULES = {
 
 RANK = {"green": 0, "amber": 1, "red": 2}
 
+# Header lines of a git diff that change something other than text lines: hidden from a line-based review.
+STRUCTURE = ("rename from ", "rename to ", "copy from ", "copy to ", "old mode ", "new mode ",
+             "new file mode 12", "new file mode 16", "deleted file mode 12", "deleted file mode 16",
+             "GIT binary patch", "Binary files ")
+
 
 def matches(path, globs):
     return any(fnmatch.fnmatch(path, g) for g in globs)
 
 
 def findings(paths, added, rules=None):
-    """paths: changed file paths. added: (path, line_number, text) for every added line."""
+    """paths: changed file paths. added: (path, line_number, text) for every added line. Structural changes
+    (renames, copies, mode changes, symlinks, submodules, binary content) come as text starting with NUL."""
     rules = rules or DEFAULT_RULES
-    out = []
+    out = [("red", path, None, "not a plain text change: " + text[1:])
+           for path, _, text in added if text.startswith("\0")]
     for p in paths:
         if matches(p, rules["red_paths"]):
             out.append(("red", p, None, "sensitive path"))
         elif matches(p, rules["amber_paths"]):
             out.append(("amber", p, None, "build or tooling path"))
     for path, line, text in added:
-        if not matches(path, rules["code_globs"]):
+        if text.startswith("\0") or not matches(path, rules["code_globs"]):
             continue
         for level in ("red", "amber"):
             for pattern in rules[f"{level}_patterns"]:
@@ -61,12 +71,22 @@ def classify(paths, added, rules=None):
 
 
 def parse_diff(diff):
-    """Unified diff -> (paths, added lines)."""
-    paths, added, path, line = [], [], None, 0
+    """Unified git diff -> (paths, added lines). Paths come from every `diff --git` header too, so renames and
+    binary files without `+++` lines are still seen."""
+    paths, added, path, line, current = [], [], None, 0, "?"
     for raw in diff.splitlines():
-        if raw.startswith("+++ "):
+        if raw.startswith("diff --git "):
+            path = None
+            heads = re.findall(r"(?:^| )[ab]/(\S+)", raw[len("diff --git"):])
+            for head in heads:
+                if head not in paths:
+                    paths.append(head)
+            current = heads[-1] if heads else "?"
+        elif raw.startswith(STRUCTURE):
+            added.append((current, 0, "\0" + raw.strip()))
+        elif raw.startswith("+++ "):
             path = raw[6:] if raw.startswith("+++ b/") else None
-            if path:
+            if path and path not in paths:
                 paths.append(path)
         elif raw.startswith("--- a/"):
             if raw[6:] not in paths:

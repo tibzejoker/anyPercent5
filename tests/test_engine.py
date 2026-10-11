@@ -40,6 +40,16 @@ class TiersTest(unittest.TestCase):
         self.assertEqual(classify(["src/a.c"], [("src/a.c", 1, 'system("ls");')]), "red")
         self.assertEqual(classify([".github/workflows/ci.yml"], []), "red")
 
+    def test_renames_binaries_and_modes_are_red_even_without_text_lines(self):
+        rename = ("diff --git a/docs/example.yml b/.github/workflows/pwn.yml\nsimilarity index 100%\n"
+                  "rename from docs/example.yml\nrename to .github/workflows/pwn.yml\n")
+        binary = ("diff --git a/src/blob.c b/src/blob.c\nnew file mode 100644\nindex 0000000..1234567\n"
+                  "GIT binary patch\nliteral 12\nzcmV+b0RR6000031\n\nliteral 0\nHcmV?d00001\n")
+        mode = "diff --git a/src/a.c b/src/a.c\nold mode 100644\nnew mode 100755\n"
+        for diff in (rename, binary, mode):
+            self.assertEqual(classify(*parse_diff(diff)), "red")
+        self.assertIn(".github/workflows/pwn.yml", parse_diff(rename)[0])
+        self.assertEqual(classify(["src/a.c"], [("src/a.c", 1, 'execl("/bin/sh", "sh", 0);')]), "red")
 
 class CanaryTest(unittest.TestCase):
     def test_plant_keeps_a_valid_diff_and_names_the_defect(self):
@@ -77,12 +87,27 @@ class ReviewTest(Base):
         with self.assertRaises(ValueError):
             self.e.claim(reviewer, task, 2)
 
-    def test_reject_closes_change(self):
+    def test_a_lone_reject_asks_a_second_opinion_two_close_the_change(self):
         cid = change_of(self.e, "alice")
         self.e.tick(1)
         r = self.e.q("select * from assignments")[0]
         self.e.verdict(r["reviewer"], r["id"], "reject", 2, reason="bug")
+        self.assertEqual(self.e.one("select state from changes where id=?", cid)["state"], "review")
+        self.e.tick(3)
+        second = self.e.one("select * from assignments where verdict is null and change_id=?", cid)
+        self.e.verdict(second["reviewer"], second["id"], "reject", 4, reason="bug")
         self.assertEqual(self.e.one("select state from changes where id=?", cid)["state"], "rejected")
+
+    def test_a_reject_outvoted_by_approvals_merges(self):
+        cid = change_of(self.e, "alice")
+        self.e.tick(1)
+        r = self.e.q("select * from assignments")[0]
+        self.e.verdict(r["reviewer"], r["id"], "reject", 2, reason="taste")
+        for hour in (3, 5):
+            self.e.tick(hour)
+            for a in self.e.q("select * from assignments where verdict is null and change_id=?", cid):
+                self.e.verdict(a["reviewer"], a["id"], "approve", hour + 1)
+        self.assertEqual(self.e.one("select state from changes where id=?", cid)["state"], "approved")
 
     def test_spare_reviewer_when_one_is_slow(self):
         cid = change_of(self.e, "alice")
@@ -99,7 +124,9 @@ class LeaseTest(Base):
     def test_pushed_work_renews_the_lease_heartbeats_do_not(self):
         task = self.e.add_task("t", "green", 0)
         self.e.claim("bob", task, 0)
-        self.e.handover(task, "bob/t", 20 * H)
+        with self.assertRaises(ValueError):
+            self.e.handover(task, "mallory/t", 10 * H, login="carol")
+        self.e.handover(task, "bob/t", 20 * H, login="bob")
         self.e.tick(90 * H)
         self.assertEqual(self.state(task), "leased")
         self.e.alive("bob", 91 * H)
@@ -226,6 +253,8 @@ class BanTest(Base):
         self.assertEqual(len(auditors), 2)
         for a in auditors:
             self.e.verdict(a["reviewer"], a["id"], "reject", 11, severity="backdoor")
+        self.assertEqual(self.e.one("select banned from members where login='alice'")["banned"], 0)
+        self.e.confirm_ban(bad, 12)
         self.assertEqual(self.e.one("select banned from members where login='alice'")["banned"], 1)
         self.assertEqual(self.e.one("select state from changes where id=?", first)["state"], "revert")
 
@@ -256,25 +285,44 @@ class ReleaseTest(Base):
 
 class CanaryFlowTest(unittest.TestCase):
     def test_canaries_are_blind_and_calibrate_reviewers(self):
-        e = Engine(config={"canary_every": 1})
+        for reason, expected in (("looks wrong", (1, 0)), ("{line}: bound is off", (1, 1))):
+            e = Engine(config={"canary_every": 1, "clean_canary_share": 0})
+            for login in ("alice", "bob", "carol", "dave"):
+                e.join(login, 0)
+            change_of(e, "alice")
+            e.tick(1)
+            canary = e.one("select * from changes where kind='canary'")
+            self.assertIsNotNone(canary)
+            a = e.one("select * from assignments where change_id=?", canary["id"])
+            [job] = e.next_review(a["reviewer"], 6)
+            self.assertEqual(set(job), {"assignment", "diff"})
+            line = canary["defect"].rsplit(":", 1)[1].rstrip(")")
+            e.verdict(a["reviewer"], job["assignment"], "reject", 7, reason=reason.format(line=f"src/buf.c:{line}"))
+            m = e.member(login=a["reviewer"])
+            self.assertEqual((m["cal_seen"], m["cal_hits"]), expected)
+
+    def test_rejecting_everything_ranks_last(self):
+        from anyp5.engine import score
+        careful = {"cal_hits": 6, "cal_seen": 10, "clean_ok": 9, "clean_seen": 10}
+        reject_all = {"cal_hits": 10, "cal_seen": 10, "clean_ok": 0, "clean_seen": 10}
+        lazy = {"cal_hits": 0, "cal_seen": 10, "clean_ok": 10, "clean_seen": 10}
+        self.assertGreater(score(careful), 3 * score(reject_all))
+        self.assertGreater(score(careful), 3 * score(lazy))
+
+    def test_a_canary_ends_unscored_when_its_original_leaves_review(self):
+        e = Engine(config={"canary_every": 1, "clean_canary_share": 0})
         for login in ("alice", "bob", "carol", "dave"):
             e.join(login, 0)
         cid = change_of(e, "alice")
         e.tick(1)
+        canary = e.one("select * from changes where kind='canary'")
         for a in e.q("select * from assignments where change_id=?", cid):
             e.verdict(a["reviewer"], a["id"], "approve", 2)
         e.merged(cid, 3)
-        for a in e.q("select * from assignments where verdict is null"):
-            e.verdict(a["reviewer"], a["id"], "approve", 4)
-        e.tick(5)
-        canary = e.one("select * from changes where kind='canary'")
-        self.assertIsNotNone(canary)
+        e.tick(4)
         a = e.one("select * from assignments where change_id=?", canary["id"])
-        [job] = e.next_review(a["reviewer"], 6)
-        self.assertEqual(set(job), {"assignment", "diff"})
-        e.verdict(a["reviewer"], job["assignment"], "reject", 7)
-        m = e.member(login=a["reviewer"])
-        self.assertEqual((m["cal_seen"], m["cal_hits"]), (1, 1))
+        self.assertEqual(a["verdict"], "withdrawn")
+        self.assertEqual(e.member(login=a["reviewer"])["cal_seen"], 0)
 
 
 if __name__ == "__main__":
