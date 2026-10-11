@@ -16,9 +16,14 @@ project fast for everyone.
 2. **Pick a task.** `anyp5 tasks` lists open tasks with their risk tier. Prefer tasks that fit in one working
    session. `anyp5 claim <id>` gives you a lease.
 3. **Keep the lease with pushed work.** Push a first commit within 24 h and record it with
-   `anyp5 handover <id> <branch>`. Each handover renews the lease for 72 h, up to 7 days after the claim.
-   `anyp5 alive` keeps you in the reviewer pool but does not keep a task. If you stop, the task goes back to
-   the pool with your branch. That is expected, not a failure.
+   `anyp5 handover <id> <branch>`. Each handover renews the lease for 72 h, up to 5 days after the claim.
+   Near the cap, if the task is big and you are progressing, run `git diff origin/main... | anyp5 extend <id>`:
+   a reviewer confirms and the cap moves by 5 days. Going offline for a while after a first push:
+   `anyp5 away <id> <days>` (5 days at most, 48 h on a task others wait on). `anyp5 alive` keeps you in the
+   reviewer pool but does not keep a task. If you stop, the task goes back to the pool with your branch.
+   That is expected, not a failure.
+   Declare once what you can run (`anyp5 caps windows gpu ...`): `anyp5 tasks` then shows what you can claim.
+   Missing a task? `anyp5 task "title" --requires ... --deps ...` proposes it; a reviewer opens it.
 4. **Push partial work early.** Push to a branch named `task/<id>-<slug>` and record it:
    `anyp5 handover <id> <branch>`. Whoever takes the task after you resumes from that branch, so commit in
    small, explained steps.

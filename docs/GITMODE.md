@@ -28,7 +28,8 @@ ranking, and the share of backdoor attempts that ship goes from 16 % to 36 %. So
   change, and the author never receives a copy of their own change. Simulated gamers recognised 6-7 % of these
   canaries, even when all attackers pooled what they saw, and leaks returned to the no-gaming level.
 - Everything public is sealed (`anyp5-sealed-v1:`). The issue comments, the boxes and the engine state are
-  unreadable. The public log only holds joins, merges (commit, tier), reverts and bans.
+  unreadable. The public log only holds joins, merges (commit, tier), reverts, bans, and the commitment
+  and later reveal of each week's draw seed.
 
 ## Security model
 

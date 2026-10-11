@@ -3,3 +3,4 @@ __pycache__/
 sim/eval/build/
 sim/eval/run.log
 sim/eval/*.out
+bench/logs/

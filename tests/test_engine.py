@@ -113,14 +113,92 @@ class LeaseTest(Base):
         self.assertEqual(self.state(quiet), "open")
         busy = self.e.add_task("busy", "green", 0)
         self.e.claim("carol", busy, 0)
-        for hour in range(20, 170, 20):
+        for hour in range(20, 120, 20):
             self.e.handover(busy, "carol/busy", hour * H)
             self.e.tick(hour * H)
             self.assertEqual(self.state(busy), "leased")
-        self.e.handover(busy, "carol/busy", 180 * H)
-        self.e.tick(169 * H)
+        self.e.handover(busy, "carol/busy", 119 * H)
+        self.e.tick(121 * H)
         self.assertEqual(self.state(busy), "open")
         self.assertEqual(self.e.one("select branch from tasks where id=?", busy)["branch"], "carol/busy")
+
+    def test_a_reviewer_confirming_progress_extends_the_cap(self):
+        task = self.e.add_task("big", "green", 0)
+        self.e.claim("carol", task, 0)
+        self.e.handover(task, "carol/big", 100 * H)
+        change = self.e.extend("carol", task, DIFF, 110 * H)
+        self.e.alive("dave", 110 * H)
+        self.e.tick(110 * H)
+        a = self.e.one("select * from assignments where change_id=?", change)
+        self.assertIn("question", self.e.next_review(a["reviewer"], 110 * H)[0])
+        self.e.verdict(a["reviewer"], a["id"], "approve", 111 * H)
+        self.e.handover(task, "carol/big", 150 * H)
+        self.e.tick(200 * H)
+        self.assertEqual(self.state(task), "leased")
+
+    def test_away_freezes_the_lease_within_limits(self):
+        task = self.e.add_task("t", "green", 0)
+        self.e.claim("bob", task, 0)
+        with self.assertRaises(ValueError):
+            self.e.away("bob", task, 3, H)
+        self.e.handover(task, "bob/t", 2 * H)
+        self.assertEqual(self.e.away("bob", task, 9, 3 * H), 5 * 24)
+        self.e.tick(100 * H)
+        self.assertEqual(self.state(task), "leased")
+        self.e.tick(121 * H)
+        self.assertEqual(self.state(task), "open")
+
+    def test_away_is_short_on_a_task_others_wait_on(self):
+        hub = self.e.add_task("hub", "green", 0)
+        self.e.add_task("after", "green", 0, deps=[hub])
+        self.e.claim("bob", hub, 0)
+        self.e.handover(hub, "bob/hub", H)
+        self.assertEqual(self.e.away("bob", hub, 5, 2 * H), 48)
+
+    def test_critical_tasks_relay_when_the_holder_goes_offline(self):
+        task = self.e.add_task("blocker", "green", 0, critical=True)
+        self.e.claim("bob", task, 0)
+        self.e.handover(task, "bob/blocker", H)
+        self.e.alive("carol", 14 * H)
+        self.e.tick(14 * H)
+        self.assertEqual(self.state(task), "open")
+
+
+class TaskGraphTest(Base):
+    def test_capabilities_and_dependencies_decide_what_one_can_claim(self):
+        game = self.e.add_task("run the prologue", "green", 0, requires=["game", "windows"])
+        after = self.e.add_task("fix what it shows", "green", 0, deps=[game])
+        self.assertEqual([t["id"] for t in self.e.open_tasks("bob")], [])
+        with self.assertRaises(ValueError):
+            self.e.claim("bob", game, 0)
+        self.e.set_caps("bob", ["windows", "game", "gpu"], 0)
+        self.assertEqual(self.e.open_tasks("bob")[0]["waiting"], 1)
+        with self.assertRaises(ValueError):
+            self.e.claim("carol", after, 0)
+        self.e.claim("bob", game, 0)
+        self.e.finish_task(game, H)
+        self.e.claim("carol", after, H)
+
+    def test_member_proposals_are_reviewed_before_opening(self):
+        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        self.assertEqual(self.state(task), "proposed")
+        self.e.tick(H)
+        a = self.e.one("select * from assignments where kind='review'")
+        self.assertNotEqual(a["reviewer"], "dave")
+        self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
+        self.assertEqual(self.state(task), "open")
+
+    def test_wanted_board_shows_the_scarce_capability(self):
+        for i in range(3):
+            self.e.add_task(f"game {i}", "green", 0, requires=["game"])
+        self.e.add_task("docs", "green", 0)
+        self.e.set_caps("bob", ["game"], 0)
+        board = self.e.wanted(H)
+        self.assertEqual(board[0], {"requires": ["game"], "open": 3, "blocked": 0, "members": 1,
+                                    "tasks_per_member": 3.0})
+
+    def state(self, task):
+        return self.e.one("select state from tasks where id=?", task)["state"]
 
 
 class BanTest(Base):
@@ -201,3 +279,18 @@ class CanaryFlowTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SeedTest(unittest.TestCase):
+    def test_who_reviews_depends_on_the_hidden_seed_not_only_on_the_change(self):
+        """An author who knows every public input still cannot steer the draw by grinding their patch."""
+        picks = []
+        for _ in range(2):
+            e = Engine(config={"canary_every": 1e9})
+            for login in ("alice", "bob", "carol", "dave", "erin", "frank", "grace"):
+                e.join(login, 0)
+            for head in range(8):
+                cid = change_of(e, "alice", pr=head, head=f"h{head}")
+                e.tick(1)
+            picks.append([r["reviewer"] for r in e.q("select reviewer from assignments order by id")])
+        self.assertNotEqual(picks[0], picks[1])

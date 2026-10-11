@@ -50,12 +50,13 @@ class GitModeTest(unittest.TestCase):
         body = command(key or self.keys[name], name, cmd, **args)
         self.inbox.post(author or name, seal.seal(meta["coordinator"]["box"], body.encode()), self.now)
 
-    def run_coordinator(self, config=None, hours=1):
+    def run_coordinator(self, config=None, hours=1, project=None):
         self.now += hours * H
         c = Coordinator(self.ledger, self.keys["coord"], self.inbox,
-                        Project(str(self.tmp / "coordinator")), config=config)
+                        project or Project(str(self.tmp / "coordinator")), config=config)
         try:
             c.run(self.now)
+            return c.e.q("select id, state, patch is null pruned from changes where kind='pr' order by id")
         finally:
             c.close()
 
@@ -107,9 +108,9 @@ class GitModeTest(unittest.TestCase):
         self.assertFalse((self.ledger / "members" / "mallory.json").exists())
 
         meta = json.loads((self.ledger / "anyp5.json").read_text())
-        old = command(self.keys["bob"], "bob", "task", title="again")
-        self.inbox.post("bob", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
-        self.inbox.post("bob", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
+        old = command(self.keys["maint"], "maint", "task", title="again")
+        self.inbox.post("maint", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
+        self.inbox.post("maint", seal.seal(meta["coordinator"]["box"], old.encode()), self.now)
         self.run_coordinator()
         tasks = json.loads((self.ledger / "tasks.json").read_text())
         self.assertEqual([t["title"] for t in tasks], ["again"])
@@ -131,6 +132,96 @@ class GitModeTest(unittest.TestCase):
         calibration = {n: self.box(n)["calibration"] for n in drawn}
         self.assertEqual(sorted(calibration.values()), [[0, 0], [1, 1]])
         self.assertEqual(self.box("alice")["changes"][0]["state"], "rejected")
+
+    def second_patch(self, name):
+        work = self.tmp / f"{name}-work"
+        git(self.tmp, "clone", "-q", "project.git", work.name)
+        (work / "src" / f"{name}.c").write_text("int one(void)\n{\n    return 1;\n}\n")
+        git(work, "add", ".")
+        git(work, "commit", "-qm", f"feat: add {name}.c")
+        return git(work, "format-patch", "-1", "--stdout")
+
+    def approve_all(self):
+        for n in ("alice", "bob", "carol", "dave", "erin", "maint"):
+            for job in self.box(n)["reviews"]:
+                self.post(n, "verdict", assignment=job["assignment"], verdict="approve")
+
+    def test_approved_changes_are_pushed_once_per_pass_and_their_text_pruned(self):
+        self.post("alice", "submit", patch=self.patch())
+        self.post("bob", "submit", patch=self.second_patch("bob"))
+        self.run_coordinator()
+        self.approve_all()
+
+        class Refused(Project):
+            def publish(self):
+                git(self.dir, "reset", "-q", "--hard", f"origin/{self.branch}")
+                return False
+        rows = self.run_coordinator(project=Refused(str(self.tmp / "coordinator")))
+        self.assertEqual([r["state"] for r in rows], ["approved", "approved"])
+        self.assertNotIn("add bob.c", git(self.tmp / "project.git", "log", "--format=%s", "main"))
+
+        pushes = []
+
+        class Counted(Project):
+            def publish(self):
+                pushes.append(1)
+                return super().publish()
+        rows = self.run_coordinator(project=Counted(str(self.tmp / "coordinator")))
+        self.assertEqual([(r["state"], r["pruned"]) for r in rows], [("merged", 1), ("merged", 1)])
+        self.assertEqual(len(pushes), 1)
+        log = git(self.tmp / "project.git", "log", "--format=%s", "main")
+        self.assertIn("add bob.c", log)
+        self.assertIn("bound check in put", log)
+        self.assertEqual([c["state"] for c in self.box("bob")["changes"]], ["merged"])
+
+    def test_capability_board_and_member_task_proposals(self):
+        self.post("maint", "task", title="capture shader dumps", requires=["game", "windows"])
+        self.post("maint", "task", title="replay dumped shaders")
+        self.post("bob", "task", title="split the recompiler pass")
+        self.post("carol", "caps", caps=["windows", "game"])
+        self.run_coordinator()
+        titles = [t["title"] for t in json.loads((self.ledger / "tasks.json").read_text())]
+        self.assertEqual(sorted(titles), ["capture shader dumps", "replay dumped shaders"])
+        board = json.loads((self.ledger / "wanted.json").read_text())["capabilities"]
+        self.assertIn({"requires": ["game", "windows"], "open": 1, "blocked": 0, "members": 1,
+                       "tasks_per_member": 1.0}, board)
+        self.assertIn("game + windows", (self.ledger / "wanted.md").read_text())
+        drawn = [n for n in ("alice", "carol", "dave", "erin", "maint") if self.box(n)["reviews"]]
+        self.assertEqual(len(drawn), 1)
+        self.assertIn("question", self.box(drawn[0])["reviews"][0])
+
+    def test_draw_seed_is_committed_then_revealed(self):
+        import hashlib
+        log = lambda: [json.loads(l) for l in (self.ledger / "log.jsonl").read_text().splitlines()]
+        commit = [x for x in log() if x["event"] == "seed-commit"][0]
+        self.run_coordinator(hours=24 * 7 * 6)
+        reveal = [x for x in log() if x["event"] == "seed-reveal" and x["epoch"] == commit["epoch"]][0]
+        self.assertEqual(hashlib.sha256(bytes.fromhex(reveal["seed"])).hexdigest(), commit["sha256"])
+
+
+
+class GitHubInboxTest(unittest.TestCase):
+    def test_reads_only_new_comments_of_every_inbox_issue(self):
+        from anyp5.gitmode import GitHubInbox
+        comments = [{"id": i, "issue_url": f"https://api.github.com/repos/o/r/issues/{1 if i < 150 else 7 if i % 5 else 3}",
+                     "user": {"login": f"u{i}"}, "body": f"b{i}", "created_at": "2026-10-11T06:00:00Z"}
+                    for i in range(1, 260)]
+        calls = []
+
+        def gh(*args):
+            calls.append(args)
+            if "search/issues" in args:
+                return json.dumps({"items": [{"number": 7, "title": "anyp5 inbox", "comments": 90, "state": "open"},
+                                             {"number": 1, "title": "anyp5 inbox", "comments": 2000, "state": "closed"},
+                                             {"number": 3, "title": "anyp5 inbox please", "comments": 1, "state": "open"}]})
+            page = int(args[1].split("page=")[-1])
+            newest = sorted(comments, key=lambda c: -c["id"])
+            return json.dumps(newest[(page - 1) * 100:page * 100])
+
+        items = GitHubInbox("o/r", 1, gh=gh).fetch(after=120)
+        ids = [i[0] for i in items]
+        self.assertEqual(ids, [i for i in range(121, 260) if i < 150 or i % 5])
+        self.assertEqual(sum(1 for c in calls if "search/issues" not in c), 2)
 
 
 if __name__ == "__main__":

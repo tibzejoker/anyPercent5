@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 from . import seal
-from .engine import Engine
+from .engine import Engine, review_item
 
 EXTRA = """
 create table if not exists keys(login text primary key, box text, sign text, seq int default 0);
@@ -34,9 +34,14 @@ create table if not exists inbox(last int);
 ADMIN_ONLY = {"admit"}
 
 
+_last_seq = 0
+
+
 def command(key, login, cmd, **args):
     """What a contributor posts: a signed command, sealed to the coordinator."""
-    payload = {"login": login, "seq": time.time_ns() // 1000, "cmd": cmd, "args": args}
+    global _last_seq
+    _last_seq = max(time.time_ns() // 1000, _last_seq + 1)
+    payload = {"login": login, "seq": _last_seq, "cmd": cmd, "args": args}
     return json.dumps(seal.sign(key, payload))
 
 
@@ -61,26 +66,64 @@ class ListInbox:
         return [i for i in self.items if i[0] > after]
 
 
-class GitHubInbox:
-    """Comments on one issue of the ledger repo. GitHub vouches for who posted each comment."""
+INBOX_TITLE = "anyp5 inbox"
+INBOX_ROTATE_AT = 2000      # GitHub disables commenting on an issue at 2,500 comments
 
-    def __init__(self, repo, issue):
-        self.repo, self.issue = repo, issue
+
+def inbox_issues(repo, gh=None):
+    """Every inbox issue, newest first: [(number, comment count, open)]."""
+    if gh is None:
+        from .forge import gh
+    found = json.loads(gh("api", "-X", "GET", "search/issues", "-f",
+                          f'q=repo:{repo} is:issue in:title "{INBOX_TITLE}"', "-f", "sort=created",
+                          "-f", "order=desc", "-f", "per_page=100") or "{}").get("items", [])
+    return [(i["number"], i["comments"], i["state"] == "open") for i in found if i["title"] == INBOX_TITLE]
+
+
+class GitHubInbox:
+    """Comments on the inbox issues. GitHub vouches for who posted each comment.
+
+    Reads the repository's comment stream newest first and stops at the last processed comment: one pass costs
+    about one API call per 100 new comments. An issue stops taking comments at 2,500, so the inbox rotates to a
+    new issue at 2,000 (`rotate`); clients post to the newest open one."""
+
+    def __init__(self, repo, issue, gh=None):
+        from .forge import gh as default_gh
+        self.repo, self.issue, self.gh = repo, issue, gh or default_gh
 
     def fetch(self, after):
-        from .forge import gh
-        pages = gh("api", "--paginate", f"repos/{self.repo}/issues/{self.issue}/comments?per_page=100")
-        items = []
-        for chunk in pages.replace("][", "]\n[").splitlines():
-            for c in json.loads(chunk or "[]"):
-                if c["id"] > after:
+        numbers = {self.issue} | {n for n, _, _ in inbox_issues(self.repo, self.gh)}
+        suffixes = tuple(f"/issues/{n}" for n in numbers)
+        items, page = [], 1
+        while True:
+            batch = json.loads(self.gh("api", f"repos/{self.repo}/issues/comments?sort=created&direction=desc"
+                                              f"&per_page=100&page={page}") or "[]")
+            for c in batch:
+                if c["id"] > after and c["issue_url"].endswith(suffixes):
                     at = datetime.fromisoformat(c["created_at"].replace("Z", "+00:00")).timestamp()
                     items.append((c["id"], c["user"]["login"], c["body"], at))
-        return sorted(items)
+            if len(batch) < 100 or min(c["id"] for c in batch) <= after:
+                return sorted(items)
+            page += 1
+
+    def rotate(self):
+        """Open a fresh inbox issue before the current one fills up, and lock the full ones."""
+        from .forge import gh
+        issues = inbox_issues(self.repo)
+        current = [i for i in issues if i[2]]
+        if current and current[0][1] < INBOX_ROTATE_AT:
+            return None
+        gh("issue", "create", "--repo", self.repo, "--title", INBOX_TITLE,
+           "--body", "Sealed any%5 commands. Post them with the anyp5 CLI.")
+        for number, _, is_open in issues:
+            if is_open:
+                gh("issue", "close", str(number), "--repo", self.repo, "--comment",
+                   "Inbox full: the anyp5 CLI now posts to the newest open \"anyp5 inbox\" issue.")
+        return True
 
 
 class Project:
-    """The project's git checkout: approved patches are applied with `git am` and pushed."""
+    """The project's git checkout: approved patches are applied with `git am`, then pushed once per pass."""
 
     def __init__(self, workdir, branch="main", push=True):
         self.dir, self.branch, self.push = workdir, branch, push
@@ -93,18 +136,23 @@ class Project:
         if subprocess.run(["git", "am", "--3way"], cwd=self.dir, input=patch.encode(), capture_output=True).returncode:
             git(self.dir, "am", "--abort", check=False)
             return None
-        return self.publish()
+        return git(self.dir, "rev-parse", "HEAD")
 
     def revert(self, sha):
         if subprocess.run(["git", "revert", "--no-edit", sha], cwd=self.dir, capture_output=True).returncode:
             git(self.dir, "revert", "--abort", check=False)
             return None
-        return self.publish()
+        return git(self.dir, "rev-parse", "HEAD")
 
     def publish(self):
-        if self.push:
-            git(self.dir, "push", "-q", "origin", f"HEAD:{self.branch}")
-        return git(self.dir, "rev-parse", "HEAD")
+        """One push for the whole pass. False if the branch moved meanwhile: nothing is recorded, retry next pass."""
+        if not self.push:
+            return True
+        if subprocess.run(["git", "push", "-q", "origin", f"HEAD:{self.branch}"], cwd=self.dir,
+                          capture_output=True).returncode == 0:
+            return True
+        git(self.dir, "reset", "-q", "--hard", f"origin/{self.branch}", check=False)
+        return False
 
 
 class Coordinator:
@@ -119,9 +167,14 @@ class Coordinator:
         self.e = Engine(db, config={**self.meta.get("config", {}), **(config or {})})
         self.e.db.executescript(EXTRA)
         self.public_log = []
+        self.joined = set()
 
     # ------------------------------------------------------------ inbox
     def run(self, now=None):
+        # The database is a scratch copy: only the sealed snapshot written at the end of the pass is kept, so a
+        # disk sync per command buys nothing (it was most of the inbox time at 10,000 members).
+        self.e.db.execute("pragma synchronous=off")
+        self.e.db.execute("pragma journal_mode=memory")
         last = (self.e.one("select last from inbox") or {"last": 0})["last"]
         for item_id, author, body, at in self.inbox.fetch(last):
             try:
@@ -163,7 +216,15 @@ class Coordinator:
         if cmd == "admit":
             self.add_member(args["member"], args["keys"], None, at)
         elif cmd == "task":
-            e.add_task(args["title"], args.get("tier", "green"), at)
+            admin = login in self.meta.get("admins", [])
+            e.add_task(args["title"], args.get("tier", "green"), at, args.get("requires", []), args.get("deps", []),
+                       bool(args.get("critical")) and admin, None if admin else login)
+        elif cmd == "caps":
+            e.set_caps(login, args["caps"], at)
+        elif cmd == "away":
+            e.away(login, int(args["task"]), float(args["days"]), at)
+        elif cmd == "extend":
+            e.extend(login, int(args["task"]), args["diff"], at)
         elif cmd == "claim":
             e.claim(login, int(args["task"]), at)
         elif cmd == "handover":
@@ -171,7 +232,7 @@ class Coordinator:
         elif cmd == "finish":
             e.finish_task(int(args["task"]), at)
         elif cmd == "submit":
-            e.submit_patch(login, args["patch"], at)
+            e.submit_patch(login, args["patch"], at, int(args["task"]) if args.get("task") else None)
         elif cmd == "verdict":
             mine = e.one("select id from assignments where id=? and reviewer=?", int(args["assignment"]), login)
             if mine is None:
@@ -190,69 +251,129 @@ class Coordinator:
         self.e.db.execute("insert or replace into keys(login, box, sign, seq) values(?,?,?,"
                           "coalesce((select seq from keys where login=?), 0))", (login, keys["box"], keys["sign"], login))
         self.e.db.commit()
+        self.joined.add(login)
         self.public_log.append({"at": at, "event": "join", "login": login})
 
     # ------------------------------------------------------------ the project branch
     def forge(self, now):
         e = self.e
-        work = e.q("select * from changes where kind='pr' and patch is not null and state in ('approved','revert')")
+        self.prune()
+        work = e.q("select * from changes where kind='pr' and ((state='approved' and patch is not null) or "
+                   "(state='revert' and id in (select change_id from commits)))")
         if not work:
             return
         self.project.sync()
+        merged, reverted, conflicts = [], [], []
         for c in work:
             if c["state"] == "approved":
                 sha = self.project.apply(c["patch"])
-                if sha is None:
-                    e.db.execute("update changes set state='conflict' where id=?", (c["id"],))
-                    e.log(now, "conflict", change=c["id"])
-                    continue
-                e.db.execute("insert or replace into commits(change_id, sha) values(?,?)", (c["id"], sha))
-                e.merged(c["id"], now)
-                self.public_log.append({"at": now, "event": "merged", "commit": sha, "tier": c["tier"]})
+                (conflicts if sha is None else merged).append((c, sha))
             else:
                 row = e.one("select sha from commits where change_id=?", c["id"])
-                if row is None or self.project.revert(row["sha"]):
-                    e.reverted(c["id"], now)
-                    self.public_log.append({"at": now, "event": "reverted", "commit": row and row["sha"]})
+                if self.project.revert(row["sha"]):
+                    reverted.append((c, row["sha"]))
+        if (merged or reverted) and not self.project.publish():
+            e.log(now, "push-refused", changes=len(merged) + len(reverted))
+            e.db.commit()
+            return
+        for c, _ in conflicts:
+            e.db.execute("update changes set state='conflict' where id=?", (c["id"],))
+            e.log(now, "conflict", change=c["id"])
+        for c, sha in merged:
+            e.db.execute("insert or replace into commits(change_id, sha) values(?,?)", (c["id"], sha))
+            e.db.execute("update changes set patch=null where id=?", (c["id"],))
+            e.merged(c["id"], now)
+            self.public_log.append({"at": now, "event": "merged", "commit": sha, "tier": c["tier"]})
+        for c, sha in reverted:
+            e.reverted(c["id"], now)
+            self.public_log.append({"at": now, "event": "reverted", "commit": sha})
         e.db.commit()
+
+    def prune(self):
+        """Settled changes keep their metadata but not their text, so the state follows open work, not history."""
+        self.e.db.execute("update changes set patch=null, diff=null where kind='pr' and diff is not null and "
+                          "state in ('rejected','superseded','conflict') and id not in "
+                          "(select change_id from assignments where verdict is null)")
+        self.e.db.execute("update changes set diff=null where kind='canary' and diff is not null and id not in "
+                          "(select change_id from assignments where verdict is null)")
 
     # ------------------------------------------------------------ what everyone can read
     def view(self, login, now):
+        """A member's box. All boxes are built from a few grouped queries once per pass, not per member."""
+        if getattr(self, "_views_at", None) != now:
+            self._views, self._views_at = self.all_views(), now
+        return self._views[login]
+
+    def all_views(self, recent=50):
         e = self.e
-        m = e.member(login=login)
-        reviews = e.q("select a.id, c.diff from assignments a join changes c on c.id=a.change_id "
-                      "where a.reviewer=? and a.verdict is null order by a.drawn_at", login)
-        mine = []
-        for c in e.q("select id, tier, state from changes where kind='pr' and author=? order by id", login):
-            reasons = [r["reason"] for r in e.q("select reason from assignments where change_id=? and verdict='reject' "
-                                                "and reason != ''", c["id"])]
-            sha = e.one("select sha from commits where change_id=?", c["id"])
-            mine.append({"change": c["id"], "tier": c["tier"], "state": c["state"], "reasons": reasons,
-                         "commit": sha["sha"] if sha else None})
-        tasks = [dict(t) for t in e.q("select id, title, tier, branch from tasks where holder=? and state='leased'", login)]
-        return {"login": login, "banned": bool(m["banned"]), "calibration": [m["cal_hits"], m["cal_seen"]],
-                "reviews": [{"assignment": r["id"], "diff": r["diff"]} for r in reviews],
-                "changes": mine, "tasks": tasks}
+        reviews, tasks, mine = {}, {}, {}
+        for r in e.q("select a.id, a.reviewer, c.diff, c.kind from assignments a join changes c on c.id=a.change_id "
+                     "where a.verdict is null order by a.drawn_at"):
+            reviews.setdefault(r["reviewer"], []).append(review_item(r))
+        for t in e.q("select id, title, tier, branch, holder from tasks where state='leased'"):
+            tasks.setdefault(t["holder"], []).append({k: t[k] for k in ("id", "title", "tier", "branch")})
+        rows = e.q("select * from (select id, author, tier, state, row_number() over "
+                   "(partition by author order by id desc) rank from changes where kind='pr') "
+                   "where rank <= ? order by id", recent)
+        reasons, shas = {}, {}
+        if rows:
+            first = min(r["id"] for r in rows)
+            for r in e.q("select change_id, reason from assignments where verdict='reject' and reason != '' "
+                         "and change_id >= ?", first):
+                reasons.setdefault(r["change_id"], []).append(r["reason"])
+            shas = {r["change_id"]: r["sha"] for r in e.q("select * from commits where change_id >= ?", first)}
+        for c in rows:
+            mine.setdefault(c["author"], []).append({"change": c["id"], "tier": c["tier"], "state": c["state"],
+                                                     "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])})
+        return {m["login"]: {"login": m["login"], "banned": bool(m["banned"]),
+                             "calibration": [m["cal_hits"], m["cal_seen"]], "reviews": reviews.get(m["login"], []),
+                             "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
+                for m in e.q("select * from members")}
+
+    def seeds(self, now, reveal_after=4 * 7 * 24 * 3600):
+        """Commit to this week's draw seed now, reveal it once it is old: draws are unpredictable while they
+        matter, and checkable afterwards."""
+        from .engine import EPOCH
+        e = self.e
+        done = {(r["what"], json.loads(r["data"])["epoch"])
+                for r in e.q("select what, data from events where what in ('seed-commit','seed-reveal')")}
+        epoch, seed = e.seed(now)
+        if ("seed-commit", epoch) not in done:
+            e.log(now, "seed-commit", epoch=epoch)
+            self.public_log.append({"at": now, "event": "seed-commit", "epoch": epoch,
+                                    "sha256": hashlib.sha256(seed).hexdigest()})
+        for what, old in sorted(done):
+            if what == "seed-commit" and ("seed-reveal", old) not in done and (old + 1) * EPOCH + reveal_after <= now:
+                e.log(now, "seed-reveal", epoch=old)
+                self.public_log.append({"at": now, "event": "seed-reveal", "epoch": old,
+                                        "seed": e.seed(old * EPOCH)[1].hex()})
 
     def write(self, now):
         e, root = self.e, self.ledger
         (root / "members").mkdir(exist_ok=True)
         (root / "boxes").mkdir(exist_ok=True)
         for k in e.q("select * from keys"):
-            (root / "members" / f'{k["login"]}.json').write_text(json.dumps({"box": k["box"], "sign": k["sign"]}))
+            card = root / "members" / f'{k["login"]}.json'
+            if k["login"] in self.joined or not card.exists():
+                card.write_text(json.dumps({"box": k["box"], "sign": k["sign"]}))
             view = json.dumps(self.view(k["login"], now), sort_keys=True)
             digest = hashlib.sha256(view.encode()).hexdigest()
             old = e.one("select digest from boxes where login=?", k["login"])
             if old is None or old["digest"] != digest:
                 (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], view.encode()))
                 e.db.execute("insert or replace into boxes(login, digest) values(?,?)", (k["login"], digest))
-        tasks = [dict(t) for t in e.q("select id, title, tier, branch from tasks where state='open' order by id")]
+        tasks = [{k: t[k] for k in ("id", "title", "tier", "branch", "requires", "critical", "waiting")}
+                 for t in e.open_tasks(limit=500)]
         (root / "tasks.json").write_text(json.dumps(tasks, indent=1))
+        board = e.wanted(now)
+        (root / "wanted.json").write_text(json.dumps({"updated": int(now), "capabilities": board}, indent=1))
+        (root / "wanted.md").write_text(wanted_markdown(board, now))
         release = e.releasable(now)
         sha = e.one("select sha from commits where change_id=?", release["id"]) if release else None
         counts = {r["state"]: r["n"] for r in e.q("select state, count(*) n from changes where kind='pr' group by state")}
         (root / "status.json").write_text(json.dumps({"updated": int(now), "changes": counts,
                                                       "releasable_commit": sha["sha"] if sha else None}, indent=1))
+        self.seeds(now)
         for ev in e.q("select * from events where what='ban'"):
             entry = {"at": ev["at"], "event": "ban", "login": json.loads(ev["data"])["login"]}
             if entry not in self.public_log:
@@ -276,12 +397,42 @@ class Coordinator:
         shutil.rmtree(self.tmp, ignore_errors=True)
 
 
+def wanted_markdown(board, now):
+    """The block a project shows in its README: where to start, and which profile it is short of."""
+    lines = ["| You can run | Open tasks | Waiting on others | Active members | Tasks per member |",
+             "|---|---:|---:|---:|---:|"]
+    for row in board:
+        need = " + ".join(row["requires"]) or "nothing special (code, docs, artifacts)"
+        flag = " **wanted**" if row["tasks_per_member"] >= 2 else ""
+        lines.append(f'| {need}{flag} | {row["open"]} | {row["blocked"]} | {row["members"]} | {row["tasks_per_member"]} |')
+    updated = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime(now))
+    return "\n".join(lines) + f"\n\nUpdated {updated}. Declare what you can run with `anyp5 caps windows gpu ...`.\n"
+
+
+def update_readme(readme, block):
+    """Replace the text between <!-- anyp5:wanted --> and <!-- /anyp5:wanted --> (run daily, not every pass)."""
+    path = Path(readme)
+    text = path.read_text(encoding="utf-8")
+    start, end = "<!-- anyp5:wanted -->", "<!-- /anyp5:wanted -->"
+    if start not in text or end not in text:
+        return False
+    head, rest = text.split(start, 1)
+    new = head + start + "\n" + block + end + rest.split(end, 1)[1]
+    if new == text:
+        return False
+    path.write_text(new, encoding="utf-8")
+    return True
+
+
 def init_ledger(path, coordinator_key, admins, project, branch="main", issue=None, config=None):
     root = Path(path)
     root.mkdir(parents=True, exist_ok=True)
     meta = {"coordinator": seal.public(coordinator_key), "admins": admins, "project": project, "branch": branch,
-            "inbox_issue": issue, "config": {"canary_source": "pending", **(config or {})}}
+            "inbox_issue": issue, "state_branch": "anyp5-state",
+            "config": {"canary_source": "pending", **(config or {})}}
     (root / "anyp5.json").write_text(json.dumps(meta, indent=1))
+    # Rewritten every pass and unreadable to git's delta compression: kept on a single-commit branch instead.
+    (root / ".gitignore").write_text("state.sealed\nboxes/\n")
     return meta
 
 
@@ -292,9 +443,10 @@ class Client:
         self.repo, self.branch, self.login, self.key = repo, branch, login, key
         self._meta = None
 
-    def read(self, path):
+    def read(self, path, branch=None):
         from .forge import gh
-        return gh("api", f"repos/{self.repo}/contents/{path}?ref={self.branch}", "-H", "Accept: application/vnd.github.raw")
+        return gh("api", f"repos/{self.repo}/contents/{path}?ref={branch or self.branch}", "-H",
+                  "Accept: application/vnd.github.raw")
 
     def meta(self):
         if self._meta is None:
@@ -306,11 +458,16 @@ class Client:
         body = seal.seal(meta["coordinator"]["box"], command(self.key, self.login, cmd, **args).encode())
         if len(body) > 65000:
             raise ValueError("command too large for one comment: split the change")
-        subprocess.run(["gh", "issue", "comment", str(meta["inbox_issue"]), "--repo", self.repo, "--body-file", "-"],
+        try:
+            issue = next(n for n, _, is_open in inbox_issues(self.repo) if is_open)
+        except (StopIteration, RuntimeError):
+            issue = meta["inbox_issue"]
+        subprocess.run(["gh", "issue", "comment", str(issue), "--repo", self.repo, "--body-file", "-"],
                        input=body, text=True, check=True, capture_output=True)
 
     def box(self):
         try:
-            return json.loads(seal.unseal(self.key, self.read(f"boxes/{self.login}.sealed")))
+            return json.loads(seal.unseal(self.key, self.read(f"boxes/{self.login}.sealed",
+                                                              self.meta().get("state_branch"))))
         except RuntimeError:
             return {"login": self.login, "note": "no box yet: the coordinator has not run since you joined"}

@@ -31,9 +31,10 @@ backdoors than the trust-level baseline, and merges 5x faster. Full table, metho
 
 ## The method in six rules
 
-1. **Work is leased, never owned.** Claim a task and you get a lease that only pushed work renews (first push
-   within 24 h, 7 days at most). If you stop, it returns to the pool, and the next person resumes your
-   branch. Heartbeats alone never hold a task others depend on.
+1. **Work is leased, never owned.** Only pushed work renews a lease: first push within 24 h, 72 h per push,
+   5 days at most unless a reviewer confirms real progress. Absences freeze it within limits; the blocker
+   everyone waits on relays to whoever is online. If you stop, the next person resumes your branch. Members
+   declare what they can run, claim matching tasks, and the README shows which profile the project lacks.
 2. **Jury duty, not reputation.** No reputation is needed to contribute, and none buys lighter checks.
    Assigned reviews come before new work. There are no credits to run out of.
 3. **Risk from the diff, not the author.** A bot tiers each change green, amber or red from what it touches
@@ -112,7 +113,7 @@ Run the tests with `python -m unittest discover -s tests -t .`.
 
 Every design document and simulator is in [`sim/designs/`](sim/designs).
 
-## Scale and stalled work
+## Scale, stalled work and runners
 
 - **From 10 to 100,000 members**, throughput is linear, at about 1.4 merges per day per person online, with no
   bottleneck. The median time to merge is 2 h from about 300 members, and 12.6 h at 10. Small projects are
@@ -124,6 +125,12 @@ Every design document and simulator is in [`sim/designs/`](sim/designs).
   feature delay from 81 to 39 days. [sim/eval/dependencies.md](sim/eval/dependencies.md)
 - **Canaries** built from merged diffs can be gamed, and gaming them doubles the backdoor leak. Copies of
   pending changes cannot. [sim/eval/canary_gaming.md](sim/eval/canary_gaming.md)
+- **One repository holds it** (project, ledger branch, inbox issue), measured with the real coordinator up to
+  10,000 members: a 4 s pass every 5 minutes, about 3 MB of ledger growth per day, inbox issues rotated before
+  GitHub's 2,500-comment limit. [bench/RESULTS.md](bench/RESULTS.md)
+- **Runners**: the coordinator is cheap; CI for contributed changes is the real limit (about 600 runner-hours
+  a day at 2,400 merges with cold builds). A merge queue with batches of 16 brings it to about 60.
+  [bench/RUNNERS.md](bench/RUNNERS.md)
 
 ## Prior art
 

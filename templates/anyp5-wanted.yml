@@ -1,0 +1,30 @@
+# Daily: copy the capability board (wanted.md on the ledger branch) into the README, between
+# <!-- anyp5:wanted --> and <!-- /anyp5:wanted -->. Once a day so main's history stays clean.
+name: any%5 wanted board
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  board:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: project
+      - uses: actions/checkout@v4
+        with:
+          ref: anyp5-ledger
+          path: ledger
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.3.0"
+      - run: |
+          anyp5 wanted --ledger ledger --readme project/README.md
+          cd project
+          git config user.name "anyp5[bot]"
+          git config user.email "anyp5-bot@users.noreply.github.com"
+          git diff --quiet || { git commit -qam "docs: update the any%5 wanted board" && git push -q; }

@@ -10,7 +10,10 @@ Contributors and their agents:
 Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see docs/GITMODE.md):
   anyp5 join --repo owner/name [--branch anyp5-ledger]   create your key and ask to join
   anyp5 submit [PATCH_FILE]                  send `git format-patch` output privately for review
-  anyp5 task TITLE [TIER] | admit LOGIN KEYS_JSON
+  anyp5 task TITLE [TIER] [--requires game windows] [--deps 3 4]   members propose, maintainers open
+  anyp5 caps windows gpu game                what you can run (decides which tasks you may claim)
+  anyp5 away TASK DAYS | extend TASK [DIFF]  absence (lease frozen, cap not) | progress check at the cap
+  anyp5 admit LOGIN KEYS_JSON
   (reviews, verdict, tasks, claim, handover, alive, me and status work the same in both modes)
 
 Maintainers:
@@ -73,7 +76,7 @@ def git_main(a, client):
         client.send("verdict", assignment=a.assignment, verdict=a.verdict,
                     severity="backdoor" if a.backdoor else "none", reason=a.reason)
     elif a.cmd == "submit":
-        client.send("submit", patch=Path(a.patch).read_text(encoding="utf-8") if a.patch else sys.stdin.read())
+        client.send("submit", task=a.task, patch=Path(a.patch).read_text(encoding="utf-8") if a.patch else sys.stdin.read())
     elif a.cmd == "claim":
         client.send("claim", task=a.task)
     elif a.cmd == "handover":
@@ -81,12 +84,18 @@ def git_main(a, client):
     elif a.cmd == "alive":
         client.send("alive")
     elif a.cmd == "task":
-        client.send("task", title=a.title, tier=a.tier)
+        client.send("task", title=a.title, tier=a.tier, requires=a.requires, deps=a.deps, critical=a.critical)
+    elif a.cmd == "caps":
+        client.send("caps", caps=a.caps)
+    elif a.cmd == "away":
+        client.send("away", task=a.task, days=a.days)
+    elif a.cmd == "extend":
+        client.send("extend", task=a.task, diff=Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read())
     elif a.cmd == "admit":
         client.send("admit", member=a.member, keys=json.loads(a.keys))
     else:
         return False
-    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit"):
+    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit", "caps", "away", "extend"):
         print("sent; the coordinator applies it on its next run (usually within a minute)")
     return True
 
@@ -103,8 +112,17 @@ def main(argv=None):
     s = sub.add_parser("tier"); s.add_argument("diff", nargs="?")
     s = sub.add_parser("join"); s.add_argument("--repo", required=True); s.add_argument("--branch", default="anyp5-ledger")
     s.add_argument("--login", help="your GitHub login (default: gh's)")
-    s = sub.add_parser("submit"); s.add_argument("patch", nargs="?")
+    s = sub.add_parser("submit"); s.add_argument("patch", nargs="?"); s.add_argument("--task", type=int)
     s = sub.add_parser("task"); s.add_argument("title"); s.add_argument("tier", nargs="?", default="green")
+    s.add_argument("--requires", nargs="*", default=[]); s.add_argument("--deps", nargs="*", type=int, default=[])
+    s.add_argument("--critical", action="store_true", help="maintainers: relays to whoever is online")
+    s = sub.add_parser("caps", help="declare what you can run, e.g. windows gpu game"); s.add_argument("caps", nargs="*")
+    s = sub.add_parser("away", help="freeze your lease while absent (after a first push)")
+    s.add_argument("task", type=int); s.add_argument("days", type=float)
+    s = sub.add_parser("extend", help="at the cap: ask a reviewer to confirm progress (branch diff on stdin)")
+    s.add_argument("task", type=int); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("wanted", help="print the capability board, or update a README block with --readme")
+    s.add_argument("--ledger", required=True); s.add_argument("--readme")
     s = sub.add_parser("admit"); s.add_argument("member"); s.add_argument("keys")
     s = sub.add_parser("coordinate", help="run one coordinator pass (in the GitHub Action)")
     s.add_argument("--ledger", required=True); s.add_argument("--project", required=True)
@@ -119,7 +137,7 @@ def main(argv=None):
     s.add_argument("--config", help="JSON file overriding engine defaults")
     s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
     a = p.parse_args(argv)
-    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin") else None
+    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted") else None
     if client and git_main(a, client):
         return
 
@@ -157,6 +175,13 @@ def main(argv=None):
         CONFIG.write_text(json.dumps({"mode": "git", "repo": a.repo, "branch": a.branch, "login": login, "key": key}))
         Client(a.repo, a.branch, login, key).send("join", keys=seal.public(key))
         print(f"key saved to {CONFIG} (keep it private); join request sent as {login}")
+    elif a.cmd == "wanted":
+        from .gitmode import update_readme
+        block = (Path(a.ledger) / "wanted.md").read_text(encoding="utf-8")
+        if a.readme:
+            print("updated" if update_readme(a.readme, block) else "unchanged (no markers or same content)")
+        else:
+            print(block)
     elif a.cmd == "init-ledger":
         from . import seal
         from .gitmode import init_ledger
@@ -168,12 +193,14 @@ def main(argv=None):
         from .gitmode import Coordinator, GitHubInbox, Project
         key = json.loads(os.environ["ANYP5_COORDINATOR_KEY"])
         meta = json.loads((Path(a.ledger) / "anyp5.json").read_text())
-        c = Coordinator(a.ledger, key, GitHubInbox(a.repo, meta["inbox_issue"]),
-                        Project(a.project, meta.get("branch", "main"), push=not a.no_push))
+        inbox = GitHubInbox(a.repo, meta["inbox_issue"])
+        c = Coordinator(a.ledger, key, inbox, Project(a.project, meta.get("branch", "main"), push=not a.no_push))
         try:
             c.run()
         finally:
             c.close()
+        if not a.no_push:
+            inbox.rotate()
     elif a.cmd == "serve":
         from .forge import GitHub
         from .server import serve

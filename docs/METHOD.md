@@ -9,15 +9,39 @@ measured, and ship only what survived a soak period".
 
 ## 1. Work is leased, never owned
 
-- Work is split into **tasks** small enough for one session. Anyone can split a task into sub-tasks.
-- `claim` gives a **lease**. The first push (`handover` with a branch) is due within 24 h. **Only pushed
-  work renews the lease** (72 h each time, never past 7 days after the claim); a heartbeat does not. When it
-  expires, the task returns to the pool with its branch, and the next holder resumes it.
-- Tasks that many others depend on are claimed first. Split them small.
-- Measured ([dependencies](../sim/eval/dependencies.md), 20 % silent and 5 % "zombie" holders who send
-  heartbeats but never finish): with heartbeat-renewed leases, dependent features take 81 days at p95 and 30 %
-  are still unfinished after a month. With this rule: 39 days and 2 %, with no loss of throughput. Short 24 h
-  leases are worse (19 % of the work wasted).
+- Work is split into **tasks** small enough for one session. Tasks can depend on other tasks; a task opens
+  for claiming once its prerequisites are done, and tasks that others wait on are listed first.
+- **Who creates tasks**: maintainers open them directly; any member can propose or split one, and a proposal
+  is reviewed by one drawn member before it opens. Measured ([capabilities](../sim/eval/capabilities.md)):
+  maintainers-only task creation costs 31 % of throughput. A failing run should create the next task from its
+  log automatically.
+- `claim` gives a **lease** ([lease sweep](../sim/eval/lease_sweep.md), 16,704 runs in six worlds):
+  - the first push (`handover` with a branch) is due within **24 h**;
+  - **only pushed work renews it**, for **72 h**; a heartbeat does not, so "zombie" holders cannot sit on a
+    task others wait on;
+  - a **cap of 5 days**, extended by 5 days each time **one drawn reviewer confirms real progress**
+    (`extend`, the branch diff). Without the extension a cap takes big tasks from honest people (55 % never
+    finished); with it, big-task worlds merge 154/day instead of 89 and the cap still stops fake pushers.
+  - When it expires, the task returns to the pool with its branch, and the next holder resumes it.
+- **Absence** (`away`, [measured](../sim/eval/away.md)): after a first push, a holder may freeze the lease for
+  up to 5 days, 21 days per 30. It never moves the cap. On a task others wait on, the freeze lasts 48 h at most.
+  A naive away (no first push, no cap) gave abusers 15-19 days of free hold.
+- **Critical tasks relay**: a task marked critical (the blocker everything waits on) returns to the pool, with
+  its branch, as soon as its holder has been offline 12 h. On a serial chain of blockers, relaying doubled the
+  pace ([blockers](../sim/eval/capabilities.md)); temporary bypass hacks that reveal the next blocker doubled
+  it again (never shipped).
+
+## 1b. Capabilities: not everyone can do every task
+
+- Members declare what they can run (`anyp5 caps windows gpu game`); tasks state what they need. One can only
+  claim matching tasks. Declarations are unverified: ask for run evidence in the first push.
+- **Reviews stay open to everyone.** Restricting reviews to capability holders shrinks the pool: careless
+  reviews triple, and attackers who claim a rare capability double shipped backdoors (24 to 46 per 10k).
+- **Convert "needs the hardware" into "needs an artifact"**: a capable member captures logs, shader dumps or
+  memory dumps (a short task), anyone works from them, and a capable member runs the final check. Measured:
+  +65 % throughput when 60 % of tasks need a capability only 15 % of members have.
+- The ledger publishes the **wanted board** (`wanted.md`): open tasks and active members per capability set.
+  A daily Action copies it into the README, so newcomers see where to start and which profile is missing.
 
 ## 2. Jury duty instead of reputation gates
 
@@ -49,8 +73,11 @@ A spare reviewer is drawn when one is slow (more than 6 h). The change merges on
   receive copies of their own change.
   Rejecting it counts as a catch. A reviewer's score is `(catches + 1) / (canaries seen + 2)`.
 - New members get canaries first (up to 5) until their score is established.
-- Reviews and audits go to **idle members with the best score**. Ties are broken by a hash of the change,
-  which anyone can recompute.
+- Reviews and audits go to **idle members with the best score**. Ties, and the coin that picks which changes
+  get a post-merge review, use a **hidden weekly seed** known only to the coordinator. With a public hash, an
+  author could retouch their patch (a blank line, a comment) until the draw picked an accomplice or skipped
+  the post-merge review. `sha256(seed)` is published when the week starts and the seed is revealed 4 weeks
+  later, so every draw can be checked once it no longer matters.
 - Canaries are why reviews are served from the any%5 server and not from the forge: a planted PR on a
   public forge is visible to everyone, so it would calibrate nothing.
 
