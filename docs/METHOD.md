@@ -10,9 +10,14 @@ measured, and ship only what survived a soak period".
 ## 1. Work is leased, never owned
 
 - Work is split into **tasks** small enough for one session. Anyone can split a task into sub-tasks.
-- `claim` gives a **lease** (72 h). Any activity renews it (heartbeat). If the holder goes quiet, the lease
-  expires and the task returns to the pool. Joining or leaving never blocks anyone.
-- Partial work lives on a branch recorded with the task (`handover`). The next holder resumes it.
+- `claim` gives a **lease**. The first push (`handover` with a branch) is due within 24 h. **Only pushed
+  work renews the lease** (72 h each time, never past 7 days after the claim); a heartbeat does not. When it
+  expires, the task returns to the pool with its branch, and the next holder resumes it.
+- Tasks that many others depend on are claimed first. Split them small.
+- Measured ([dependencies](../sim/eval/dependencies.md), 20 % silent and 5 % "zombie" holders who send
+  heartbeats but never finish): with heartbeat-renewed leases, dependent features take 81 days at p95 and 30 %
+  are still unfinished after a month. With this rule: 39 days and 2 %, with no loss of throughput. Short 24 h
+  leases are worse (19 % of the work wasted).
 
 ## 2. Jury duty instead of reputation gates
 
@@ -36,7 +41,12 @@ A spare reviewer is drawn when one is slow (more than 6 h). The change merges on
 ## 4. Blind, calibrated reviewers
 
 - Reviewers see **an id and a diff**, never the author or the title.
-- **Calibration canaries**: for every 2.5 real changes, one canary is mixed in: a real, already merged diff with one planted defect.
+- **Calibration canaries**: for every 2.5 real changes, one canary is mixed in: a **copy of a change still
+  under review** with one planted defect, served only through the blind channel. A canary must never come
+  from anything public: canaries built from merged diffs are found with `git log`, and then gamers rise in the
+  ranking and the share of backdoor attempts that ship doubles (16 % to 36 %, [canary
+  gaming](../sim/eval/canary_gaming.md)). Nobody receives two versions of one change, and authors never
+  receive copies of their own change.
   Rejecting it counts as a catch. A reviewer's score is `(catches + 1) / (canaries seen + 2)`.
 - New members get canaries first (up to 5) until their score is established.
 - Reviews and audits go to **idle members with the best score**. Ties are broken by a hash of the change,
@@ -66,7 +76,15 @@ compared with shipping on merge, for every design tested.
   - nobody else is banned. Measured: banning approvers too ("full contagion") banned honest people with no
     security gain.
 
-## 7. What it does not solve
+## 7. Scale
+
+Measured from 10 to 100,000 members ([scaling](../sim/eval/scaling.md)): throughput is linear (about 1.4
+merges/day per person online) with no bottleneck, and the median time to merge is 2 h from about 300 members.
+Small projects are slower (12.6 h at 10 members) and about 1.5x less safe per merge: calibration has few people
+to choose from, and one attacker is a large share. Below about 100 members, maintainers stay in the reviewer
+pool and act as backdoor auditors. Past about 2,000 merges/day into one branch, use a merge queue.
+
+## 8. What it does not solve
 
 - A subtle backdoor that passes every check can still ship. One review catches a subtle one about 15 % of
   the time and an audit about 26 %, so safety comes from the number and quality of independent looks, plus

@@ -93,14 +93,34 @@ class ReviewTest(Base):
 
 
 class LeaseTest(Base):
-    def test_lease_expires_only_when_the_holder_goes_quiet(self):
+    def state(self, task):
+        return self.e.one("select state from tasks where id=?", task)["state"]
+
+    def test_pushed_work_renews_the_lease_heartbeats_do_not(self):
         task = self.e.add_task("t", "green", 0)
         self.e.claim("bob", task, 0)
-        self.e.alive("bob", 60 * H)
-        self.e.tick(100 * H)
-        self.assertEqual(self.e.one("select state from tasks where id=?", task)["state"], "leased")
-        self.e.tick(140 * H)
-        self.assertEqual(self.e.one("select state from tasks where id=?", task)["state"], "open")
+        self.e.handover(task, "bob/t", 20 * H)
+        self.e.tick(90 * H)
+        self.assertEqual(self.state(task), "leased")
+        self.e.alive("bob", 91 * H)
+        self.e.tick(93 * H)
+        self.assertEqual(self.state(task), "open")
+
+    def test_first_push_is_due_within_a_day_and_leases_are_capped(self):
+        quiet = self.e.add_task("quiet", "green", 0)
+        self.e.claim("bob", quiet, 0)
+        self.e.tick(25 * H)
+        self.assertEqual(self.state(quiet), "open")
+        busy = self.e.add_task("busy", "green", 0)
+        self.e.claim("carol", busy, 0)
+        for hour in range(20, 170, 20):
+            self.e.handover(busy, "carol/busy", hour * H)
+            self.e.tick(hour * H)
+            self.assertEqual(self.state(busy), "leased")
+        self.e.handover(busy, "carol/busy", 180 * H)
+        self.e.tick(169 * H)
+        self.assertEqual(self.state(busy), "open")
+        self.assertEqual(self.e.one("select branch from tasks where id=?", busy)["branch"], "carol/busy")
 
 
 class BanTest(Base):

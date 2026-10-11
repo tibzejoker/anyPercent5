@@ -280,7 +280,7 @@ def init_ledger(path, coordinator_key, admins, project, branch="main", issue=Non
     root = Path(path)
     root.mkdir(parents=True, exist_ok=True)
     meta = {"coordinator": seal.public(coordinator_key), "admins": admins, "project": project, "branch": branch,
-            "inbox_issue": issue, "config": config or {}}
+            "inbox_issue": issue, "config": {"canary_source": "pending", **(config or {})}}
     (root / "anyp5.json").write_text(json.dumps(meta, indent=1))
     return meta
 

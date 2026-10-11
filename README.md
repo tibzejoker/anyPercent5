@@ -31,15 +31,16 @@ backdoors than the trust-level baseline, and merges 5x faster. Full table, metho
 
 ## The method in six rules
 
-1. **Work is leased, never owned.** Claim a task and you get a lease that renews while you are active. If
-   you go quiet, it returns to the pool, and the next person resumes your branch.
+1. **Work is leased, never owned.** Claim a task and you get a lease that only pushed work renews (first push
+   within 24 h, 7 days at most). If you stop, it returns to the pool, and the next person resumes your
+   branch. Heartbeats alone never hold a task others depend on.
 2. **Jury duty, not reputation.** No reputation is needed to contribute, and none buys lighter checks.
    Assigned reviews come before new work. There are no credits to run out of.
 3. **Risk from the diff, not the author.** A bot tiers each change green, amber or red from what it touches
    (CI, build, dependencies, network, process execution, memory protection…). Riskier tiers get more
    reviewers and post-merge audits.
 4. **Blind, calibrated reviewers.** Reviewers see a diff without its author or title. Mixed into their work
-   are *canaries*: real merged diffs with one planted defect. Catching them ranks reviewers, and reviews go
+   are *canaries*: copies of pending changes with one planted defect, never anything public. Catching them ranks reviewers, and reviews go
    to the best-ranked people who are free. This is the biggest single lever measured.
 5. **Merge fast, ship after a soak.** Changes merge on approval (2 h median). Releases include only changes
    that spent 14 days on main and finished their post-merge checks.
@@ -51,18 +52,24 @@ Details and rationale: [docs/METHOD.md](docs/METHOD.md).
 
 ## How it runs
 
+**Git mode (default, nothing to host).** A ledger branch, one inbox issue and a GitHub Action replace the
+server. Contributors send sealed, signed commands as issue comments. Changes are sent privately as
+`git format-patch` output, so canaries can be copies of pending changes that nothing public tells apart. The
+Action applies approved patches and pushes them. Tested end to end on GitHub. See [docs/GITMODE.md](docs/GITMODE.md).
+
 ```
-contributors + their agents ──(anyp5 CLI)──> any%5 server (ledger, leases, blind review queue, canaries)
-                                                   │  syncs PRs, merges approved ones, labels, revert requests
-                                                   ▼
-                                          GitHub (code, PRs, releases)
+contributor + agent ──(anyp5 CLI: sealed comment)──> inbox issue ──> Action "coordinator" ──> main
+        ▲                                                                │
+        └──────────── anyp5-ledger branch: your sealed box ──────────────┘
 ```
 
-Git and GitHub remain the source of truth for code. The small any%5 server exists for one reason: canaries
-only calibrate if a reviewer cannot tell them from real changes, and a planted PR on a public forge is
-visible to everyone. Reviews are therefore served blind by the server, and only outcomes go back to GitHub.
+**Server mode.** The same engine behind a small HTTP server that syncs public PRs (`anyp5 serve`). It is
+simpler for contributors, but a public PR can be compared with its canary copy. Use it with synthetic
+canaries, or prefer git mode.
 
-- `anyp5/`: engine (SQLite ledger), HTTP server, GitHub adapter (`gh` CLI) and CLI. Standard library only.
+- `anyp5/`: engine (SQLite ledger), git mode (`gitmode.py`, `seal.py`), HTTP server, GitHub adapter (`gh` CLI)
+  and CLI. The only dependency is `cryptography`.
+- `templates/anyp5-coordinator.yml`: the git mode coordinator Action.
 - `skills/`: agent skills ([contributor](skills/contributor/SKILL.md), [reviewer](skills/reviewer/SKILL.md))
   that teach an agent the loop.
 - `evidence/`: evidence bundles for a PR. The tests fail before the change and pass after it, the bundle
@@ -104,6 +111,32 @@ Run the tests with `python -m unittest discover -s tests -t .`.
    the soak. Rules that did not beat noise were dropped. The result was confirmed on fresh seeds.
 
 Every design document and simulator is in [`sim/designs/`](sim/designs).
+
+## Scale and stalled work
+
+- **From 10 to 100,000 members**, throughput is linear, at about 1.4 merges per day per person online, with no
+  bottleneck. The median time to merge is 2 h from about 300 members, and 12.6 h at 10. Small projects are
+  about 1.5x less safe per merge, so below about 100 members maintainers stay in the reviewer pool.
+  [sim/eval/scaling.md](sim/eval/scaling.md)
+- **When people holding tasks others depend on stop answering**, throughput barely moves: other work is
+  always available. Dependent features are delayed, though, and "zombie" holders who send heartbeats without
+  pushing anything were the worst case. Leases renewed only by pushed work, with a 7-day cap, bring the p95
+  feature delay from 81 to 39 days. [sim/eval/dependencies.md](sim/eval/dependencies.md)
+- **Canaries** built from merged diffs can be gamed, and gaming them doubles the backdoor leak. Copies of
+  pending changes cannot. [sim/eval/canary_gaming.md](sim/eval/canary_gaming.md)
+
+## Prior art
+
+- **Closing the door**: GitHub's collaborator-only PRs and PR caps (2026), "N merged PRs first" gates. These
+  are simple, but they do not scale (see the status-quo row).
+- **[Vouch](https://github.com/mitchellh/vouch)** (Mitchell Hashimoto, 2026): vouched and denounced lists,
+  shareable across projects, with an Action that closes PRs from unvouched users. It works well against spam.
+  It is still "trust the author", and vouching is a human bottleneck. The two combine: Vouch at the door,
+  any%5 for throughput and checks. A Vouch denounce list can feed any%5 bans.
+- **cargo-crev / cargo-vet**: signed, shared code reviews for dependencies. Voluntary review stayed scarce,
+  which is why any%5 assigns reviews (jury duty).
+- **Stack Overflow review audits, crowdsourcing "gold questions"**: the canary idea, proven at scale. The
+  known failure mode, recognisable audits, is the one measured above.
 
 ## Limits (read these)
 

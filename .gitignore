@@ -2,3 +2,4 @@ __pycache__/
 *.sqlite
 sim/eval/build/
 sim/eval/run.log
+sim/eval/*.out

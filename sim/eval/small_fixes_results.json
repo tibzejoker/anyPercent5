@@ -1,0 +1,9382 @@
+[
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 12.5,
+  "ship14": 0,
+  "merged_before": 194,
+  "careless": 0.20676691729323307
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 198,
+  "careless": 0.28346456692913385
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 3,
+  "med": 10,
+  "ship14": 0,
+  "merged_before": 194,
+  "careless": 0.20463320463320464
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 185,
+  "careless": 0.12692307692307692
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 3,
+  "merged_before": 184,
+  "careless": 0.176
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 3,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.14344262295081966
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.17768595041322313
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 177,
+  "careless": 0.26609442060085836
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.19202898550724637
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 3,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 174,
+  "careless": 0.1910569105691057
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.2689075630252101
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 6,
+  "merged_before": 180,
+  "careless": 0.08
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.15416666666666667
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.16818181818181818
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 2,
+  "med": 18.0,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.04878048780487805
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.09836065573770492
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.2379182156133829
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 3,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.24615384615384617
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.1596958174904943
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 3,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.2364341085271318
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.20784313725490197
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.13857677902621723
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 2,
+  "merged_before": 172,
+  "careless": 0.1729957805907173
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.3426294820717131
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.06159420289855073
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 3,
+  "med": 10.0,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.124
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.10810810810810811
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 179,
+  "careless": 0.20300751879699247
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.1717557251908397
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.28205128205128205
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.15057915057915058
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.09056603773584905
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 190,
+  "careless": 0.0599250936329588
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.1434108527131783
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 2,
+  "med": 10.0,
+  "ship14": 0,
+  "merged_before": 179,
+  "careless": 0.05223880597014925
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.33620689655172414
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 3,
+  "merged_before": 158,
+  "careless": 0.128099173553719
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 2,
+  "merged_before": 181,
+  "careless": 0.17647058823529413
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.14634146341463414
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.17180616740088106
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 3,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.2111111111111111
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 3,
+  "med": 9,
+  "ship14": 0,
+  "merged_before": 197,
+  "careless": 0.15162454873646208
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 1,
+  "merged_before": 174,
+  "careless": 0.09795918367346938
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.1449814126394052
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.22
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.11151079136690648
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.07279693486590039
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 192,
+  "careless": 0.0695970695970696
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.13306451612903225
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.21323529411764705
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.18181818181818182
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 1,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.08333333333333333
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.13026819923371646
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.14028776978417265
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.148014440433213
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.26639344262295084
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.10483870967741936
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 2,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.11363636363636363
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.14049586776859505
+ },
+ {
+  "name": "as published (flat)",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 188,
+  "careless": 0.28085106382978725
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 562,
+  "careless": 0.07614213197969544
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 8,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 569,
+  "careless": 0.1759379042690815
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 8,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 545,
+  "careless": 0.14138817480719795
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 8,
+  "med": 5.5,
+  "ship14": 3,
+  "merged_before": 553,
+  "careless": 0.11662198391420911
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 9,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 568,
+  "careless": 0.1590013140604468
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 3,
+  "merged_before": 508,
+  "careless": 0.1409028727770178
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 6,
+  "med": 5,
+  "ship14": 2,
+  "merged_before": 527,
+  "careless": 0.17131474103585656
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 6,
+  "med": 7.0,
+  "ship14": 1,
+  "merged_before": 510,
+  "careless": 0.15112994350282485
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 556,
+  "careless": 0.16352201257861634
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 2,
+  "merged_before": 545,
+  "careless": 0.1245136186770428
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 558,
+  "careless": 0.1391509433962264
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 2,
+  "merged_before": 511,
+  "careless": 0.1986842105263158
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 553,
+  "careless": 0.11223203026481715
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 535,
+  "careless": 0.14343163538873996
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 522,
+  "careless": 0.08255659121171771
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 537,
+  "careless": 0.12953367875647667
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 553,
+  "careless": 0.17826617826617827
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 8,
+  "med": 5,
+  "ship14": 1,
+  "merged_before": 570,
+  "careless": 0.1878238341968912
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 526,
+  "careless": 0.1415929203539823
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 7,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 540,
+  "careless": 0.1893732970027248
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 531,
+  "careless": 0.08344733242134063
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 547,
+  "careless": 0.14848883048620237
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 540,
+  "careless": 0.14659685863874344
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 8,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 564,
+  "careless": 0.2255541069100391
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 544,
+  "careless": 0.17647058823529413
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 2,
+  "merged_before": 549,
+  "careless": 0.14432989690721648
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 8,
+  "med": 5.0,
+  "ship14": 1,
+  "merged_before": 531,
+  "careless": 0.1205298013245033
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 516,
+  "careless": 0.1746031746031746
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 5,
+  "med": 7,
+  "ship14": 6,
+  "merged_before": 557,
+  "careless": 0.17407878017789072
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 514,
+  "careless": 0.12376933895921238
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 7,
+  "med": 5.0,
+  "ship14": 1,
+  "merged_before": 545,
+  "careless": 0.09866666666666667
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 538,
+  "careless": 0.09148665819567979
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 8,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 549,
+  "careless": 0.11741424802110818
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 6,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 547,
+  "careless": 0.15089163237311384
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 1,
+  "merged_before": 532,
+  "careless": 0.11709286675639301
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 7,
+  "med": 6.5,
+  "ship14": 0,
+  "merged_before": 515,
+  "careless": 0.24554183813443073
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 555,
+  "careless": 0.10790464240903387
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 519,
+  "careless": 0.16532258064516128
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 3,
+  "merged_before": 534,
+  "careless": 0.09161290322580645
+ },
+ {
+  "name": "as published (flat)",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 561,
+  "careless": 0.1481958762886598
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 26,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1775,
+  "careless": 0.11840515505436972
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 24,
+  "med": 3.0,
+  "ship14": 3,
+  "merged_before": 1846,
+  "careless": 0.1122645136485967
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 26,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1870,
+  "careless": 0.1200448765893792
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 25,
+  "med": 3.0,
+  "ship14": 9,
+  "merged_before": 1839,
+  "careless": 0.10262436349392871
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1823,
+  "careless": 0.11373648378053665
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 22,
+  "med": 3.0,
+  "ship14": 1,
+  "merged_before": 1782,
+  "careless": 0.11653225806451613
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 26,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 1784,
+  "careless": 0.11509054325955734
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 5,
+  "merged_before": 1814,
+  "careless": 0.12734375
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 1736,
+  "careless": 0.12154471544715448
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 25,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1778,
+  "careless": 0.1415650806134487
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 27,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1803,
+  "careless": 0.15833666533386645
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 3,
+  "merged_before": 1859,
+  "careless": 0.1123015873015873
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 25,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1790,
+  "careless": 0.1362530413625304
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 24,
+  "med": 4,
+  "ship14": 3,
+  "merged_before": 1798,
+  "careless": 0.12439807383627609
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 1755,
+  "careless": 0.1306511820821236
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 23,
+  "med": 4,
+  "ship14": 6,
+  "merged_before": 1805,
+  "careless": 0.15901060070671377
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 24,
+  "med": 4,
+  "ship14": 5,
+  "merged_before": 1762,
+  "careless": 0.10328068043742406
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 22,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1815,
+  "careless": 0.1606782398062172
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 24,
+  "med": 3.0,
+  "ship14": 4,
+  "merged_before": 1780,
+  "careless": 0.15161422149570902
+ },
+ {
+  "name": "as published (flat)",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1851,
+  "careless": 0.1688715953307393
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 76,
+  "med": 2,
+  "ship14": 3,
+  "merged_before": 5467,
+  "careless": 0.08829404714342788
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 76,
+  "med": 3.0,
+  "ship14": 3,
+  "merged_before": 5405,
+  "careless": 0.09303267620847962
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 77,
+  "med": 2,
+  "ship14": 4,
+  "merged_before": 5382,
+  "careless": 0.09331532748143147
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 77,
+  "med": 2,
+  "ship14": 3,
+  "merged_before": 5468,
+  "careless": 0.08107756376887038
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 72,
+  "med": 2,
+  "ship14": 3,
+  "merged_before": 5454,
+  "careless": 0.100438421681945
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 73,
+  "med": 2,
+  "ship14": 5,
+  "merged_before": 5408,
+  "careless": 0.09419510884170922
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 75,
+  "med": 3,
+  "ship14": 9,
+  "merged_before": 5325,
+  "careless": 0.10118066996155958
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 71,
+  "med": 2,
+  "ship14": 8,
+  "merged_before": 5484,
+  "careless": 0.08872360207198832
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 75,
+  "med": 2.0,
+  "ship14": 3,
+  "merged_before": 5450,
+  "careless": 0.09606236786469345
+ },
+ {
+  "name": "as published (flat)",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 68,
+  "med": 2,
+  "ship14": 7,
+  "merged_before": 5622,
+  "careless": 0.08686084142394822
+ },
+ {
+  "name": "as published (flat)",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 237,
+  "med": 2,
+  "ship14": 20,
+  "merged_before": 18066,
+  "careless": 0.06576018777062846
+ },
+ {
+  "name": "as published (flat)",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 246,
+  "med": 2.0,
+  "ship14": 10,
+  "merged_before": 18128,
+  "careless": 0.0640447195048912
+ },
+ {
+  "name": "as published (flat)",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 240,
+  "med": 2.0,
+  "ship14": 18,
+  "merged_before": 18152,
+  "careless": 0.07309115505510683
+ },
+ {
+  "name": "as published (flat)",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 247,
+  "med": 2.0,
+  "ship14": 11,
+  "merged_before": 18251,
+  "careless": 0.05427716849451645
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.21026894865525672
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 138,
+  "careless": 0.20402298850574713
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.07692307692307693
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 1,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.18508997429305912
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 3,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.13399503722084366
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.08673469387755102
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.24050632911392406
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 134,
+  "careless": 0.06060606060606061
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 164,
+  "careless": 0.12646370023419204
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 1,
+  "merged_before": 140,
+  "careless": 0.17724867724867724
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 1,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 150,
+  "careless": 0.03684210526315789
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 146,
+  "careless": 0.08108108108108109
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.14004914004914004
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.3233082706766917
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 2,
+  "med": 32,
+  "ship14": 0,
+  "merged_before": 140,
+  "careless": 0.09523809523809523
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.08266666666666667
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.18137254901960784
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.1393643031784841
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.13466334164588528
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.22009569377990432
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 2,
+  "med": 25.5,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.20681265206812652
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 3,
+  "med": 29.5,
+  "ship14": 1,
+  "merged_before": 154,
+  "careless": 0.175
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 22,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.09905660377358491
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 156,
+  "careless": 0.3076923076923077
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 3,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.2119815668202765
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 2,
+  "med": 29.0,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.16585365853658537
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 150,
+  "careless": 0.05853658536585366
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 1,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 156,
+  "careless": 0.22604422604422605
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.17865429234338748
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 149,
+  "careless": 0.10621761658031088
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 1,
+  "merged_before": 153,
+  "careless": 0.18298969072164947
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 3,
+  "med": 24.5,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.20134228187919462
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 3,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 156,
+  "careless": 0.13114754098360656
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 1,
+  "merged_before": 140,
+  "careless": 0.2689075630252101
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.23543123543123542
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.24878048780487805
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 3,
+  "med": 28.0,
+  "ship14": 2,
+  "merged_before": 152,
+  "careless": 0.22604422604422605
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 2,
+  "merged_before": 157,
+  "careless": 0.125
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 150,
+  "careless": 0.15
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 30,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.1435523114355231
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 1,
+  "merged_before": 159,
+  "careless": 0.17603911980440098
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.14
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 134,
+  "careless": 0.16939890710382513
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.23222748815165878
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 2,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 149,
+  "careless": 0.17142857142857143
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.2205128205128205
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 147,
+  "careless": 0.13720316622691292
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 146,
+  "careless": 0.15885416666666666
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 26.5,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.13959390862944163
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 2,
+  "med": 24.5,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.228643216080402
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 29.0,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.19174757281553398
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.11471321695760599
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 3,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.12200956937799043
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.17660550458715596
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 3,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.23129251700680273
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 1,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.12276214833759591
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 1,
+  "merged_before": 146,
+  "careless": 0.1834625322997416
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 3,
+  "med": 30.0,
+  "ship14": 0,
+  "merged_before": 152,
+  "careless": 0.2766990291262136
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.1295843520782396
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 1,
+  "merged_before": 148,
+  "careless": 0.21204188481675393
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 478,
+  "careless": 0.15789473684210525
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 1,
+  "merged_before": 462,
+  "careless": 0.14713216957605985
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 6,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 467,
+  "careless": 0.0895397489539749
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 1,
+  "merged_before": 482,
+  "careless": 0.14888535031847133
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 486,
+  "careless": 0.20242914979757085
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 6,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 473,
+  "careless": 0.09306122448979592
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 6,
+  "med": 17.0,
+  "ship14": 0,
+  "merged_before": 477,
+  "careless": 0.2161051766639277
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 1,
+  "merged_before": 454,
+  "careless": 0.17903930131004367
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 5,
+  "merged_before": 456,
+  "careless": 0.14431239388794567
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 5,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 458,
+  "careless": 0.14113597246127366
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 470,
+  "careless": 0.15980230642504117
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 5,
+  "med": 17,
+  "ship14": 2,
+  "merged_before": 458,
+  "careless": 0.20540997464074387
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 454,
+  "careless": 0.2032590051457976
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 5,
+  "med": 15.5,
+  "ship14": 0,
+  "merged_before": 432,
+  "careless": 0.14684684684684685
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 4,
+  "med": 18,
+  "ship14": 1,
+  "merged_before": 426,
+  "careless": 0.1278127812781278
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 7,
+  "med": 17.0,
+  "ship14": 1,
+  "merged_before": 455,
+  "careless": 0.13213981244671782
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 4,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.18509212730318259
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.05721393034825871
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.09950248756218906
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 466,
+  "careless": 0.1348221670802316
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 1,
+  "merged_before": 472,
+  "careless": 0.14380165289256197
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 7,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.07920792079207921
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 2,
+  "merged_before": 469,
+  "careless": 0.10430463576158941
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 6,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 484,
+  "careless": 0.2121697357886309
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.12635983263598327
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 7,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 456,
+  "careless": 0.19591141396933562
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 7,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 479,
+  "careless": 0.18253968253968253
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 7,
+  "med": 16.0,
+  "ship14": 1,
+  "merged_before": 440,
+  "careless": 0.13126079447322972
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 8,
+  "med": 17.0,
+  "ship14": 2,
+  "merged_before": 441,
+  "careless": 0.15536480686695278
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 481,
+  "careless": 0.1136
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 7,
+  "med": 14.0,
+  "ship14": 2,
+  "merged_before": 474,
+  "careless": 0.1606714628297362
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 476,
+  "careless": 0.12884927066450566
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 5,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 453,
+  "careless": 0.1503823279524214
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 1,
+  "merged_before": 433,
+  "careless": 0.11877729257641921
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 471,
+  "careless": 0.15733113673805602
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 453,
+  "careless": 0.2030328559393429
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 6,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 484,
+  "careless": 0.12702265372168284
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 484,
+  "careless": 0.10115131578947369
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 483,
+  "careless": 0.13995117982099267
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 454,
+  "careless": 0.12256973795435334
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 21,
+  "med": 13,
+  "ship14": 2,
+  "merged_before": 1586,
+  "careless": 0.15411042944785275
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 20,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 1564,
+  "careless": 0.11455727863931967
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 20,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 1510,
+  "careless": 0.17924285346381663
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 3,
+  "merged_before": 1562,
+  "careless": 0.1041718710966775
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 19,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1548,
+  "careless": 0.134470647265429
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 22,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1545,
+  "careless": 0.14009054325955733
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 18,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 1565,
+  "careless": 0.11817501869857891
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 2,
+  "merged_before": 1601,
+  "careless": 0.10892549791000737
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 19,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 1545,
+  "careless": 0.15199398043641835
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 20,
+  "med": 14.0,
+  "ship14": 2,
+  "merged_before": 1514,
+  "careless": 0.18825339830725826
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 19,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 1559,
+  "careless": 0.16993957703927492
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 3,
+  "merged_before": 1613,
+  "careless": 0.14205653021442496
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1519,
+  "careless": 0.13693370872792424
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 22,
+  "med": 12.0,
+  "ship14": 4,
+  "merged_before": 1508,
+  "careless": 0.12057272042200452
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 1,
+  "merged_before": 1561,
+  "careless": 0.1299800796812749
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 21,
+  "med": 13.0,
+  "ship14": 3,
+  "merged_before": 1553,
+  "careless": 0.1524436566219296
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 18,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 1579,
+  "careless": 0.1210367388022144
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 19,
+  "med": 13.0,
+  "ship14": 2,
+  "merged_before": 1544,
+  "careless": 0.18434472208057115
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1597,
+  "careless": 0.1666255854079369
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 21,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 1541,
+  "careless": 0.11359638100025132
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 61,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 4708,
+  "careless": 0.12586479953321664
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 62,
+  "med": 12.0,
+  "ship14": 4,
+  "merged_before": 4724,
+  "careless": 0.11700441998165291
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 63,
+  "med": 12,
+  "ship14": 4,
+  "merged_before": 4758,
+  "careless": 0.11349693251533742
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 61,
+  "med": 13.0,
+  "ship14": 5,
+  "merged_before": 4656,
+  "careless": 0.09405693357749292
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 65,
+  "med": 12.0,
+  "ship14": 3,
+  "merged_before": 4658,
+  "careless": 0.13448969331322272
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 62,
+  "med": 12,
+  "ship14": 1,
+  "merged_before": 4789,
+  "careless": 0.11924651924651924
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 60,
+  "med": 11,
+  "ship14": 6,
+  "merged_before": 4659,
+  "careless": 0.12851845609303894
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 58,
+  "med": 12,
+  "ship14": 2,
+  "merged_before": 4646,
+  "careless": 0.11666525459628908
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 66,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 4618,
+  "careless": 0.09828236279849183
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 61,
+  "med": 12,
+  "ship14": 5,
+  "merged_before": 4700,
+  "careless": 0.11700364600596619
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 206,
+  "med": 12.0,
+  "ship14": 11,
+  "merged_before": 15357,
+  "careless": 0.09062444314334445
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 204,
+  "med": 12.0,
+  "ship14": 12,
+  "merged_before": 15459,
+  "careless": 0.08938124558393055
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 207,
+  "med": 12.0,
+  "ship14": 12,
+  "merged_before": 15484,
+  "careless": 0.09788673719292044
+ },
+ {
+  "name": "green needs 2 reviewers",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 215,
+  "med": 12.0,
+  "ship14": 12,
+  "merged_before": 15554,
+  "careless": 0.08870662460567823
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 164,
+  "careless": 0.12062256809338522
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 2,
+  "med": 11.5,
+  "ship14": 1,
+  "merged_before": 185,
+  "careless": 0.18823529411764706
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.058823529411764705
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.09523809523809523
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 2,
+  "med": 10.0,
+  "ship14": 0,
+  "merged_before": 185,
+  "careless": 0.10775862068965517
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 10,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.05803571428571429
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.06854838709677419
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 175,
+  "careless": 0.1598360655737705
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.3423076923076923
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 3,
+  "merged_before": 161,
+  "careless": 0.13043478260869565
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 3,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.10121457489878542
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 4,
+  "merged_before": 158,
+  "careless": 0.1917808219178082
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 175,
+  "careless": 0.1387900355871886
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 2,
+  "med": 13.5,
+  "ship14": 0,
+  "merged_before": 167,
+  "careless": 0.15151515151515152
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 3,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.0321285140562249
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.06719367588932806
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 1,
+  "merged_before": 179,
+  "careless": 0.22813688212927757
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 2,
+  "med": 12.5,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.23394495412844038
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 3,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.0752212389380531
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 185,
+  "careless": 0.30685920577617326
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 3,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.25416666666666665
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.12053571428571429
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.08914728682170543
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.38492063492063494
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.12686567164179105
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 3,
+  "med": 12.5,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.1440677966101695
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.17624521072796934
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 2,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.27705627705627706
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.13839285714285715
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.15040650406504066
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.05416666666666667
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.11020408163265306
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.15813953488372093
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 1,
+  "merged_before": 168,
+  "careless": 0.07929515418502203
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 3,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 172,
+  "careless": 0.104
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 3,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.09829059829059829
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 3,
+  "merged_before": 163,
+  "careless": 0.2009132420091324
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.10612244897959183
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 3,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.0970464135021097
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 10.5,
+  "ship14": 0,
+  "merged_before": 177,
+  "careless": 0.2289156626506024
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 1,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.32098765432098764
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 164,
+  "careless": 0.1541501976284585
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 4,
+  "merged_before": 159,
+  "careless": 0.11403508771929824
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 2,
+  "med": 13.5,
+  "ship14": 0,
+  "merged_before": 163,
+  "careless": 0.16972477064220184
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 2,
+  "med": 10,
+  "ship14": 4,
+  "merged_before": 181,
+  "careless": 0.17647058823529413
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.14222222222222222
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.19665271966527198
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.19008264462809918
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.12033195020746888
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 177,
+  "careless": 0.11969111969111969
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.12448132780082988
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.17488789237668162
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.15702479338842976
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 2,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.2175732217573222
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.212
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.32644628099173556
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 3,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.2015810276679842
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.1346938775510204
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.10727969348659004
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.351931330472103
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 517,
+  "careless": 0.2039381153305204
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 498,
+  "careless": 0.12395543175487465
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 548,
+  "careless": 0.13797634691195795
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 541,
+  "careless": 0.1687041564792176
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 518,
+  "careless": 0.20810055865921787
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 508,
+  "careless": 0.1589310829817159
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 482,
+  "careless": 0.1863905325443787
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 502,
+  "careless": 0.14647887323943662
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 8,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 541,
+  "careless": 0.12720403022670027
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 496,
+  "careless": 0.15521978021978022
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 6,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 532,
+  "careless": 0.15555555555555556
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 495,
+  "careless": 0.10980966325036604
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 518,
+  "careless": 0.12104539202200826
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 530,
+  "careless": 0.20345744680851063
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 5,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 507,
+  "careless": 0.09026798307475317
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 8,
+  "med": 7.0,
+  "ship14": 6,
+  "merged_before": 493,
+  "careless": 0.16784203102961917
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 509,
+  "careless": 0.23570432357043236
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 550,
+  "careless": 0.14395886889460155
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 505,
+  "careless": 0.16161616161616163
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 1,
+  "merged_before": 518,
+  "careless": 0.1686746987951807
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 516,
+  "careless": 0.13215859030837004
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 515,
+  "careless": 0.07297297297297298
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 5,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 528,
+  "careless": 0.08456375838926175
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 8,
+  "med": 5,
+  "ship14": 2,
+  "merged_before": 513,
+  "careless": 0.15672676837725383
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 6,
+  "med": 7,
+  "ship14": 0,
+  "merged_before": 510,
+  "careless": 0.12789115646258503
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 523,
+  "careless": 0.08860759493670886
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 504,
+  "careless": 0.07887700534759358
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 538,
+  "careless": 0.166446499339498
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 530,
+  "careless": 0.08152866242038216
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 520,
+  "careless": 0.1172316384180791
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 7,
+  "med": 5.0,
+  "ship14": 1,
+  "merged_before": 520,
+  "careless": 0.09362279511533243
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 532,
+  "careless": 0.13534822601839686
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 516,
+  "careless": 0.07692307692307693
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 534,
+  "careless": 0.10983397190293742
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 512,
+  "careless": 0.1436388508891929
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 524,
+  "careless": 0.16458852867830423
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 509,
+  "careless": 0.16897506925207756
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 8,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 517,
+  "careless": 0.24147339699863574
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 539,
+  "careless": 0.16116751269035534
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 494,
+  "careless": 0.11773472429210134
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 3,
+  "merged_before": 1703,
+  "careless": 0.13953488372093023
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 21,
+  "med": 3.0,
+  "ship14": 1,
+  "merged_before": 1672,
+  "careless": 0.13345195729537365
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1701,
+  "careless": 0.07898035938152946
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 24,
+  "med": 3.0,
+  "ship14": 1,
+  "merged_before": 1689,
+  "careless": 0.12141652613827993
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 21,
+  "med": 3.0,
+  "ship14": 10,
+  "merged_before": 1679,
+  "careless": 0.16037335596096733
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 19,
+  "med": 4.0,
+  "ship14": 0,
+  "merged_before": 1673,
+  "careless": 0.13600697471665213
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 1715,
+  "careless": 0.12744689712619742
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1685,
+  "careless": 0.12309644670050761
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1677,
+  "careless": 0.13333333333333333
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 20,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1740,
+  "careless": 0.16033057851239668
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1745,
+  "careless": 0.14197784160853508
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1736,
+  "careless": 0.10776218001651527
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1690,
+  "careless": 0.11674917491749175
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 4,
+  "merged_before": 1743,
+  "careless": 0.1454316848281643
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 24,
+  "med": 3.0,
+  "ship14": 6,
+  "merged_before": 1711,
+  "careless": 0.13790186125211507
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 2,
+  "merged_before": 1726,
+  "careless": 0.13034278459585272
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1702,
+  "careless": 0.11993313832010029
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1756,
+  "careless": 0.18128654970760233
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 22,
+  "med": 3.5,
+  "ship14": 10,
+  "merged_before": 1761,
+  "careless": 0.12484289903644742
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 21,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1738,
+  "careless": 0.09120924473792819
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 72,
+  "med": 2,
+  "ship14": 2,
+  "merged_before": 5112,
+  "careless": 0.12119471568064331
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 71,
+  "med": 2.0,
+  "ship14": 2,
+  "merged_before": 5184,
+  "careless": 0.11057827926657264
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 69,
+  "med": 2,
+  "ship14": 2,
+  "merged_before": 5197,
+  "careless": 0.10509465478841871
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 74,
+  "med": 2,
+  "ship14": 0,
+  "merged_before": 5223,
+  "careless": 0.07592463363572924
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 70,
+  "med": 2.0,
+  "ship14": 2,
+  "merged_before": 5178,
+  "careless": 0.12406662837449742
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 69,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 5103,
+  "careless": 0.08781589721869265
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 67,
+  "med": 2.0,
+  "ship14": 3,
+  "merged_before": 5153,
+  "careless": 0.1110799831909231
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 67,
+  "med": 2,
+  "ship14": 7,
+  "merged_before": 5214,
+  "careless": 0.11665475339528235
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 70,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 5112,
+  "careless": 0.09382054176072235
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 64,
+  "med": 3,
+  "ship14": 6,
+  "merged_before": 5164,
+  "careless": 0.10723860589812333
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 220,
+  "med": 2,
+  "ship14": 17,
+  "merged_before": 17287,
+  "careless": 0.07953488372093023
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 225,
+  "med": 2.0,
+  "ship14": 13,
+  "merged_before": 17265,
+  "careless": 0.07841817416912074
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 238,
+  "med": 2.0,
+  "ship14": 9,
+  "merged_before": 17272,
+  "careless": 0.06654592932653834
+ },
+ {
+  "name": "post-merge review on 100 % of green",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 229,
+  "med": 2.0,
+  "ship14": 15,
+  "merged_before": 17366,
+  "careless": 0.06999286643447611
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 147,
+  "careless": 0.15538847117794485
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 156,
+  "careless": 0.14215686274509803
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 26.5,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.14123006833712984
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 3,
+  "med": 21.0,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.08591885441527446
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.16666666666666666
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.08290155440414508
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 140,
+  "careless": 0.06788511749347259
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 1,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.06753246753246753
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 135,
+  "careless": 0.27793696275071633
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 146,
+  "careless": 0.12335958005249344
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.12189054726368159
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 2,
+  "med": 22.0,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.24193548387096775
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.25063291139240507
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 1,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 150,
+  "careless": 0.1940700808625337
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 2,
+  "med": 31.0,
+  "ship14": 0,
+  "merged_before": 147,
+  "careless": 0.20604395604395603
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 1,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 149,
+  "careless": 0.11827956989247312
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 30,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.2164705882352941
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 2,
+  "med": 22,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.26139088729016785
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.06648936170212766
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 2,
+  "med": 33,
+  "ship14": 0,
+  "merged_before": 132,
+  "careless": 0.13702623906705538
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 2,
+  "med": 33.0,
+  "ship14": 0,
+  "merged_before": 144,
+  "careless": 0.19008264462809918
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.08663366336633663
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.10997442455242967
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.4019607843137255
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 3,
+  "med": 26.5,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.09718670076726342
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 146,
+  "careless": 0.14698162729658792
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.1875
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 2,
+  "med": 30,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.26424870466321243
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 1,
+  "med": 24,
+  "ship14": 1,
+  "merged_before": 150,
+  "careless": 0.1122715404699739
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 139,
+  "careless": 0.11780104712041885
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 28.5,
+  "ship14": 0,
+  "merged_before": 141,
+  "careless": 0.1340782122905028
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.16019417475728157
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 134,
+  "careless": 0.17615176151761516
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 140,
+  "careless": 0.13858695652173914
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.11707317073170732
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.3098958333333333
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 2,
+  "med": 25.5,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.14285714285714285
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 2,
+  "merged_before": 166,
+  "careless": 0.2678132678132678
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 25.5,
+  "ship14": 1,
+  "merged_before": 151,
+  "careless": 0.0825
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.15526315789473685
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.17346938775510204
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.09523809523809523
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 1,
+  "med": 33,
+  "ship14": 1,
+  "merged_before": 135,
+  "careless": 0.09695290858725762
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 1,
+  "med": 30,
+  "ship14": 0,
+  "merged_before": 142,
+  "careless": 0.1318051575931232
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 134,
+  "careless": 0.2659279778393352
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 2,
+  "med": 27.5,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.1607565011820331
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 1,
+  "merged_before": 146,
+  "careless": 0.010610079575596816
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 1,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.21782178217821782
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 22.0,
+  "ship14": 0,
+  "merged_before": 158,
+  "careless": 0.07616707616707617
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 1,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 144,
+  "careless": 0.2
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 149,
+  "careless": 0.12468193384223919
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.17571059431524547
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 152,
+  "careless": 0.2
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.16879795396419436
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 22.5,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.024096385542168676
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.062034739454094295
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 146,
+  "careless": 0.11363636363636363
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.2727272727272727
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 2,
+  "med": 29,
+  "ship14": 0,
+  "merged_before": 134,
+  "careless": 0.25205479452054796
+ },
+ {
+  "name": "both",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 2,
+  "med": 27.5,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.2456575682382134
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 5,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 444,
+  "careless": 0.17132551848512173
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 1,
+  "merged_before": 448,
+  "careless": 0.21034775233248515
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 6,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 447,
+  "careless": 0.10182767624020887
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 2,
+  "merged_before": 448,
+  "careless": 0.14948453608247422
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 430,
+  "careless": 0.1112115732368897
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 6,
+  "med": 17.5,
+  "ship14": 0,
+  "merged_before": 422,
+  "careless": 0.177007299270073
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 7,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 456,
+  "careless": 0.11487603305785124
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 440,
+  "careless": 0.22515391380826738
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 6,
+  "med": 15,
+  "ship14": 1,
+  "merged_before": 450,
+  "careless": 0.1317365269461078
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 6,
+  "med": 17.0,
+  "ship14": 0,
+  "merged_before": 441,
+  "careless": 0.15017064846416384
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 452,
+  "careless": 0.12721145745577084
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 6,
+  "med": 13.0,
+  "ship14": 4,
+  "merged_before": 465,
+  "careless": 0.1548936170212766
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 6,
+  "med": 17.5,
+  "ship14": 0,
+  "merged_before": 460,
+  "careless": 0.14118629908103592
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 5,
+  "med": 16.0,
+  "ship14": 4,
+  "merged_before": 433,
+  "careless": 0.1414503133393017
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 442,
+  "careless": 0.19139596136962247
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 2,
+  "merged_before": 443,
+  "careless": 0.13096270598438856
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 1,
+  "merged_before": 436,
+  "careless": 0.1256781193490054
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 464,
+  "careless": 0.2602168473728107
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 453,
+  "careless": 0.12478031634446397
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 427,
+  "careless": 0.2775735294117647
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 6,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 438,
+  "careless": 0.17652173913043478
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 7,
+  "med": 14.0,
+  "ship14": 3,
+  "merged_before": 449,
+  "careless": 0.10780984719864177
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 439,
+  "careless": 0.2246891651865009
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 5,
+  "med": 14.0,
+  "ship14": 1,
+  "merged_before": 467,
+  "careless": 0.2627484874675886
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 455,
+  "careless": 0.1912751677852349
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 6,
+  "med": 18.0,
+  "ship14": 0,
+  "merged_before": 446,
+  "careless": 0.1323918799646955
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 5,
+  "med": 18,
+  "ship14": 0,
+  "merged_before": 436,
+  "careless": 0.15335753176043557
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 5,
+  "med": 17,
+  "ship14": 1,
+  "merged_before": 440,
+  "careless": 0.15597147950089127
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 5,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 438,
+  "careless": 0.14175257731958762
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 7,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 442,
+  "careless": 0.20603448275862069
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 5,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 427,
+  "careless": 0.19641255605381167
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 432,
+  "careless": 0.1265377855887522
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 451,
+  "careless": 0.1636980491942324
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 6,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 420,
+  "careless": 0.14298561151079137
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 6,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 455,
+  "careless": 0.16010498687664043
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 428,
+  "careless": 0.1793041926851026
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 437,
+  "careless": 0.10806023029229407
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 7,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 431,
+  "careless": 0.11621856027753687
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 438,
+  "careless": 0.08326029798422437
+ },
+ {
+  "name": "both",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 435,
+  "careless": 0.1057347670250896
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 19,
+  "med": 13,
+  "ship14": 1,
+  "merged_before": 1516,
+  "careless": 0.10821280991735537
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 20,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 1508,
+  "careless": 0.16299559471365638
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 19,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1521,
+  "careless": 0.12509593246354567
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 21,
+  "med": 13.0,
+  "ship14": 5,
+  "merged_before": 1460,
+  "careless": 0.13044626353313968
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 21,
+  "med": 12.0,
+  "ship14": 2,
+  "merged_before": 1504,
+  "careless": 0.14184768385239466
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 21,
+  "med": 12,
+  "ship14": 1,
+  "merged_before": 1498,
+  "careless": 0.14405228758169936
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 19,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 1460,
+  "careless": 0.1595916174099946
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 18,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 1485,
+  "careless": 0.1436072459963245
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 20,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 1504,
+  "careless": 0.19586279130662476
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 23,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 1507,
+  "careless": 0.17136993329912775
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 21,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 1477,
+  "careless": 0.15709415158667717
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 22,
+  "med": 13.0,
+  "ship14": 2,
+  "merged_before": 1460,
+  "careless": 0.15663927908825867
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 19,
+  "med": 11.0,
+  "ship14": 2,
+  "merged_before": 1534,
+  "careless": 0.164969450101833
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 21,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1473,
+  "careless": 0.12709894084215964
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1440,
+  "careless": 0.15113146551724138
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 18,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 1488,
+  "careless": 0.1417734763274915
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 4,
+  "merged_before": 1550,
+  "careless": 0.13419583967529172
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 2,
+  "merged_before": 1534,
+  "careless": 0.22153687997943974
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 1476,
+  "careless": 0.12285789612443976
+ },
+ {
+  "name": "both",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 19,
+  "med": 12,
+  "ship14": 4,
+  "merged_before": 1481,
+  "careless": 0.18042328042328043
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 55,
+  "med": 13,
+  "ship14": 4,
+  "merged_before": 4495,
+  "careless": 0.13147583804962995
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 59,
+  "med": 12,
+  "ship14": 5,
+  "merged_before": 4482,
+  "careless": 0.13635174038209893
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 59,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 4483,
+  "careless": 0.13502662127956708
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 56,
+  "med": 13,
+  "ship14": 6,
+  "merged_before": 4381,
+  "careless": 0.13268695574108985
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 61,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 4442,
+  "careless": 0.12095713910070996
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 62,
+  "med": 11.0,
+  "ship14": 2,
+  "merged_before": 4501,
+  "careless": 0.14116416869989543
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 60,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 4424,
+  "careless": 0.13264586638462894
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 62,
+  "med": 12.0,
+  "ship14": 5,
+  "merged_before": 4429,
+  "careless": 0.12867550250153603
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 58,
+  "med": 12.0,
+  "ship14": 3,
+  "merged_before": 4429,
+  "careless": 0.12901522485259176
+ },
+ {
+  "name": "both",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 58,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 4415,
+  "careless": 0.13658062234794907
+ },
+ {
+  "name": "both",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 206,
+  "med": 12.0,
+  "ship14": 11,
+  "merged_before": 15065,
+  "careless": 0.10720800542033669
+ },
+ {
+  "name": "both",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 193,
+  "med": 12.0,
+  "ship14": 8,
+  "merged_before": 14931,
+  "careless": 0.10727454698693636
+ },
+ {
+  "name": "both",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 198,
+  "med": 12.0,
+  "ship14": 9,
+  "merged_before": 14962,
+  "careless": 0.08837600546764103
+ },
+ {
+  "name": "both",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 203,
+  "med": 12,
+  "ship14": 10,
+  "merged_before": 14954,
+  "careless": 0.11134382281330994
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 177,
+  "careless": 0.18695652173913044
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 192,
+  "careless": 0.15272727272727274
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 190,
+  "careless": 0.0859375
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 2,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.04048582995951417
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 2,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 188,
+  "careless": 0.17482517482517482
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 193,
+  "careless": 0.1297709923664122
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.034220532319391636
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 2,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.2066115702479339
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.1225296442687747
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 3,
+  "med": 19.0,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.10964912280701754
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.24896265560165975
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 3,
+  "med": 10,
+  "ship14": 4,
+  "merged_before": 193,
+  "careless": 0.09712230215827339
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 1,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.13135593220338984
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 2,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.21296296296296297
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 2,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.18777292576419213
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.14522821576763487
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 190,
+  "careless": 0.25274725274725274
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.14859437751004015
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 179,
+  "careless": 0.12941176470588237
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 3,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 188,
+  "careless": 0.25806451612903225
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 187,
+  "careless": 0.18875502008032127
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 2,
+  "med": 10.0,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.05531914893617021
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 1,
+  "merged_before": 154,
+  "careless": 0.22897196261682243
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.11618257261410789
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 2,
+  "med": 10.5,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.15289256198347106
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 3,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.14634146341463414
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.2153846153846154
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 187,
+  "careless": 0.19230769230769232
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 178,
+  "careless": 0.033582089552238806
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 3,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 177,
+  "careless": 0.07086614173228346
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 1,
+  "med": 16.0,
+  "ship14": 3,
+  "merged_before": 178,
+  "careless": 0.14102564102564102
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 3,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.09363295880149813
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 2,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 178,
+  "careless": 0.06390977443609022
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 158,
+  "careless": 0.06299212598425197
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 3,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.0989399293286219
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 2,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 179,
+  "careless": 0.24786324786324787
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 1,
+  "med": 11.0,
+  "ship14": 2,
+  "merged_before": 181,
+  "careless": 0.10441767068273092
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.09163346613545817
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.09019607843137255
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.18992248062015504
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 2,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 179,
+  "careless": 0.24096385542168675
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.03861003861003861
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.07228915662650602
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 3,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 190,
+  "careless": 0.09731543624161074
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 3,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.15625
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 3,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.11583011583011583
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.10245901639344263
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 192,
+  "careless": 0.027777777777777776
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.025830258302583026
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 4,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.3007246376811594
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 188,
+  "careless": 0.08778625954198473
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 2,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.08677685950413223
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 3,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.024390243902439025
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 2,
+  "med": 10,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.05220883534136546
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 173,
+  "careless": 0.2413793103448276
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 2,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.17647058823529413
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 3,
+  "med": 14.0,
+  "ship14": 1,
+  "merged_before": 167,
+  "careless": 0.11587982832618025
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 2,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 168,
+  "careless": 0.18333333333333332
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 3,
+  "med": 18.0,
+  "ship14": 0,
+  "merged_before": 167,
+  "careless": 0.3130081300813008
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 2,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.17716535433070865
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 4,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 530,
+  "careless": 0.11273792093704246
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 553,
+  "careless": 0.11400247831474597
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 6,
+  "med": 7,
+  "ship14": 1,
+  "merged_before": 506,
+  "careless": 0.14343707713125844
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 531,
+  "careless": 0.14543114543114544
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 7,
+  "med": 5.0,
+  "ship14": 0,
+  "merged_before": 565,
+  "careless": 0.13540372670807455
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 1,
+  "merged_before": 514,
+  "careless": 0.10198675496688742
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 517,
+  "careless": 0.10643889618922471
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 545,
+  "careless": 0.1089238845144357
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 522,
+  "careless": 0.16470588235294117
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 520,
+  "careless": 0.1282420749279539
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 544,
+  "careless": 0.1477124183006536
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 7,
+  "med": 6.0,
+  "ship14": 2,
+  "merged_before": 549,
+  "careless": 0.17792207792207793
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 552,
+  "careless": 0.10825439783491204
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 516,
+  "careless": 0.21052631578947367
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 519,
+  "careless": 0.10533707865168539
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 540,
+  "careless": 0.12335958005249344
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 8,
+  "med": 7,
+  "ship14": 3,
+  "merged_before": 547,
+  "careless": 0.14556962025316456
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 6,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 532,
+  "careless": 0.1953551912568306
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 563,
+  "careless": 0.10739856801909307
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 573,
+  "careless": 0.21382842509603073
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 3,
+  "merged_before": 538,
+  "careless": 0.10810810810810811
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 1,
+  "merged_before": 528,
+  "careless": 0.14577656675749318
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 543,
+  "careless": 0.21456953642384105
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 1,
+  "merged_before": 563,
+  "careless": 0.1475195822454308
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 7,
+  "med": 7,
+  "ship14": 0,
+  "merged_before": 515,
+  "careless": 0.14866760168302945
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 2,
+  "merged_before": 528,
+  "careless": 0.13534822601839686
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 7,
+  "med": 5,
+  "ship14": 0,
+  "merged_before": 518,
+  "careless": 0.11412268188302425
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 6,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 557,
+  "careless": 0.13636363636363635
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 529,
+  "careless": 0.08068783068783068
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 556,
+  "careless": 0.10727969348659004
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 8,
+  "med": 7,
+  "ship14": 1,
+  "merged_before": 524,
+  "careless": 0.11548913043478261
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 551,
+  "careless": 0.18695106649937265
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 8,
+  "med": 5.0,
+  "ship14": 1,
+  "merged_before": 571,
+  "careless": 0.1419828641370869
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 535,
+  "careless": 0.12075471698113208
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 8,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 545,
+  "careless": 0.1837837837837838
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 7,
+  "med": 6,
+  "ship14": 0,
+  "merged_before": 542,
+  "careless": 0.18979057591623036
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 7,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 527,
+  "careless": 0.13006993006993006
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 5,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 541,
+  "careless": 0.17057291666666666
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 5,
+  "med": 7,
+  "ship14": 0,
+  "merged_before": 554,
+  "careless": 0.11711711711711711
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 8,
+  "med": 6.0,
+  "ship14": 0,
+  "merged_before": 532,
+  "careless": 0.143646408839779
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 26,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 1787,
+  "careless": 0.11901889827100925
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 22,
+  "med": 3.0,
+  "ship14": 4,
+  "merged_before": 1819,
+  "careless": 0.12315663611000399
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1866,
+  "careless": 0.10414201183431952
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 1823,
+  "careless": 0.10783521809369952
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 21,
+  "med": 3,
+  "ship14": 0,
+  "merged_before": 1745,
+  "careless": 0.12326461926798485
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 22,
+  "med": 4,
+  "ship14": 0,
+  "merged_before": 1778,
+  "careless": 0.11603545527800162
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 22,
+  "med": 4.0,
+  "ship14": 2,
+  "merged_before": 1712,
+  "careless": 0.09724540901502504
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 23,
+  "med": 4.0,
+  "ship14": 2,
+  "merged_before": 1765,
+  "careless": 0.10984848484848485
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 1,
+  "merged_before": 1806,
+  "careless": 0.12648221343873517
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 25,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1777,
+  "careless": 0.12384025816861638
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 24,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1825,
+  "careless": 0.16436191228763333
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 22,
+  "med": 4,
+  "ship14": 1,
+  "merged_before": 1798,
+  "careless": 0.10168134507606084
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 23,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 1823,
+  "careless": 0.11597110754414125
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1827,
+  "careless": 0.08137215795771839
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 6,
+  "merged_before": 1773,
+  "careless": 0.11428571428571428
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 22,
+  "med": 3,
+  "ship14": 2,
+  "merged_before": 1862,
+  "careless": 0.12951575710991545
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 25,
+  "med": 4,
+  "ship14": 2,
+  "merged_before": 1793,
+  "careless": 0.13290632506004804
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 24,
+  "med": 4,
+  "ship14": 4,
+  "merged_before": 1855,
+  "careless": 0.14635124298315957
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 23,
+  "med": 4.0,
+  "ship14": 2,
+  "merged_before": 1809,
+  "careless": 0.13452380952380952
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 23,
+  "med": 3.0,
+  "ship14": 0,
+  "merged_before": 1843,
+  "careless": 0.11324376199616124
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 77,
+  "med": 3,
+  "ship14": 6,
+  "merged_before": 5420,
+  "careless": 0.09265218557253956
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 72,
+  "med": 2.0,
+  "ship14": 5,
+  "merged_before": 5500,
+  "careless": 0.07703644158628081
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 69,
+  "med": 3,
+  "ship14": 1,
+  "merged_before": 5347,
+  "careless": 0.09744495786898613
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 72,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 5469,
+  "careless": 0.07767379679144384
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 74,
+  "med": 3,
+  "ship14": 3,
+  "merged_before": 5420,
+  "careless": 0.0954035275253875
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 79,
+  "med": 3.0,
+  "ship14": 9,
+  "merged_before": 5424,
+  "careless": 0.09379547559200953
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 71,
+  "med": 3.0,
+  "ship14": 6,
+  "merged_before": 5337,
+  "careless": 0.11376271186440678
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 71,
+  "med": 3.0,
+  "ship14": 5,
+  "merged_before": 5472,
+  "careless": 0.10497821206919318
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 68,
+  "med": 3,
+  "ship14": 3,
+  "merged_before": 5594,
+  "careless": 0.0836870026525199
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 71,
+  "med": 3,
+  "ship14": 6,
+  "merged_before": 5543,
+  "careless": 0.09862869198312237
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 235,
+  "med": 2.0,
+  "ship14": 13,
+  "merged_before": 18059,
+  "careless": 0.06531449957744778
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 244,
+  "med": 2.0,
+  "ship14": 13,
+  "merged_before": 18178,
+  "careless": 0.06237014543711043
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 235,
+  "med": 2,
+  "ship14": 20,
+  "merged_before": 18074,
+  "careless": 0.06645770512617045
+ },
+ {
+  "name": "real reviews need score >= 0.5",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 248,
+  "med": 2,
+  "ship14": 17,
+  "merged_before": 18246,
+  "careless": 0.06638491288226148
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 2,
+  "med": 31,
+  "ship14": 0,
+  "merged_before": 187,
+  "careless": 0.003968253968253968
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 3,
+  "med": 29,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 193,
+  "careless": 0.022058823529411766
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 2,
+  "med": 61.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 1,
+  "med": 42,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.021645021645021644
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 50.0,
+  "ship14": 1,
+  "merged_before": 156,
+  "careless": 0.15121951219512195
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 30,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.06866952789699571
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 1,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.1115702479338843
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 3,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 176,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 3,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.004424778761061947
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 1,
+  "med": 45,
+  "ship14": 0,
+  "merged_before": 169,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 3,
+  "med": 43.0,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.05394190871369295
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 3,
+  "med": 23.0,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.06463878326996197
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 1,
+  "med": 26.5,
+  "ship14": 0,
+  "merged_before": 191,
+  "careless": 0.06374501992031872
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 4,
+  "med": 54,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.0625
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 3,
+  "med": 23,
+  "ship14": 1,
+  "merged_before": 175,
+  "careless": 0.1148936170212766
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 3,
+  "med": 34.5,
+  "ship14": 0,
+  "merged_before": 192,
+  "careless": 0.07196969696969698
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 3,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.02142857142857143
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 65.5,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.20306513409961685
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 2,
+  "med": 31.0,
+  "ship14": 0,
+  "merged_before": 175,
+  "careless": 0.12133891213389121
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 3,
+  "med": 151,
+  "ship14": 1,
+  "merged_before": 187,
+  "careless": 0.03896103896103896
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.015209125475285171
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 3,
+  "med": 68,
+  "ship14": 0,
+  "merged_before": 187,
+  "careless": 0.04932735426008968
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 3,
+  "med": 33,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.07296137339055794
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 2,
+  "med": 43.0,
+  "ship14": 0,
+  "merged_before": 191,
+  "careless": 0.03937007874015748
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 2,
+  "med": 22.5,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 1,
+  "med": 49,
+  "ship14": 0,
+  "merged_before": 182,
+  "careless": 0.016666666666666666
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.09578544061302682
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.15151515151515152
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 26.5,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.029787234042553193
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 4,
+  "med": 195,
+  "ship14": 0,
+  "merged_before": 133,
+  "careless": 0.017543859649122806
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 3,
+  "med": 23.0,
+  "ship14": 1,
+  "merged_before": 180,
+  "careless": 0.08745247148288973
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 4,
+  "med": 53,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 2,
+  "med": 41.5,
+  "ship14": 0,
+  "merged_before": 190,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 3,
+  "med": 56.0,
+  "ship14": 0,
+  "merged_before": 179,
+  "careless": 0.0411522633744856
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 170,
+  "careless": 0.23376623376623376
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 63,
+  "ship14": 1,
+  "merged_before": 172,
+  "careless": 0.00823045267489712
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 33.0,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.04219409282700422
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 42.5,
+  "ship14": 2,
+  "merged_before": 193,
+  "careless": 0.052830188679245285
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 1,
+  "med": 506,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 3,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 3,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.06224066390041494
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 2,
+  "med": 55,
+  "ship14": 0,
+  "merged_before": 188,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 3,
+  "med": 37,
+  "ship14": 1,
+  "merged_before": 169,
+  "careless": 0.11715481171548117
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 1,
+  "med": 33.0,
+  "ship14": 3,
+  "merged_before": 169,
+  "careless": 0.26635514018691586
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 4,
+  "med": 37.0,
+  "ship14": 0,
+  "merged_before": 184,
+  "careless": 0.0794979079497908
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 2,
+  "med": 93,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 50.0,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 2,
+  "med": 46,
+  "ship14": 0,
+  "merged_before": 180,
+  "careless": 0.21982758620689655
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 1,
+  "med": 79.0,
+  "ship14": 3,
+  "merged_before": 163,
+  "careless": 0.07860262008733625
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 3,
+  "med": 45,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.1115702479338843
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 2,
+  "med": 30.0,
+  "ship14": 0,
+  "merged_before": 166,
+  "careless": 0.004166666666666667
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 2,
+  "med": 34.0,
+  "ship14": 0,
+  "merged_before": 195,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 89,
+  "ship14": 0,
+  "merged_before": 189,
+  "careless": 0.2601626016260163
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 3,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 183,
+  "careless": 0.20384615384615384
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 3,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 181,
+  "careless": 0.06504065040650407
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 1,
+  "med": 39.0,
+  "ship14": 0,
+  "merged_before": 174,
+  "careless": 0.04716981132075472
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 2,
+  "med": 22.0,
+  "ship14": 0,
+  "merged_before": 186,
+  "careless": 0.007575757575757576
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 4,
+  "med": 56.0,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.012987012987012988
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 7,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 543,
+  "careless": 0.10294117647058823
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 9,
+  "med": 19,
+  "ship14": 0,
+  "merged_before": 546,
+  "careless": 0.02168021680216802
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 7,
+  "med": 13.0,
+  "ship14": 0,
+  "merged_before": 534,
+  "careless": 0.013422818791946308
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 8,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 558,
+  "careless": 0.047435897435897434
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 541,
+  "careless": 0.05093833780160858
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 6,
+  "med": 18,
+  "ship14": 1,
+  "merged_before": 525,
+  "careless": 0.014824797843665768
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 9,
+  "med": 17.0,
+  "ship14": 3,
+  "merged_before": 559,
+  "careless": 0.0106951871657754
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 1,
+  "merged_before": 558,
+  "careless": 0.14939434724091522
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 7,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 520,
+  "careless": 0.14589235127478753
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 5,
+  "med": 30,
+  "ship14": 1,
+  "merged_before": 505,
+  "careless": 0.13284671532846715
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 1,
+  "merged_before": 524,
+  "careless": 0.015172413793103448
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 7,
+  "med": 10.0,
+  "ship14": 3,
+  "merged_before": 560,
+  "careless": 0.033810143042912875
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 5,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 547,
+  "careless": 0.07989690721649484
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 6,
+  "med": 21.0,
+  "ship14": 1,
+  "merged_before": 556,
+  "careless": 0.019635343618513323
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 8,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 531,
+  "careless": 0.1383989145183175
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 7,
+  "med": 12.0,
+  "ship14": 2,
+  "merged_before": 531,
+  "careless": 0.006925207756232687
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 567,
+  "careless": 0.05179282868525897
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 7,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 554,
+  "careless": 0.0
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 1,
+  "merged_before": 572,
+  "careless": 0.06132665832290363
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 8,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 530,
+  "careless": 0.01662049861495845
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 8,
+  "med": 11,
+  "ship14": 0,
+  "merged_before": 576,
+  "careless": 0.11296534017971759
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 8,
+  "med": 30.0,
+  "ship14": 0,
+  "merged_before": 549,
+  "careless": 0.04588394062078273
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 9,
+  "med": 19,
+  "ship14": 1,
+  "merged_before": 560,
+  "careless": 0.15046604527296936
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 7,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 565,
+  "careless": 0.0199203187250996
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 2,
+  "merged_before": 553,
+  "careless": 0.08155080213903744
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 547,
+  "careless": 0.06951871657754011
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 5,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 570,
+  "careless": 0.05822784810126582
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 7,
+  "med": 16.5,
+  "ship14": 1,
+  "merged_before": 517,
+  "careless": 0.08635097493036212
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 7,
+  "med": 17.0,
+  "ship14": 0,
+  "merged_before": 526,
+  "careless": 0.03819918144611187
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 8,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 528,
+  "careless": 0.04031209362808843
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 9,
+  "med": 11.0,
+  "ship14": 1,
+  "merged_before": 539,
+  "careless": 0.07270233196159122
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 563,
+  "careless": 0.07901907356948229
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 578,
+  "careless": 0.06402048655569782
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 9,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 549,
+  "careless": 0.0751592356687898
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 7,
+  "med": 9.0,
+  "ship14": 1,
+  "merged_before": 558,
+  "careless": 0.0546875
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 544,
+  "careless": 0.0967741935483871
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 6,
+  "med": 17,
+  "ship14": 3,
+  "merged_before": 523,
+  "careless": 0.12086330935251799
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 7,
+  "med": 17,
+  "ship14": 0,
+  "merged_before": 527,
+  "careless": 0.05750350631136045
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 8,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 561,
+  "careless": 0.08290816326530612
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 8,
+  "med": 11.0,
+  "ship14": 0,
+  "merged_before": 546,
+  "careless": 0.12911725955204217
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 23,
+  "med": 10,
+  "ship14": 1,
+  "merged_before": 1787,
+  "careless": 0.03351042092357989
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 24,
+  "med": 8,
+  "ship14": 0,
+  "merged_before": 1811,
+  "careless": 0.08722358722358722
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 24,
+  "med": 7.0,
+  "ship14": 2,
+  "merged_before": 1815,
+  "careless": 0.050999592003263976
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 23,
+  "med": 6.0,
+  "ship14": 1,
+  "merged_before": 1876,
+  "careless": 0.03316812809759817
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 23,
+  "med": 7.0,
+  "ship14": 1,
+  "merged_before": 1850,
+  "careless": 0.05422905706191825
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 22,
+  "med": 7,
+  "ship14": 0,
+  "merged_before": 1819,
+  "careless": 0.07008410092110533
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 25,
+  "med": 8.0,
+  "ship14": 1,
+  "merged_before": 1827,
+  "careless": 0.03524229074889868
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 20,
+  "med": 9,
+  "ship14": 1,
+  "merged_before": 1755,
+  "careless": 0.06117247238742566
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 23,
+  "med": 7.0,
+  "ship14": 1,
+  "merged_before": 1854,
+  "careless": 0.07224185316058107
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 26,
+  "med": 12,
+  "ship14": 4,
+  "merged_before": 1844,
+  "careless": 0.08927108927108927
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 23,
+  "med": 7.0,
+  "ship14": 1,
+  "merged_before": 1839,
+  "careless": 0.05344129554655871
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 22,
+  "med": 8,
+  "ship14": 1,
+  "merged_before": 1822,
+  "careless": 0.042828282828282827
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 22,
+  "med": 7,
+  "ship14": 3,
+  "merged_before": 1794,
+  "careless": 0.08051529790660225
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 24,
+  "med": 7.0,
+  "ship14": 0,
+  "merged_before": 1816,
+  "careless": 0.06520858647225597
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 26,
+  "med": 7.0,
+  "ship14": 2,
+  "merged_before": 1781,
+  "careless": 0.062040816326530614
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 24,
+  "med": 8.0,
+  "ship14": 3,
+  "merged_before": 1809,
+  "careless": 0.04127503064977524
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 24,
+  "med": 7,
+  "ship14": 1,
+  "merged_before": 1848,
+  "careless": 0.09460547504025765
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 18,
+  "med": 11.0,
+  "ship14": 4,
+  "merged_before": 1791,
+  "careless": 0.055201698513800426
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 23,
+  "med": 8.0,
+  "ship14": 2,
+  "merged_before": 1815,
+  "careless": 0.04721888755502201
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 26,
+  "med": 13,
+  "ship14": 0,
+  "merged_before": 1749,
+  "careless": 0.04524114383269313
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 73,
+  "med": 6.0,
+  "ship14": 6,
+  "merged_before": 5385,
+  "careless": 0.04140510217710699
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 74,
+  "med": 5,
+  "ship14": 4,
+  "merged_before": 5441,
+  "careless": 0.0642067403756494
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 69,
+  "med": 6.0,
+  "ship14": 6,
+  "merged_before": 5495,
+  "careless": 0.05789544056692071
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 70,
+  "med": 6,
+  "ship14": 4,
+  "merged_before": 5411,
+  "careless": 0.036395380069836156
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 71,
+  "med": 5,
+  "ship14": 10,
+  "merged_before": 5513,
+  "careless": 0.05893283780196443
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 72,
+  "med": 6.0,
+  "ship14": 8,
+  "merged_before": 5357,
+  "careless": 0.05333694327873291
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 73,
+  "med": 5,
+  "ship14": 8,
+  "merged_before": 5419,
+  "careless": 0.03627082213863514
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 77,
+  "med": 5,
+  "ship14": 7,
+  "merged_before": 5411,
+  "careless": 0.05740100983258039
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 73,
+  "med": 5,
+  "ship14": 10,
+  "merged_before": 5425,
+  "careless": 0.05073519671479666
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 75,
+  "med": 5.0,
+  "ship14": 7,
+  "merged_before": 5359,
+  "careless": 0.05422174264904235
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 244,
+  "med": 4.0,
+  "ship14": 14,
+  "merged_before": 18061,
+  "careless": 0.046610506238575856
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 230,
+  "med": 4,
+  "ship14": 14,
+  "merged_before": 18017,
+  "careless": 0.035870481081731735
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 236,
+  "med": 4.0,
+  "ship14": 14,
+  "merged_before": 18349,
+  "careless": 0.036705919420267026
+ },
+ {
+  "name": "real reviews need score >= 0.6",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 241,
+  "med": 4.0,
+  "ship14": 14,
+  "merged_before": 17873,
+  "careless": 0.047064512229520086
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 1,
+  "merged_day": 1,
+  "med": 29.0,
+  "ship14": 0,
+  "merged_before": 137,
+  "careless": 0.1544943820224719
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 2,
+  "merged_day": 3,
+  "med": 28,
+  "ship14": 2,
+  "merged_before": 150,
+  "careless": 0.21994884910485935
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 3,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 152,
+  "careless": 0.2638190954773869
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 4,
+  "merged_day": 2,
+  "med": 29.0,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.14921465968586387
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 5,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 1,
+  "merged_before": 158,
+  "careless": 0.25
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 6,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.1366906474820144
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 7,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 149,
+  "careless": 0.16195372750642673
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 8,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 144,
+  "careless": 0.08717948717948718
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 9,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.4117647058823529
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 10,
+  "merged_day": 1,
+  "med": 25.5,
+  "ship14": 0,
+  "merged_before": 152,
+  "careless": 0.12195121951219512
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 11,
+  "merged_day": 2,
+  "med": 29.5,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.07591623036649214
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 12,
+  "merged_day": 2,
+  "med": 22.5,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.15196078431372548
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 13,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 165,
+  "careless": 0.24349881796690306
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 14,
+  "merged_day": 2,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 141,
+  "careless": 0.3803191489361702
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 15,
+  "merged_day": 3,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.18598382749326145
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 16,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 138,
+  "careless": 0.20855614973262032
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 17,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 164,
+  "careless": 0.22897196261682243
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 18,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.1811764705882353
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 19,
+  "merged_day": 2,
+  "med": 26.0,
+  "ship14": 0,
+  "merged_before": 152,
+  "careless": 0.19117647058823528
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 20,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.1070559610705596
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 21,
+  "merged_day": 1,
+  "med": 25.5,
+  "ship14": 0,
+  "merged_before": 142,
+  "careless": 0.03888888888888889
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 22,
+  "merged_day": 2,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.057065217391304345
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 23,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.02650602409638554
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 24,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.15121951219512195
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 25,
+  "merged_day": 3,
+  "med": 22,
+  "ship14": 0,
+  "merged_before": 171,
+  "careless": 0.232662192393736
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 26,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 1,
+  "merged_before": 159,
+  "careless": 0.24817518248175183
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 27,
+  "merged_day": 3,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.21980676328502416
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 28,
+  "merged_day": 1,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.315
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 29,
+  "merged_day": 2,
+  "med": 22,
+  "ship14": 0,
+  "merged_before": 161,
+  "careless": 0.19471153846153846
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 30,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 141,
+  "careless": 0.18518518518518517
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 31,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.20103092783505155
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 32,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 148,
+  "careless": 0.3213367609254499
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 33,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.12410501193317422
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 34,
+  "merged_day": 2,
+  "med": 22.5,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.1949367088607595
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 35,
+  "merged_day": 3,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 167,
+  "careless": 0.2072892938496583
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 36,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 2,
+  "merged_before": 157,
+  "careless": 0.2506203473945409
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 37,
+  "merged_day": 3,
+  "med": 25.5,
+  "ship14": 1,
+  "merged_before": 152,
+  "careless": 0.18362282878411912
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 38,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 143,
+  "careless": 0.11688311688311688
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 39,
+  "merged_day": 2,
+  "med": 27,
+  "ship14": 0,
+  "merged_before": 137,
+  "careless": 0.15176151761517614
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 40,
+  "merged_day": 2,
+  "med": 24.5,
+  "ship14": 0,
+  "merged_before": 155,
+  "careless": 0.10287081339712918
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 41,
+  "merged_day": 2,
+  "med": 23,
+  "ship14": 0,
+  "merged_before": 153,
+  "careless": 0.18575063613231552
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 42,
+  "merged_day": 2,
+  "med": 27.0,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.1111111111111111
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 43,
+  "merged_day": 2,
+  "med": 29.0,
+  "ship14": 1,
+  "merged_before": 150,
+  "careless": 0.13279132791327913
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 44,
+  "merged_day": 2,
+  "med": 24,
+  "ship14": 1,
+  "merged_before": 146,
+  "careless": 0.28
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 45,
+  "merged_day": 2,
+  "med": 28.0,
+  "ship14": 0,
+  "merged_before": 135,
+  "careless": 0.14285714285714285
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 46,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 0,
+  "merged_before": 150,
+  "careless": 0.10784313725490197
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 47,
+  "merged_day": 2,
+  "med": 24.0,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.29397590361445786
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 48,
+  "merged_day": 2,
+  "med": 24.5,
+  "ship14": 0,
+  "merged_before": 154,
+  "careless": 0.11604938271604938
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 49,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 0,
+  "merged_before": 156,
+  "careless": 0.04187192118226601
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 50,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 0,
+  "merged_before": 133,
+  "careless": 0.18233618233618235
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 51,
+  "merged_day": 2,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 168,
+  "careless": 0.17411764705882352
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 52,
+  "merged_day": 2,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 147,
+  "careless": 0.2109375
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 53,
+  "merged_day": 2,
+  "med": 28,
+  "ship14": 0,
+  "merged_before": 145,
+  "careless": 0.24661246612466126
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 54,
+  "merged_day": 0,
+  "med": 25,
+  "ship14": 0,
+  "merged_before": 151,
+  "careless": 0.1232876712328767
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 55,
+  "merged_day": 2,
+  "med": 29.0,
+  "ship14": 0,
+  "merged_before": 157,
+  "careless": 0.1774580335731415
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 56,
+  "merged_day": 2,
+  "med": 23.0,
+  "ship14": 2,
+  "merged_before": 154,
+  "careless": 0.08928571428571429
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 57,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.20493827160493827
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 58,
+  "merged_day": 2,
+  "med": 26,
+  "ship14": 0,
+  "merged_before": 159,
+  "careless": 0.1710843373493976
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 59,
+  "merged_day": 1,
+  "med": 25.0,
+  "ship14": 0,
+  "merged_before": 160,
+  "careless": 0.13744075829383887
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 10,
+  "seed": 60,
+  "merged_day": 3,
+  "med": 21,
+  "ship14": 0,
+  "merged_before": 162,
+  "careless": 0.15102974828375287
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 1,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 423,
+  "careless": 0.1548154815481548
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 2,
+  "merged_day": 5,
+  "med": 18,
+  "ship14": 0,
+  "merged_before": 447,
+  "careless": 0.1865546218487395
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 3,
+  "merged_day": 7,
+  "med": 14.5,
+  "ship14": 0,
+  "merged_before": 475,
+  "careless": 0.1135091926458833
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 4,
+  "merged_day": 7,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 453,
+  "careless": 0.15914893617021278
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 5,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 473,
+  "careless": 0.17391304347826086
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 6,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 3,
+  "merged_before": 449,
+  "careless": 0.1826012058570198
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 7,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 452,
+  "careless": 0.16947723440134907
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 8,
+  "merged_day": 6,
+  "med": 17.0,
+  "ship14": 1,
+  "merged_before": 450,
+  "careless": 0.16044142614601017
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 9,
+  "merged_day": 7,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 466,
+  "careless": 0.2829581993569132
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 10,
+  "merged_day": 5,
+  "med": 15.0,
+  "ship14": 2,
+  "merged_before": 441,
+  "careless": 0.14726027397260275
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 11,
+  "merged_day": 6,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 474,
+  "careless": 0.18602761982128352
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 12,
+  "merged_day": 8,
+  "med": 16.0,
+  "ship14": 0,
+  "merged_before": 416,
+  "careless": 0.1474820143884892
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 13,
+  "merged_day": 6,
+  "med": 16.5,
+  "ship14": 0,
+  "merged_before": 439,
+  "careless": 0.22808586762075134
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 14,
+  "merged_day": 6,
+  "med": 14.0,
+  "ship14": 1,
+  "merged_before": 455,
+  "careless": 0.23141891891891891
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 15,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 451,
+  "careless": 0.20321761219305673
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 16,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 439,
+  "careless": 0.23607427055702918
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 17,
+  "merged_day": 7,
+  "med": 13,
+  "ship14": 1,
+  "merged_before": 463,
+  "careless": 0.1897565071368598
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 18,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 456,
+  "careless": 0.21690862510674638
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 19,
+  "merged_day": 5,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 432,
+  "careless": 0.1692169216921692
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 20,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 441,
+  "careless": 0.24041811846689895
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 21,
+  "merged_day": 6,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 449,
+  "careless": 0.16382252559726962
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 22,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 458,
+  "careless": 0.1111111111111111
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 23,
+  "merged_day": 6,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 454,
+  "careless": 0.2256973795435334
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 24,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 457,
+  "careless": 0.2028985507246377
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 25,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 461,
+  "careless": 0.20033528918692373
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 26,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 464,
+  "careless": 0.1437962202136401
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 27,
+  "merged_day": 7,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 470,
+  "careless": 0.13283828382838284
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 28,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 433,
+  "careless": 0.2109851787271142
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 29,
+  "merged_day": 7,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 456,
+  "careless": 0.14333333333333334
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 30,
+  "merged_day": 6,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 449,
+  "careless": 0.15226689478186484
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 31,
+  "merged_day": 7,
+  "med": 17.0,
+  "ship14": 0,
+  "merged_before": 430,
+  "careless": 0.11775200713648529
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 32,
+  "merged_day": 6,
+  "med": 15.0,
+  "ship14": 1,
+  "merged_before": 455,
+  "careless": 0.1517476555839727
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 33,
+  "merged_day": 7,
+  "med": 15,
+  "ship14": 0,
+  "merged_before": 466,
+  "careless": 0.23475355054302421
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 34,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 454,
+  "careless": 0.14
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 35,
+  "merged_day": 7,
+  "med": 15.0,
+  "ship14": 2,
+  "merged_before": 455,
+  "careless": 0.16583747927031509
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 36,
+  "merged_day": 5,
+  "med": 15.0,
+  "ship14": 0,
+  "merged_before": 454,
+  "careless": 0.19382504288164665
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 37,
+  "merged_day": 7,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 451,
+  "careless": 0.16477768090671316
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 38,
+  "merged_day": 6,
+  "med": 14,
+  "ship14": 0,
+  "merged_before": 462,
+  "careless": 0.14416666666666667
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 39,
+  "merged_day": 5,
+  "med": 14,
+  "ship14": 1,
+  "merged_before": 466,
+  "careless": 0.15780866721177433
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 30,
+  "seed": 40,
+  "merged_day": 6,
+  "med": 16,
+  "ship14": 0,
+  "merged_before": 463,
+  "careless": 0.14333333333333334
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 1,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1492,
+  "careless": 0.18456805947193028
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 2,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1556,
+  "careless": 0.1438721136767318
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 3,
+  "merged_day": 20,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 1572,
+  "careless": 0.1482213438735178
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 4,
+  "merged_day": 21,
+  "med": 12,
+  "ship14": 1,
+  "merged_before": 1492,
+  "careless": 0.15297741273100615
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 5,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 6,
+  "merged_before": 1497,
+  "careless": 0.2251552795031056
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 6,
+  "merged_day": 19,
+  "med": 12.0,
+  "ship14": 0,
+  "merged_before": 1556,
+  "careless": 0.1537320810677212
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 7,
+  "merged_day": 19,
+  "med": 13,
+  "ship14": 1,
+  "merged_before": 1506,
+  "careless": 0.1608053007135576
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 8,
+  "merged_day": 17,
+  "med": 14.0,
+  "ship14": 0,
+  "merged_before": 1498,
+  "careless": 0.14839047369798483
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 9,
+  "merged_day": 20,
+  "med": 12,
+  "ship14": 1,
+  "merged_before": 1551,
+  "careless": 0.16116941529235382
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 10,
+  "merged_day": 22,
+  "med": 12,
+  "ship14": 6,
+  "merged_before": 1527,
+  "careless": 0.18223466530923899
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 11,
+  "merged_day": 22,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1533,
+  "careless": 0.19924242424242425
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 12,
+  "merged_day": 19,
+  "med": 13.0,
+  "ship14": 2,
+  "merged_before": 1549,
+  "careless": 0.16193110384712095
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 13,
+  "merged_day": 18,
+  "med": 13.0,
+  "ship14": 1,
+  "merged_before": 1494,
+  "careless": 0.17889788456516062
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 14,
+  "merged_day": 17,
+  "med": 13,
+  "ship14": 4,
+  "merged_before": 1469,
+  "careless": 0.20521512385919166
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 15,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 2,
+  "merged_before": 1464,
+  "careless": 0.14957716701902748
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 16,
+  "merged_day": 20,
+  "med": 13.0,
+  "ship14": 2,
+  "merged_before": 1532,
+  "careless": 0.1737704918032787
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 17,
+  "merged_day": 18,
+  "med": 12,
+  "ship14": 4,
+  "merged_before": 1489,
+  "careless": 0.18047882136279927
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 18,
+  "merged_day": 21,
+  "med": 12,
+  "ship14": 0,
+  "merged_before": 1516,
+  "careless": 0.1805345436207766
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 19,
+  "merged_day": 20,
+  "med": 13,
+  "ship14": 1,
+  "merged_before": 1520,
+  "careless": 0.1811722912966252
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 100,
+  "seed": 20,
+  "merged_day": 20,
+  "med": 12,
+  "ship14": 1,
+  "merged_before": 1541,
+  "careless": 0.16649848637739656
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 1,
+  "merged_day": 63,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 4609,
+  "careless": 0.16401006711409397
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 2,
+  "merged_day": 60,
+  "med": 12.0,
+  "ship14": 1,
+  "merged_before": 4638,
+  "careless": 0.14994561124592085
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 3,
+  "merged_day": 62,
+  "med": 12,
+  "ship14": 3,
+  "merged_before": 4627,
+  "careless": 0.17602555480833892
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 4,
+  "merged_day": 59,
+  "med": 12.0,
+  "ship14": 7,
+  "merged_before": 4573,
+  "careless": 0.13961975895433712
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 5,
+  "merged_day": 59,
+  "med": 12.0,
+  "ship14": 2,
+  "merged_before": 4568,
+  "careless": 0.1530040733197556
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 6,
+  "merged_day": 64,
+  "med": 11,
+  "ship14": 1,
+  "merged_before": 4636,
+  "careless": 0.17179144385026737
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 7,
+  "merged_day": 61,
+  "med": 12.0,
+  "ship14": 2,
+  "merged_before": 4509,
+  "careless": 0.1494576821248612
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 8,
+  "merged_day": 62,
+  "med": 12,
+  "ship14": 5,
+  "merged_before": 4641,
+  "careless": 0.1606631880154856
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 9,
+  "merged_day": 59,
+  "med": 12,
+  "ship14": 5,
+  "merged_before": 4525,
+  "careless": 0.1553248090620441
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 300,
+  "seed": 10,
+  "merged_day": 61,
+  "med": 13,
+  "ship14": 2,
+  "merged_before": 4549,
+  "careless": 0.20307065908898125
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 1000,
+  "seed": 1,
+  "merged_day": 205,
+  "med": 12,
+  "ship14": 15,
+  "merged_before": 15215,
+  "careless": 0.14071825740958016
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 1000,
+  "seed": 2,
+  "merged_day": 202,
+  "med": 12,
+  "ship14": 12,
+  "merged_before": 15233,
+  "careless": 0.13734970580711178
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 1000,
+  "seed": 3,
+  "merged_day": 201,
+  "med": 12.0,
+  "ship14": 16,
+  "merged_before": 15425,
+  "careless": 0.1293231567545782
+ },
+ {
+  "name": "both + 1 canary per 5 changes",
+  "n": 1000,
+  "seed": 4,
+  "merged_day": 206,
+  "med": 12.0,
+  "ship14": 15,
+  "merged_before": 15247,
+  "careless": 0.13445271096616387
+ }
+]

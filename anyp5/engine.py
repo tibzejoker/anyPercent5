@@ -15,7 +15,7 @@ DEFAULTS = {
     "post_review": {"green": 0.6, "amber": 1.0, "red": 0.0},
     "audit": {"green": 0.0, "amber": 0.0, "red": 1.0},
     "soak_days": 14,
-    "lease_hours": {"task": 72, "review": 24},
+    "lease_hours": {"task": 72, "review": 24, "first_push": 24, "cap": 168},
     "spare_after_hours": 6,
     "canary_every": 2.5,
     "canary_confirm_max": 5,
@@ -28,7 +28,7 @@ SCHEMA = """
 create table if not exists members(login text primary key, token text unique, joined real, last_seen real,
     banned int default 0, cal_seen int default 0, cal_hits int default 0);
 create table if not exists tasks(id integer primary key, title text, tier text, state text default 'open',
-    holder text, lease_until real, branch text, created real);
+    holder text, lease_until real, branch text, created real, claimed real);
 create table if not exists changes(id integer primary key, kind text, pr int, head text, author text, tier text,
     diff text, state text, created real, merged_at real, defect text, source int, patch text);
 create table if not exists assignments(id integer primary key, change_id int, reviewer text, kind text,
@@ -59,6 +59,8 @@ class Engine:
         for col, kind in (("source", "int"), ("patch", "text")):
             if col not in cols:
                 self.db.execute(f"alter table changes add column {col} {kind}")
+        if "claimed" not in {r["name"] for r in self.q("pragma table_info(tasks)")}:
+            self.db.execute("alter table tasks add column claimed real")
 
     # ------------------------------------------------------------ helpers
     def q(self, sql, *args):
@@ -87,10 +89,9 @@ class Engine:
         return row
 
     def alive(self, login, now):
-        """Heartbeat: renews every lease the member holds (the timeout only fires when they go quiet)."""
+        """Heartbeat: keeps the member in the reviewer pool and renews review leases. Task leases are renewed
+        only by pushed work (`handover`): a heartbeat alone would let a stalled holder block dependent tasks."""
         self.db.execute("update members set last_seen=? where login=?", (now, login))
-        self.db.execute("update tasks set lease_until=? where holder=? and state='leased'",
-                        (now + self.hours(self.cfg["lease_hours"]["task"]), login))
         self.db.execute("update assignments set lease_until=? where reviewer=? and verdict is null",
                         (now + self.hours(self.cfg["lease_hours"]["review"]), login))
         self.db.commit()
@@ -107,13 +108,17 @@ class Engine:
         task = self.one("select * from tasks where id=?", task_id)
         if task is None or task["state"] != "open":
             raise ValueError("task is not open")
-        self.db.execute("update tasks set state='leased', holder=?, lease_until=? where id=?",
-                        (login, now + self.hours(self.cfg["lease_hours"]["task"]), task_id))
+        self.db.execute("update tasks set state='leased', holder=?, lease_until=?, claimed=? where id=?",
+                        (login, now + self.hours(self.cfg["lease_hours"]["first_push"]), now, task_id))
         self.log(now, "claim", login=login, task=task_id)
         self.db.commit()
 
     def handover(self, task_id, branch, now):
-        """Partial work stays on a branch; the next holder resumes it."""
+        """Pushed work renews the lease, up to a hard cap; the next holder resumes the branch."""
+        lease = self.cfg["lease_hours"]
+        self.db.execute("update tasks set branch=?, lease_until=min(?, coalesce(claimed, ?) + ?) "
+                        "where id=? and state='leased'",
+                        (branch, now + self.hours(lease["task"]), now, self.hours(lease["cap"]), task_id))
         self.db.execute("update tasks set branch=? where id=?", (branch, task_id))
         self.db.commit()
 
@@ -301,7 +306,7 @@ class Engine:
         # "pending": copy a change still under review, so a canary cannot be found in the public history.
         state = "review" if self.cfg["canary_source"] == "pending" else "merged"
         source = self.q("select * from changes where kind='pr' and state=? order by random() limit 1", state)
-        if real < made * self.cfg["canary_every"] or not source:
+        if real < (made + 1) * self.cfg["canary_every"] or not source:
             return
         from .canary import plant
         planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}")
