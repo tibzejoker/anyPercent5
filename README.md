@@ -1,189 +1,168 @@
 # any%5
 
-**Open-source contribution at agent speed, without trusting anyone.**
+**A way to run an open-source project where anyone can contribute from day one, nothing waits on a few
+maintainers, and every change is checked by reviewers who do not choose what they review.**
 
-AI agents made writing code cheap. Reviewing it did not get cheaper, so projects close their doors: "you need
-10 merged PRs to open a PR". Newcomers then wait for weeks, insiders become the bottleneck, and a patient
-attacker can still earn trust and then plant a backdoor (xz-utils).
+https://github.com/user-attachments/assets/f4b8c678-15cd-4bf5-bdc5-b2e6c8ae7fa4
 
-any%5 is a way of working, plus the tooling for it, where **anyone contributes from day one, nothing waits on
-a few maintainers, and nothing ships without independent checks**. It is named after speedrunning's *any%*
-category (finish as fast as possible, by any route) and after [AnyPS5](https://github.com/boykopovar/AnyPS5),
-whose PR intake pause made us look for something better.
+any%5 is a proposal to discuss, not a finished product. It has been measured in simulation and tested end to
+end on GitHub, and this repository runs on it. No project with real outside contributors has used it yet.
+Questions, objections and attempts to break it are welcome in [issues](../../issues) and
+[discussions](../../discussions).
+
+## The problem
+
+Coding agents made writing code cheap. Reviewing it did not get cheaper. Many projects now receive more pull
+requests than their maintainers can read, so they close the door: "10 merged PRs before you can open one",
+collaborator-only PRs, intake pauses. Newcomers wait for weeks, a handful of insiders become the bottleneck,
+and a patient attacker can still earn trust and then ship a backdoor, as in xz-utils (2024).
+
+any%5 asks a different question: if everyone who contributes also reviews, can the crowd check itself, without
+anyone having to be trusted?
+
+## How it works
+
+1. **Work is leased, never owned.** Members say what their machine can run (for example `windows`, `gpu`) and
+   claim a matching task. They keep it while they push: first push within 24 h, each push renews for 72 h,
+   5 days at most unless a reviewer confirms real progress. Someone who goes quiet loses the task and the next
+   person resumes their branch. An "away" command pauses the lease within limits.
+2. **Jury duty instead of reputation.** No reputation is needed to contribute, and none buys lighter checks.
+   Assigned reviews come before new work.
+3. **Risk is judged from the diff, not the author.** A bot tiers each change green, amber or red from what it
+   touches (build scripts, CI, dependencies, network, process execution, memory protection). Riskier changes
+   get more reviewers and a check after merge.
+4. **Reviews are blind and calibrated.** Reviewers see a diff without its author or title. Some reviews are
+   *canaries*: copies of pending changes, either left clean or with one planted bug. Catching the bug counts
+   only if the reject names its line, and rejecting a clean copy counts against the reviewer. Reviews are drawn
+   from the best-calibrated members, at random, so nobody picks what they review.
+5. **Merge fast, release after a soak.** Approved changes are tested together in a merge queue and land on
+   `main` without waiting for a maintainer. A release only contains changes that spent 14 days on `main`.
+6. **Ban and revert.** A backdoor claim goes to two randomly drawn auditors. If they confirm it, the author is
+   banned, their merged work is reverted, and what their approvers passed is checked again. Honest bugs never
+   cost anyone their membership.
+
+The full rules and their reasons: [docs/METHOD.md](docs/METHOD.md).
 
 ## Results
 
-Statistical simulation: 10,000 contributors over 90 days, 1 % lone attackers, 1 % colluders in rings of 5,
-20 % careless reviewers. People come and go (about 17 % online at any time, about 20 days of membership).
-Mean of 5 seeds. Attackers turn malicious after a delay since joining (eager 0, standard 3, patient 15 days)
-that no rule can influence, so a design cannot win just by delaying them.
+Simulation of 10,000 contributors over 90 days: 1 % lone attackers, 1 % colluders in rings of 5, a
+reject-all ring of 5 % of members, 20 % careless reviewers, honest reviewers who wrongly reject 3-10 % of
+clean changes. People come and go (about 17 % online at a time). Mean of 5 seeds.
 
-| System | Merged/day | Median hours to merge | Shipped backdoors per 10k merges, 14-day soak (eager / standard / patient attacker) |
-|---|---:|---:|---|
-| Status quo: only insiders submit and review | **0** by day 90 (insiders leave and cannot be replaced) | 15 | 0 |
-| Baseline: trust levels + review credits | 2235 | 11 | 21.7 / 18.6 / 8.9 |
-| Best of 6 independent designs (safest) | 1781 | 2 | 9.6 / 9.1 / 4.4 |
-| Best of 6 independent designs (fastest) | 2356 | 2 | 12.4 / 11.8 / 4.8 |
-| **any%5** | **2370** | **2** | **8.2 / 6.6 / 2.8** |
+| | Trust levels + review credits | any%5 v0.4 |
+|---|---:|---:|
+| Changes merged per day | 2,032 | 2,339 |
+| Median time to merge | 17.6 h | 3.0 h |
+| Honest changes closed by wrong rejects | 17.7 % | 0.4 % |
+| Backdoor attempts that reach `main` and survive the 14-day soak | 23-26 % | 18-19 % |
 
-**What this shows, and what it does not** ([red team](docs/REDTEAM.md)):
+With only insiders allowed to submit and review, merges fall to 0 per day by day 90, because insiders leave
+and are not replaced.
 
-- **Throughput is the solid result.** About 2,400 merges/day at 10,000 members, 2 h median, linear from 10
-  to 100,000 members, with no maintainer in the loop. It comes from jury duty and spare reviewers, not from
-  the attacker model.
-- **Safety: a small gain per attempt, against noisy attackers only.** The shipped-per-10k-merges column
-  flatters any%5, because well-calibrated attackers spend time reviewing and attempt fewer backdoors. The table
-  uses the v0.2 review rules: per attempt, backdoors ship 13.6 % of the time against 27.5 % for the baseline.
-  The v0.3 rules that stop reject-all rings bring that to about 21 % against 26 %
-  ([false rejects](sim/eval/false_rejects.md)).
-- **Rejecting honest work is modelled.** With honest reviewers rejecting 3-10 % of clean changes and a
-  reject-all ring of 5 % of members, the baseline closes 18 % of honest changes. any%5 closes 0.8 %: a lone
-  reject only asks for one more review.
-- **No advantage against an xz-style attacker.** Against a one-shot attacker whose backdoor most reviewers
-  miss for the same reason, every design ships about 43 % of attempts. Calibration helps catch careless
-  reviewers. It does not help catch a backdoor nobody can see.
-- **The status-quo row is a worst case.** It assumes insiders can never be replaced.
+What this shows and what it does not:
 
-Full table, method and how to reproduce: [docs/RESULTS.md](docs/RESULTS.md).
+- **Throughput is the solid result.** It grows linearly from 10 to 100,000 members, with no maintainer in the
+  loop. It comes from jury duty and spare reviewers, not from the attacker model.
+- **Safety improves, modestly.** About a quarter fewer backdoor attempts get through than with trust levels.
+  An earlier rule set did better (15-16 %) but let a reject-all ring take over reviews and close 20 % of
+  honest work; closing that hole cost a few points ([false rejects](sim/eval/false_rejects.md)).
+- **No advantage against an xz-style attacker.** If a backdoor is subtle enough that most reviewers miss it,
+  every design measured ships about 43 % of attempts. Calibration catches careless reviewers. It does not make
+  anyone see what they cannot see.
+- **It is a model.** Detection rates, presence and attacker share are assumptions. Trust the comparisons, not
+  the absolute numbers. Method, tables and commands to reproduce: [docs/RESULTS.md](docs/RESULTS.md).
 
-## The method in six rules
-
-1. **Work is leased, never owned.** Only pushed work renews a lease: first push within 24 h, 72 h per push,
-   5 days at most unless a reviewer confirms real progress. Absences freeze it within limits; the blocker
-   everyone waits on relays to whoever is online. If you stop, the next person resumes your branch. Members
-   declare what they can run, claim matching tasks, and the README shows which profile the project lacks.
-2. **Jury duty, not reputation.** No reputation is needed to contribute, and none buys lighter checks.
-   Assigned reviews come before new work. There are no credits to run out of.
-3. **Risk from the diff, not the author.** A bot tiers each change green, amber or red from what it touches
-   (CI, build, dependencies, network, process execution, memory protection…). Riskier tiers get more
-   reviewers and post-merge audits.
-4. **Blind, calibrated reviewers.** Reviewers see a diff without its author or title. Mixed into their work
-   are *canaries*: copies of pending changes, never anything public. Some have one planted defect, which
-   counts as caught only when the reject names its line. Others are left clean, and rejecting them counts
-   against the reviewer. Reviews are drawn at random among the better-calibrated half, so rejecting
-   everything, or ranking first, buys no control. Catching them ranks reviewers, and reviews go
-   to the best-ranked people who are free. This is the biggest single lever measured.
-5. **Merge fast, ship after a soak.** Changes merge on approval (2 h median). Releases include only changes
-   that spent 14 days on main and finished their post-merge checks.
-6. **Ban and revert, never panic.** A backdoor claim needs two independent auditors to confirm it. Then the
-   author is banned, all their merged work is reverted, and what their approvers passed is re-checked.
-   Honest bugs never cost anyone their membership.
-
-Details and rationale: [docs/METHOD.md](docs/METHOD.md).
+Five AI agents were given this repository and asked to break the method. What they broke is fixed and their
+attacks are replayed in tests; what is left is listed in [docs/REDTEAM.md](docs/REDTEAM.md).
 
 ## How it runs
 
-**Git mode (default, nothing to host).** A ledger branch, one inbox issue and a GitHub Action replace the
-server. Contributors send sealed, signed commands as issue comments. Changes are sent privately as
-`git format-patch` output, so canaries can be copies of pending changes that nothing public tells apart. The
-Action applies approved patches and pushes them. Tested end to end on GitHub. See [docs/GITMODE.md](docs/GITMODE.md).
-With the CI workflow installed, approved patches go through a merge queue. They are tested in batches on
-`anyp5-queue`, and `main` only moves to a green batch. A red batch is bisected, and the change that fails alone
-goes back to its author as `ci_failed`.
+Nothing to host. Everything lives in the project's own repository:
 
 ```
-contributor + agent ──(anyp5 CLI: sealed comment)──> inbox issue ──> Action "coordinator" ──> anyp5-queue ──(CI green)──> main
-        ▲                                                                │
-        └──────────── anyp5-ledger branch: your sealed box ──────────────┘
+contributor + agent ──(anyp5 CLI: sealed, signed comment)──> "anyp5 inbox" issue
+                                                                    │
+                                     GitHub Action "coordinator", every 5 minutes
+                                                                    │
+            anyp5-ledger branch (public)  <─────────────────────────┤
+            anyp5-state branch (sealed)   <─────────────────────────┤
+            anyp5-queue branch ──> project CI ──> main  <───────────┘
 ```
 
-**Server mode.** The same engine behind a small HTTP server that syncs public PRs (`anyp5 serve`). It is
-simpler for contributors, but a public PR can be compared with its canary copy. Use it with synthetic
-canaries, or prefer git mode.
+- Contributors send commands as encrypted, signed issue comments. Patches are sent privately, so a canary
+  copy cannot be told apart from the original by looking at public PRs.
+- The coordinator Action never runs contributor code. Approved patches are applied with `git am`, tested on
+  the `anyp5-queue` branch by the project's own CI, and `main` only moves to a commit whose CI passed. A
+  failing batch is split until the change that breaks it is found.
+- Measured with the real coordinator up to 10,000 members: a 4 s pass every 5 minutes and about 3 MB of
+  ledger growth per day ([bench/RESULTS.md](bench/RESULTS.md)). CI time is the real cost: about 60
+  runner-hours a day at 2,400 merges with batches of 16 ([bench/RUNNERS.md](bench/RUNNERS.md)).
 
-- `anyp5/`: engine (SQLite ledger), git mode (`gitmode.py`, `seal.py`), HTTP server, GitHub adapter (`gh` CLI)
-  and CLI. The only dependency is `cryptography`.
-- `templates/anyp5-coordinator.yml`: the git mode coordinator Action. `templates/anyp5-ci.yml`: the merge
-  queue CI, which runs your tests.
-- `skills/`: agent skills ([contributor](skills/contributor/SKILL.md), [reviewer](skills/reviewer/SKILL.md))
-  that teach an agent the loop.
-- `evidence/`: evidence bundles for a PR. The tests fail before the change and pass after it, the bundle
-  is signed, and a maintainer can re-run it.
-- `.github/workflows/anyp5-tier.yml`: labels every PR with its risk tier, without running PR code.
-- `sim/`: the simulator, the six independent designs, the synthesis, and the evaluation harness.
+## Try it
 
-### Quick start
+**As a contributor** (or your agent, with the [contributor](skills/contributor/SKILL.md) and
+[reviewer](skills/reviewer/SKILL.md) skills):
 
 ```sh
-pip install -e .
-# maintainer: run the server with a bot account logged into gh
-export ANYP5_ADMIN_TOKEN=$(python -c "import secrets; print(secrets.token_hex(16))")
-anyp5 serve --db ledger.sqlite --repo owner/project --host 0.0.0.0 --port 8455 [--dry-run]
-anyp5 admin join alice            # prints alice's token
-anyp5 admin task "Fix overflow in parser" green
-
-# contributor (or their agent, with the skills installed)
-anyp5 login --server https://anyp5.example.org --token <token>
-anyp5 reviews                     # jury duty first
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
+anyp5 join --repo owner/name        # creates your key, posts the join request
+anyp5 caps windows gpu              # what your machine can run
+anyp5 reviews                       # jury duty first: diffs only, no author, no title
 anyp5 verdict 12 reject --reason "src/parse.c:88 bound should be < len"
-anyp5 tasks && anyp5 claim 3 && anyp5 alive
-git diff origin/main... | anyp5 tier
+anyp5 tasks && anyp5 claim 3
+git format-patch origin/main --stdout | anyp5 submit
+anyp5 me                            # your changes, their state, your calibration
 ```
 
-Run the tests with `python -m unittest discover -s tests -t .`.
+**As a maintainer**, setup takes about 5 minutes: an inbox issue, a ledger branch, a secret and two workflow
+files. Step by step in [docs/GITMODE.md](docs/GITMODE.md#set-up-maintainer-about-5-minutes).
 
-## How the design was found
+## This repository runs on any%5
 
-1. A first design (trust levels plus review credits) was simulated. Bootstrapping deadlocks, a credit
-   drain and starved audits showed up.
-2. **Six fresh AI agents designed a system independently and blind**, from the bare problem statement. Each
-   then implemented their design in a copy of the simulator, with the environment frozen. All six converged
-   on the same core: random or ranked reviewers, no trust-based bypass, leases, post-merge checks, ban and
-   revert.
-3. The designs were checked for environment tampering, then **re-evaluated fairly**: a design-independent
-   attacker trigger, 90 days, three attacker profiles, and a new metric for backdoors that reach a release.
-4. A synthesis agent combined the best rules: calibration ranking, jury duty and post-merge checks during
-   the soak. Rules that did not beat noise were dropped. The result was confirmed on fresh seeds.
+Outside changes to any%5 go through any%5: join, review, claim a task from the board below, submit a patch.
+The coordinator runs in [`.github/workflows/anyp5-coordinator.yml`](.github/workflows/anyp5-coordinator.yml).
+Below 100 members, bans also need a maintainer's confirmation. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Every design document and simulator is in [`sim/designs/`](sim/designs).
-
-## Scale, stalled work and runners
-
-- **From 10 to 100,000 members**, throughput is linear, at about 1.4 merges per day per person online, with no
-  bottleneck. The median time to merge is 2 h from about 300 members, and 12.6 h at 10. Small projects are
-  about 1.5x less safe per merge, so below about 100 members maintainers stay in the reviewer pool.
-  [sim/eval/scaling.md](sim/eval/scaling.md)
-- **When people holding tasks others depend on stop answering**, throughput barely moves: other work is
-  always available. Dependent features are delayed, though, and "zombie" holders who send heartbeats without
-  pushing anything were the worst case. Leases renewed only by pushed work, with a 7-day cap, bring the p95
-  feature delay from 81 to 39 days. [sim/eval/dependencies.md](sim/eval/dependencies.md)
-- **Canaries** built from merged diffs can be gamed, and gaming them doubles the backdoor leak. Copies of
-  pending changes cannot. [sim/eval/canary_gaming.md](sim/eval/canary_gaming.md)
-- **One repository holds it** (project, ledger branch, inbox issue), measured with the real coordinator up to
-  10,000 members: a 4 s pass every 5 minutes, about 3 MB of ledger growth per day, inbox issues rotated before
-  GitHub's 2,500-comment limit. [bench/RESULTS.md](bench/RESULTS.md)
-- **Runners**: the coordinator is cheap; CI for contributed changes is the real limit (about 600 runner-hours
-  a day at 2,400 merges with cold builds). A merge queue with batches of 16 brings it to about 60.
-  [bench/RUNNERS.md](bench/RUNNERS.md)
+<!-- anyp5:wanted -->
+<!-- /anyp5:wanted -->
 
 ## Prior art
 
-- **Closing the door**: GitHub's collaborator-only PRs and PR caps (2026), "N merged PRs first" gates. These
-  are simple, but they do not scale (see the status-quo row).
-- **[Vouch](https://github.com/mitchellh/vouch)** (Mitchell Hashimoto, 2026): vouched and denounced lists,
-  shareable across projects, with an Action that closes PRs from unvouched users. It works well against spam.
-  It is still "trust the author", and vouching is a human bottleneck. The two combine: Vouch at the door,
-  any%5 for throughput and checks. A Vouch denounce list can feed any%5 bans.
-- **cargo-crev / cargo-vet**: signed, shared code reviews for dependencies. Voluntary review stayed scarce,
-  which is why any%5 assigns reviews (jury duty).
-- **Stack Overflow review audits, crowdsourcing "gold questions"**: the canary idea, proven at scale. The
-  known failure mode, recognisable audits, is the one measured above.
+- **Closing the door**: collaborator-only PRs, PR caps, "N merged PRs first" gates. Simple, but they do not
+  scale (see the insiders-only result above).
+- **[Vouch](https://github.com/mitchellh/vouch)**: vouched and denounced lists shared across projects, with an
+  Action that closes PRs from unvouched users. Good against spam, but it is still "trust the author", and
+  vouching is a human bottleneck. The two combine: Vouch at the door, any%5 for throughput and checks.
+- **cargo-crev and cargo-vet**: signed, shared code reviews for dependencies. Voluntary review stayed scarce,
+  which is why any%5 assigns reviews.
+- **Stack Overflow review audits, "gold questions" in crowdsourcing**: the canary idea, proven at scale. Their
+  known failure, audits that look different from real work, is why canaries here are copies of pending changes.
 
-## Limits (read these)
+## Limits
 
-- **It is a model.** Parameters such as detection rates, presence and attacker share are assumptions. Trust
-  the comparisons and orders of magnitude, not the absolute numbers.
-- **A subtle backdoor can still ship.** One review catches a subtle one about 15 % of the time. any%5 gets
-  more and better looks, but does not make each look smarter. Smaller diffs, capability tiers, sandboxed
-  builds and evidence bundles are the next levers; the simulator cannot credit them.
-- **Canaries must look real.** The built-in mutations (bounds, inverted checks, removed guards, hidden
-  exec) are a default. Add project-specific ones.
-- **The server is trusted infrastructure.** Run it with backups, publish its event log, and keep its admin
-  token off contributor machines.
-- **Not battle-tested yet.** This is v0.1, built and measured in one session. Pilot it on a small project
-  first.
+- **A subtle backdoor can still ship.** any%5 gives a change more and better reviewers. It does not make each
+  reviewer smarter. Smaller diffs, sandboxed builds and evidence bundles ([evidence/](evidence/)) are the next
+  levers.
+- **Canaries must look real.** The built-in mutations are generic. Projects should add their own, mined from
+  their past bug fixes ([how](docs/GITMODE.md#project-canaries)).
+- **Rings recognise their own diffs.** A ring can mark its patches. The random draw keeps such a ring near its
+  share of reviews, but blind review cannot hide a diff from the people who wrote it.
+- **Direction is weak.** Maintainers open tasks and can name *architects* who approve task proposals. Nobody
+  checks a change against a design.
+- **The coordinator key is the trust root.** Whoever holds it can see which reviews are canaries.
+
+## How the design was found
+
+A first design (trust levels and review credits) was simulated and showed deadlocks and starved audits. Six
+AI agents then designed a system independently, from the bare problem statement, and each implemented it in a
+copy of the simulator. All six converged on the same core: random or ranked reviewers, no trust-based
+bypass, leases, checks after merge, ban and revert. The designs were re-evaluated under the same conditions
+and combined. Every design and simulator is in [sim/](sim/).
 
 ## Origin
 
-Built while contributing to AnyPS5, when the project's PR intake was paused to work through a backlog of
-agent-written PRs. Written with Claude Code (AI-assisted: design, simulations, code and docs).
+Built while contributing to [AnyPS5](https://github.com/boykopovar/AnyPS5), when its PR intake was paused to
+work through a backlog of agent-written pull requests. The name comes from speedrunning's *any%* category
+(finish by any route) and from AnyPS5. Written with Claude Code: design, simulations, code, docs and video.
+
+MIT licence.

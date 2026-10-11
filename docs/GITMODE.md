@@ -59,6 +59,12 @@ Cost: one CI run per batch while it stays green, plus about 2 log2(batch) runs t
 model in [bench/RUNNERS.md](../bench/RUNNERS.md) gives 0.29-0.37 runs per landed change at 3 % breakage. One
 lane lands about `batch x runs/day` changes. Past that, shard by area.
 
+Tested end to end on GitHub (2026-10-11, private sandbox repository, coordinator pinned to the v0.4 branch):
+a correct patch and a patch that does not compile were submitted by two members and approved by all reviewers.
+The coordinator dispatched `anyp5-ci` on `anyp5-queue`, the batch failed, the bisection isolated the broken
+patch (`ci_failed`, reported in its author's box) and `main` moved only to the tested commit holding the
+correct one (author kept, committer `anyp5[bot]`).
+
 ## Why it keeps canaries blind
 
 The [canary gaming simulation](../sim/eval/canary_gaming.md) shows the rule. Never build a canary from anything
@@ -109,7 +115,7 @@ fixed and covered by tests:
 ## Set up (maintainer, about 5 minutes)
 
 ```sh
-pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.2.0"
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
 gh issue create --title "anyp5 inbox" --body "Sealed any%5 commands."           # note its number N
 git checkout --orphan anyp5-ledger && git rm -rq --cached . && git clean -fdq
 anyp5 init-ledger --ledger . --project owner/name --issue N --admin your-login | tail -1 \
