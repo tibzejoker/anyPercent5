@@ -1,0 +1,39 @@
+{
+  "name": "example-cmake",
+  "build": {
+    "configure": ["cmake", "-S", "{src}", "-B", "{build}", "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release",
+                  "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++", "-DBUILD_TESTING=ON"],
+    "path_prepend": [],
+    "env": {}
+  },
+  "tests": {
+    "globs": ["*/tests/*.cpp", "*/tests/*.hpp", "tests/*"],
+    "target_call": "add_test_executable",
+    "output_dir": "tests",
+    "timeout": 900
+  },
+  "conventions": ["python", "tools/check_conventions.py", "--base", "{base}"],
+  "toolchain": {"gcc": ["gcc", "--version"], "cmake": ["cmake", "--version"]},
+  "risk": {
+    "max_lines": 400,
+    "code_globs": ["*.c", "*.cc", "*.cpp", "*.h", "*.hpp", "*.inl", "*.py", "*.cmake", "*CMakeLists.txt", "*.s", "*.asm", "*.ps1", "*.sh"],
+    "red_paths": [".github/*", ".gitmodules", "3rdparty/*", "*.cmake", "cmake/*", "*.ps1", "*.sh", "*.bat"],
+    "amber_paths": ["*CMakeLists.txt", "tools/*", "core/*/loader/*"],
+    "red_patterns": [
+      {"regex": "FetchContent_Declare|ExternalProject_Add|file\\s*\\(\\s*DOWNLOAD|execute_process|add_custom_command", "why": "build step that fetches or runs code"},
+      {"regex": "\\b(WSAStartup|socket|connect|getaddrinfo|WinHttp\\w*|InternetOpen\\w*|URLDownloadToFile\\w*|curl_\\w+)\\s*\\(", "why": "network access"},
+      {"regex": "\\b(CreateProcess\\w*|ShellExecute\\w*|WinExec|system|_?popen|_wpopen|execv\\w*|posix_spawn)\\s*\\(", "why": "starts another program"},
+      {"regex": "\\b(WriteProcessMemory|CreateRemoteThread|OpenProcess|SetWindowsHookEx\\w*)\\s*\\(", "why": "touches another process"},
+      {"regex": "\\b(Reg(Open|Create|Set|Delete)\\w*)\\s*\\(", "why": "writes the registry"},
+      {"regex": "https?://", "why": "URL in code"},
+      {"regex": "[A-Za-z0-9+/]{120,}={0,2}|(0x[0-9a-fA-F]{2},\\s*){48,}", "why": "opaque data blob"}
+    ],
+    "amber_patterns": [
+      {"regex": "\\b(VirtualProtect|VirtualAlloc\\w*|mprotect|mmap|MapViewOfFile\\w*)\\s*\\(|PAGE_EXECUTE", "why": "changes memory protection"},
+      {"regex": "\\b(AddVectoredExceptionHandler|SetUnhandledExceptionFilter|signal|sigaction)\\s*\\(", "why": "installs a fault handler"},
+      {"regex": "\\b(LoadLibrary\\w*|GetProcAddress|dlopen|dlsym)\\s*\\(", "why": "loads code at run time"},
+      {"regex": "\\b(CreateFile\\w*|DeleteFile\\w*|MoveFile\\w*|fopen|_wfopen|std::filesystem::remove\\w*)\\s*\\(", "why": "host file access"},
+      {"regex": "\\bgetenv\\s*\\(\\s*\"[^\"]*(TOKEN|KEY|SECRET|PASS)", "why": "reads a secret from the environment"}
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+name: any%5 risk tier
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  tier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+      - name: Classify the diff (the PR's code is never executed)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" > pr.diff
+          python -m anyp5 tier pr.diff | tee tier.txt
+          tier=$(head -1 tier.txt)
+          for t in green:2da44e amber:d29922 red:cf222e; do
+            gh label create "anyp5:${t%%:*}" --color "${t##*:}" --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+          done
+          gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label anyp5:green,anyp5:amber,anyp5:red || true
+          gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label "anyp5:$tier"

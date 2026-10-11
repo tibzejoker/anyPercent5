@@ -1,0 +1,104 @@
+"""any%5 command line.
+
+Contributors and their agents:
+  anyp5 login --server URL --token TOKEN     store credentials in ~/.anyp5.json
+  anyp5 reviews                              your assigned reviews (jury duty: do these first)
+  anyp5 verdict ID approve|reject [--backdoor] --reason "..."
+  anyp5 tasks | claim ID | handover ID BRANCH | alive | me | status
+  anyp5 tier [DIFF_FILE]                     risk tier of a diff (stdin by default)
+
+Maintainers:
+  anyp5 serve --db ledger.sqlite [--repo owner/name] [--port 8455] [--dry-run]
+  anyp5 admin join LOGIN | task TITLE [TIER] | reverted CHANGE_ID
+"""
+import argparse
+import json
+import os
+import sys
+import urllib.request
+from pathlib import Path
+
+from .tiers import classify, findings, parse_diff
+
+CONFIG = Path(os.environ.get("ANYP5_CONFIG", Path.home() / ".anyp5.json"))
+
+
+def creds():
+    data = json.loads(CONFIG.read_text()) if CONFIG.exists() else {}
+    return os.environ.get("ANYP5_SERVER", data.get("server", "http://127.0.0.1:8455")), \
+        os.environ.get("ANYP5_TOKEN", data.get("token"))
+
+
+def call(path, body=None, token=None):
+    server, saved = creds()
+    request = urllib.request.Request(server + path, data=json.dumps(body).encode() if body is not None else None,
+                                     method="POST" if body is not None else "GET")
+    request.add_header("Content-Type", "application/json")
+    if token or saved:
+        request.add_header("Authorization", f"Bearer {token or saved}")
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read() or b"{}")
+    except urllib.error.HTTPError as err:
+        sys.exit(f"anyp5: {err.code} {json.loads(err.read() or b'{}').get('error', '')}")
+
+
+def main(argv=None):
+    p = argparse.ArgumentParser(prog="anyp5", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = p.add_subparsers(dest="cmd", required=True)
+    s = sub.add_parser("login"); s.add_argument("--server", required=True); s.add_argument("--token", required=True)
+    sub.add_parser("reviews"); sub.add_parser("tasks"); sub.add_parser("alive"); sub.add_parser("me"); sub.add_parser("status")
+    s = sub.add_parser("verdict"); s.add_argument("assignment", type=int); s.add_argument("verdict", choices=["approve", "reject"])
+    s.add_argument("--backdoor", action="store_true"); s.add_argument("--reason", default="")
+    s = sub.add_parser("claim"); s.add_argument("task", type=int)
+    s = sub.add_parser("handover"); s.add_argument("task", type=int); s.add_argument("branch")
+    s = sub.add_parser("tier"); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("serve"); s.add_argument("--db", default="ledger.sqlite"); s.add_argument("--repo")
+    s.add_argument("--host", default="127.0.0.1"); s.add_argument("--port", type=int, default=8455)
+    s.add_argument("--dry-run", action="store_true", help="log forge actions without running them")
+    s.add_argument("--config", help="JSON file overriding engine defaults")
+    s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
+    a = p.parse_args(argv)
+
+    if a.cmd == "login":
+        CONFIG.write_text(json.dumps({"server": a.server, "token": a.token}))
+        print(f"saved to {CONFIG}")
+    elif a.cmd == "reviews":
+        for job in call("/reviews")["reviews"]:
+            print(f"=== assignment {job['assignment']}\n{job['diff']}")
+    elif a.cmd == "verdict":
+        call("/verdict", {"assignment": a.assignment, "verdict": a.verdict,
+                          "severity": "backdoor" if a.backdoor else "none", "reason": a.reason})
+        print("recorded")
+    elif a.cmd in ("tasks", "me", "status"):
+        print(json.dumps(call("/" + a.cmd), indent=2))
+    elif a.cmd == "alive":
+        call("/alive", {})
+    elif a.cmd == "claim":
+        call("/claim", {"task": a.task})
+        print(f"task {a.task} leased to you; run `anyp5 alive` while you work")
+    elif a.cmd == "handover":
+        call("/handover", {"task": a.task, "branch": a.branch})
+    elif a.cmd == "tier":
+        diff = Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read()
+        paths, added = parse_diff(diff)
+        print(classify(paths, added))
+        for level, path, line, why in findings(paths, added):
+            print(f"  {level:5} {path}{':' + str(line) if line else ''}  {why}")
+    elif a.cmd == "serve":
+        from .forge import GitHub
+        from .server import serve
+        config = json.loads(Path(a.config).read_text()) if a.config else None
+        serve(a.db, a.host, a.port, GitHub(a.repo, apply=not a.dry_run) if a.repo else None, config)
+    elif a.cmd == "admin":
+        admin = os.environ.get("ANYP5_ADMIN_TOKEN")
+        if a.action == "join":
+            print(call("/admin/join", {"login": a.args[0]}, token=admin)["token"])
+        elif a.action == "task":
+            print(call("/admin/task", {"title": a.args[0], "tier": (a.args[1:] or ["green"])[0]}, token=admin))
+        else:
+            call("/admin/reverted", {"change": int(a.args[0])}, token=admin)
+
+
+if __name__ == "__main__":
+    main()
