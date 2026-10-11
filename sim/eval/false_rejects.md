@@ -38,7 +38,8 @@ What is new in the model:
   - canaries: 40 % are clean and count only if approved, and a planted canary counts only if the reject names its
     line (`score_canary`);
   - score: (hits + 1) / (seen + 2) x (clean approved + 1) / (clean seen + 2) (`score`);
-  - draw: at random among the better-calibrated half of the members who are still idle (`draw`);
+  - draw: at random among the better-calibrated half of the members who are still idle (`draw`; v0.4 changes
+    this, see the last section);
   - canaries go to the least-tested members first (`mix_canaries`);
   - rejects: a lone reject asks for one more approval, and 2 rejects close a change (`needed`, `verdict`);
   - backdoor claims: a claim holds the change until 2 auditors answer. They are drawn the same way, and the author
@@ -101,6 +102,72 @@ Ablation: v0.3 with one rule reverted at a time, with honest false rejects and n
     points. All of them spread reviews away from the best reviewers: a random draw among the top half, a calibration
     signal split with clean canaries, a second opinion instead of a close, and canaries spread over more members.
   - Rejecters also reject backdoors, so they lower the baseline's leak (25.7 % to 23.2 %). They are not a defence.
+
+## v0.4: tuning the draw (draw_tuning.py)
+
+Can the draw keep the ring out and win back some of v0.2's per-attempt safety?
+
+```sh
+cd sim/eval
+python draw_tuning.py 10000 90 5 all "band 30 %, score^2, confirm first"     # 40 s wall, slowest run 40 s
+python draw_tuning.py 10000 90 10 "+ reject-all ring that" "<variant>" ...  # 35-49 s per batch of <= 32 runs
+```
+
+`draw_tuning.py` adds three knobs to the false-reject model: the band (share of idle members, ranked by score, that
+the draw picks from), a weight inside the band (odds proportional to score^k), and "amber/red: first reviewer from
+the top 10 %". It also tries clean-canary shares, canary frequency, canary routing and stronger clean-canary
+penalties. Every batch ran 10,000 members for 90 days, seeds 1-5 or 1-10, and took under 50 s wall on 32 threads.
+Raw rows: `draw_tuning_sweep.json` (sweep) and `draw_tuning.json` (final run).
+
+Per-seed difference from v0.3, in points of backdoors shipped per attempt (same seeds, so same population):
+
+| Variant | Without the ring (seeds) | Ring that claims backdoors (seeds) | Ring share / bans |
+|---|---:|---:|---|
+| band 30 %, uniform | | -1.2 ± 0.7 (1-5) | 1.8 % / 0.4 |
+| half, score^4 | | -0.5 ± 0.9 (1-5) | 1.8 % / 2.2 |
+| band 30 %, score^2 | | -1.1 ± 0.5 (1-10) | 1.8 % / 0.6 |
+| half, amber/red first from top 10 % | | -0.1 ± 1.2 (1-5) | 1.9 % / 2.8 |
+| canary every 2 PRs (not 2.5) | | +0.2 ± 1.2 (1-5) | 1.6 % / 0.8 |
+| canaries confirm perfect records first | | -0.3 ± 0.2 (1-5) | 1.6 % / 0.8 |
+| **band 30 %, score^2, canaries confirm perfect records first** | **-1.3 ± 0.8 (1-10)** | **-1.7 ± 0.6 (1-10)** | **1.3 % / 0.6** |
+| ... and clean canaries 20 % | -2.6 ± 0.9 (1-10) | -3.4 ± 0.7 (1-10) | 3.4 % / 3.8 |
+| ... and clean canaries 20 %, clean factor squared | -2.2 ± 0.7 (1-10) | -2.1 ± 0.9 (1-10) | 2.1 % / 1.4 |
+| ... and a clean gate (clean factor 1 above 0.5) | -3.0 ± 0.6 (1-8) | -1.7 ± 0.7 (1-8) | 2.9 % / 9.2 |
+
+v0.3 in the same runs: ring share 1.9-2.0 %, 2.9 honest members banned. "±" is the standard error of the mean
+per-seed difference.
+
+Main setup (seeds 1-5, ring that claims backdoors unless stated):
+
+| System | Honest clean PRs closed | Ring share of real reviews | Honest members banned | Shipped per attempt | ... without the ring | Merged/day | Median h |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| any%5, v0.2 rules | 4.8 % | 11.6 % | 452.0 | 16.4 % (sd 1.8) | 16.0 % (sd 1.7) | 2048 | 3.8 |
+| any%5, v0.3 rules | 0.5 % | 2.0 % | 2.6 | 20.7 % (sd 1.3) | 20.3 % (sd 1.6) | 2294 | 3.0 |
+| **v0.4: band 30 %, score^2, confirm first** | 0.4 % | 1.3 % | 0.4 | 18.5 % (sd 1.1) | 18.8 % (sd 1.5) | 2339 | 3.0 |
+| v0.4 + clean canaries 20 %, clean factor squared (seeds 1-10) | 0.5 % | 2.1 % | 1.4 | 18.1 % (sd 2.0) | 18.2 % (sd 1.8) | 2310 | 3.0 |
+| v0.4 + clean canaries 20 % (seeds 1-10) | 0.6 % | 3.4 % | 3.8 | 16.8 % | 17.8 % (sd 1.9) | 2282 | 3.0 |
+
+With the v0.4 draw in the other two populations (seeds 1-5): no false rejects 17.9 % (v0.3: 21.2 %), ring that
+does not claim backdoors 19.2 % (v0.3: 21.4 %, ring share 1.2 % against 1.9 %).
+
+What this shows:
+
+- **The v0.4 draw is a small but real gain.** It ships fewer backdoors per attempt than v0.3 in all four
+  populations (1.5 to 3.3 points with seeds 1-5), and 1.3 to 1.7 points fewer in the 10-seed paired runs
+  (1.6 and 3.1 standard errors). It also keeps the ring further out: 1.3 % of reviews
+  against 2.0 %, and 0.4 honest members banned against 2.6. Throughput and latency do not change. It recovers about
+  a third to a half of the gap to v0.2, not all of it.
+- **No single knob does it.** A narrower band or a score weight alone gives about 1 point; canary routing alone
+  0.3; a top-decile reviewer on amber/red changes, and more frequent canaries, nothing measurable.
+- **Fewer clean canaries buy safety with ring defence.** With 20 % clean canaries the reject-all ring is caught
+  more slowly. It does 3.4 % of reviews and gets 3.8 honest members banned. Part of the extra gain is the ring
+  itself rejecting backdoors, which is not a defence. Squaring the clean factor brings the ring back to 2.1 %
+  but leaves only 0.5 points over v0.4 alone, within noise. So the clean share stays at 40 %.
+- **The rest of the gap is the price of the ring defence.** v0.2 ranks with a one-sided score, so the best
+  reviewers take more reviews. Every way of getting closer to it found here lets the ring back in.
+- A stronger weight concentrates reviews: the weight is score^2 inside the top 30 % only, and a member holds at
+  most one open review, so the best member's odds are a few times those of a member at the edge of the band, not
+  a monopoly. The stealth ring of canary_gaming.py was not re-run with the new draw.
 
 ## Caveats
 

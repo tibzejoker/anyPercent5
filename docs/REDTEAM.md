@@ -34,7 +34,7 @@ fixed code.
 
 - **The headline was too strong.** "Shipped per 10k merges" rewards keeping attackers busy reviewing. Per
   attempt, any%5 leaks 13.6 % against 27.5 % for the trust-level baseline: about 2x, not 3x. That was
-  under the v0.2 review rules. The v0.3 rules give back most of the gain (see the next point).
+  under the v0.2 review rules. The v0.3 rules give back most of the gain, and v0.4 wins part of it back (see the next point).
 - **The simulation's attacker is noisy.** It plants a backdoor in half its changes, each one independently
   visible. With correlated difficulty and one-shot attackers (xz-like), every design ships about 43 % of
   attempts. any%5's advantage over the other designs disappears.
@@ -50,6 +50,11 @@ fixed code.
     doubles.
   - The cost: v0.3 ships 20-21 % of backdoor attempts, against 15-16 % under v0.2 and 23-26 % in the baseline.
     The safety gain per attempt is now small.
+  - v0.4 tunes the draw: the best-calibrated 30 % instead of half, odds proportional to score², and canaries
+    first to members with a perfect record. It ships 18-19 % of attempts, keeps the ring at 1.3 % of reviews
+    with 0.4 honest members banned, and does not change throughput. That wins back a third to a half of the
+    gap to v0.2. Every variant that got closer (fewer clean canaries, a softer clean-canary penalty) let the ring
+    back in ([sim/eval/false_rejects.md](../sim/eval/false_rejects.md), last section).
 - **What held:**
   - throughput and latency;
   - pending-copy canaries over merged-diff canaries;

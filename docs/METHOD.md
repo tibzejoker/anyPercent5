@@ -86,10 +86,13 @@ A spare reviewer is drawn when one is slow (more than 6 h). The change merges on
 - A canary still open when its original leaves review is withdrawn without scoring, so waiting for the
   original to land and then comparing tells nothing. An expired canary counts as missed. Members never see
   their own score, since watching it change would reveal which reviews were canaries.
-- New members get canaries first (up to 5) until their score is established.
-- Reviews and audits are drawn **at random among the better-calibrated half of idle members**, not
-  strictly from the top. Calibration keeps careless reviewers out, and no account, however well it scores,
-  can hold most reviews. The draw, and the coin that picks which changes get a post-merge review, use a
+- New members get canaries first (up to 5) until their score is established. Canaries go first to members
+  with a perfect record so far (one more canary confirms or breaks it), then to untested members.
+- Reviews and audits are drawn **at random among the best-calibrated 30 % of idle members, with odds
+  proportional to score²** (`draw_band`, `draw_weight`), not strictly from the top. Calibration keeps careless
+  reviewers out and favours the best, and no account, however well it scores, can hold most reviews: a member
+  holds one open review at a time, and the best member's odds are only a few times those at the edge of the
+  band. The draw, and the coin that picks which changes get a post-merge review, use a
   **hidden weekly seed** known only to the coordinator. With a public hash, an
   author could retouch their patch (a blank line, a comment) until the draw picked an accomplice or skipped
   the post-merge review. `sha256(seed)` is published when the week starts and the seed is revealed 4 weeks
@@ -114,8 +117,8 @@ compared with shipping on merge, for every design tested.
 - **A lone reject asks a second opinion.** Each reject adds one required approval, and two rejects close the
   change. One reviewer can no longer veto a change.
 - A defect found after merge becomes a fix task. Honest bugs never cost anyone their membership.
-- A **backdoor claim** (`--backdoor`) never acts alone. The change is held, and two auditors are drawn at
-  random from the better-calibrated half. While the project has fewer than 100 active members, a maintainer
+- A **backdoor claim** (`--backdoor`) never acts alone. The change is held, and two auditors are drawn the
+  same way as reviewers. While the project has fewer than 100 active members, a maintainer
   must also confirm the ban (`confirm-ban`). If they all confirm:
   - the author is banned and **all their merged changes are reverted** before the next release;
   - every change their approvers approved is re-audited;
