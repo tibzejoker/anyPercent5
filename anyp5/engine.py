@@ -5,6 +5,7 @@ the GitHub adapter and the tests all drive the same code.
 """
 import hashlib
 import hmac
+import math
 import re
 import json
 import secrets
@@ -27,6 +28,9 @@ DEFAULTS = {
     "escalation_auditors": 2,
     "canary_source": "pending",
     "clean_canary_share": 0.4,
+    "draw_band": 0.3,
+    "draw_weight": 2,
+    "canary_routing": "confirm",
     "max_extensions": 2,
     "max_open_proposals": 3,
     "ban_needs_admin_below": 100,
@@ -359,9 +363,10 @@ class Engine:
         busy = {r["reviewer"] for r in self.q("select reviewer from assignments where verdict is null")}
         return [m for m in rows if m["login"] not in busy and m["login"] not in exclude]
 
-    def draw(self, change, count, kind, now, pool=None, least_tested=False):
-        """At random (hidden weekly seed) among the better-calibrated half of the idle members: calibration
-        keeps careless reviewers out, and nobody, however well scored, can take most of the reviews."""
+    def draw(self, change, count, kind, now, pool=None, canary=False):
+        """At random (hidden weekly seed) among the best-calibrated `draw_band` share of the idle members, with
+        odds proportional to score^`draw_weight`: calibration keeps careless reviewers out and favours the best,
+        and nobody, however well scored, can take most of the reviews."""
         ids = self.related(change)
         taken = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
                                                % ",".join("?" * len(ids)), *ids)}
@@ -369,11 +374,15 @@ class Engine:
         salt = f'{change["id"]}:{change["head"]}:{kind}:{len(taken)}'
         epoch, seed = self.seed(now)
         tie = lambda m: hmac.new(seed, f'{salt}:{m["login"]}'.encode(), "sha256").hexdigest()
-        if least_tested:
-            pool = sorted(pool, key=lambda m: (m["cal_seen"] + m["clean_seen"], tie(m)))
+        if canary:
+            pool = sorted(pool, key=lambda m: (self.canary_order(m), tie(m)))
         else:
             ranked = sorted(pool, key=lambda m: (-score(m), tie(m)))
-            pool = sorted(ranked[:max((len(ranked) + 1) // 2, count)], key=tie)
+            band = ranked[:max(math.ceil(len(ranked) * self.cfg["draw_band"]), count)]
+            weight = self.cfg["draw_weight"]
+            # Weighted sampling without replacement (Efraimidis-Spirakis): sort by u^(1/w), u from the seed.
+            key = lambda m: math.log((int(tie(m), 16) + 1) / 2 ** 256) / max(score(m) ** weight, 1e-12)
+            pool = sorted(band, key=key, reverse=True)
         chosen = pool[:count]
         for m in chosen:
             self.db.execute("insert into assignments(change_id, reviewer, kind, drawn_at, lease_until) values(?,?,?,?,?)",
@@ -608,8 +617,18 @@ class Engine:
                                                   % ",".join("?" * len(ids)), *ids)}
             tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
             fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
-            self.draw(change, 1, "review", now, pool=fresh or tested, least_tested=True)
+            self.draw(change, 1, "review", now, pool=fresh or tested, canary=True)
         return change["id"], job
+
+    def canary_order(self, m):
+        """Who gets a canary first. "confirm": members with a perfect record, the most tested first (one more
+        canary confirms or breaks their place in the band), then untested members, then the others.
+        "least_tested": the fewest canaries first."""
+        seen = m["cal_seen"] + m["clean_seen"]
+        if self.cfg["canary_routing"] == "least_tested":
+            return (seen,)
+        perfect = seen > 0 and m["cal_hits"] == m["cal_seen"] and m["clean_ok"] == m["clean_seen"]
+        return (0 if perfect else 1 if seen == 0 else 2, -seen if perfect else seen)
 
     def reverted(self, change_id, now):
         """The forge merged the revert of a banned author's change: it no longer blocks releases."""
