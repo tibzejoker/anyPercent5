@@ -217,7 +217,7 @@ class Installer:
                 say("push refused: " + next((l for l in lines if "rejected" in l), lines[-1]).strip())
                 say("Everything else is in place and committed locally. GitHub only lets a token change workflow "
                     "files with the `workflow` scope: run `gh auth refresh -h github.com -s workflow`, then "
-                    f"`git push origin {branch}`.")
+                    f"`git push origin {branch}` (or push over SSH, which needs no scope).")
                 push = False
         say("")
         say("done (dry run: nothing was changed)" if self.dry_run else "done")
