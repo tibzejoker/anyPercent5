@@ -31,9 +31,14 @@ that no rule can influence, so a design cannot win just by delaying them.
 - **Throughput is the solid result.** About 2,400 merges/day at 10,000 members, 2 h median, linear from 10
   to 100,000 members, with no maintainer in the loop. It comes from jury duty and spare reviewers, not from
   the attacker model.
-- **Safety: about 2x better, against noisy attackers only.** The shipped-per-10k-merges column flatters
-  any%5, because well-calibrated attackers spend time reviewing and attempt fewer backdoors. Per attempt,
-  backdoors ship 13.6 % of the time against 27.5 % for the baseline.
+- **Safety: a small gain per attempt, against noisy attackers only.** The shipped-per-10k-merges column
+  flatters any%5, because well-calibrated attackers spend time reviewing and attempt fewer backdoors. The table
+  uses the v0.2 review rules: per attempt, backdoors ship 13.6 % of the time against 27.5 % for the baseline.
+  The v0.3 rules that stop reject-all rings bring that to about 21 % against 26 %
+  ([false rejects](sim/eval/false_rejects.md)).
+- **Rejecting honest work is modelled.** With honest reviewers rejecting 3-10 % of clean changes and a
+  reject-all ring of 5 % of members, the baseline closes 18 % of honest changes. any%5 closes 0.8 %: a lone
+  reject only asks for one more review.
 - **No advantage against an xz-style attacker.** Against a one-shot attacker whose backdoor most reviewers
   miss for the same reason, every design ships about 43 % of attempts. Calibration helps catch careless
   reviewers. It does not help catch a backdoor nobody can see.
