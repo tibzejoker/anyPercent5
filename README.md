@@ -120,8 +120,22 @@ git format-patch origin/main --stdout | anyp5 submit
 anyp5 me                            # your changes, their state, your calibration
 ```
 
-**As a maintainer**, setup takes about 5 minutes: an inbox issue, a ledger branch, a secret and two workflow
-files. Step by step in [docs/GITMODE.md](docs/GITMODE.md#set-up-maintainer-about-5-minutes).
+**As a maintainer**, from your project's checkout, with `gh` logged in as an admin:
+
+```sh
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
+anyp5 setup --test "python -m pytest -q" --dry-run   # prints every step, changes nothing
+anyp5 setup --test "python -m pytest -q"             # inbox issue, ledger branch, secret, workflows, local commit
+git push origin main
+```
+
+It creates the inbox issue, the `anyp5-ledger` branch and the coordinator key secret, and commits the workflow
+files without pushing them. What it does, step by step: [docs/GITMODE.md](docs/GITMODE.md#set-up-maintainer).
+Alone, you keep pushing to `main` as before; any%5 handles changes from the first newcomer on
+([small projects](docs/METHOD.md#small-projects-one-maintainer-then-the-first-newcomers)).
+
+**With an agent**: give your agent [skills/maintainer/SKILL.md](skills/maintainer/SKILL.md) and ask it to
+install any%5.
 
 ## This repository runs on any%5
 

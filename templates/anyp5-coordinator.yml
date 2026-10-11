@@ -1,4 +1,4 @@
-# any%5 git mode coordinator. Copy to .github/workflows/ in your project (see docs/GITMODE.md).
+# any%5 git mode coordinator. Written by `anyp5 setup`, or copy to .github/workflows/ (see docs/GITMODE.md).
 # It never runs contributor code: comments are read as sealed data, patches are applied with `git am`.
 # Branches: main (code), anyp5-ledger (public ledger, small history), anyp5-state (sealed state and boxes,
 # one commit, force-pushed: it is rewritten every pass and would otherwise grow the repo by GBs per year).

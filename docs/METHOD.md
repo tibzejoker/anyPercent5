@@ -133,6 +133,23 @@ Small projects are slower (12.6 h at 10 members) and about 1.5x less safe per me
 to choose from, and one attacker is a large share. Below about 100 members, maintainers stay in the reviewer
 pool and act as backdoor auditors. Past about 2,000 merges/day into one branch, use a merge queue.
 
+### Small projects: one maintainer, then the first newcomers
+
+- **Alone.** A maintainer with no other member has nobody to review their changes, so they keep working as
+  before: they push to `main` directly. Installing any%5 changes nothing for them until someone joins. The
+  coordinator still runs, the inbox is open and the wanted board shows the open tasks.
+- **The first newcomer.** From the first join on, outside changes go through any%5. The newcomer can claim a
+  task, submit a patch and review from day one: no history or invitation is needed. The maintainer, who joins
+  as a member like anyone (`anyp5 join`), reviews the newcomer's changes (drawn, blind), and the newcomer reviews the maintainer's changes if the
+  maintainer also submits through any%5.
+- **Reviewer counts follow the team size.** A tier asks for 1 (green), 3 (amber) or 2 (red) reviewers, but a
+  change never needs more reviewers than the project has other members who can review it, and always at least
+  one. So a 2-person project is not stuck on an amber change, and the full counts apply once enough people have
+  joined.
+- **Bans.** While the project has fewer than 100 active members, a backdoor ban also needs a maintainer's
+  confirmation (`ban_needs_admin_below`), because two drawn auditors in a small team may be the same few people.
+- Changes under `.github/` always wait for a maintainer, whatever the size.
+
 ## 8. What it does not solve
 
 - A subtle backdoor that passes every check can still ship. One review catches a subtle one about 15 % of

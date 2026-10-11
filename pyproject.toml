@@ -1,6 +1,6 @@
 [project]
 name = "anyp5"
-version = "0.4.0"
+dynamic = ["version"]
 description = "any%5: leased tasks, blind calibrated review, soak-gated releases for projects with thousands of agent-assisted contributors"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -10,4 +10,14 @@ dependencies = ["cryptography>=42"]
 anyp5 = "anyp5.cli:main"
 
 [tool.setuptools]
-packages = ["anyp5"]
+packages = ["anyp5", "anyp5.templates"]
+
+[tool.setuptools.dynamic]
+version = {attr = "anyp5.__version__"}
+
+# The workflow templates live once, in the repository's templates/ directory, and ship as anyp5.templates.
+[tool.setuptools.package-dir]
+"anyp5.templates" = "templates"
+
+[tool.setuptools.package-data]
+"anyp5.templates" = ["*.yml", "canaries/*.json"]

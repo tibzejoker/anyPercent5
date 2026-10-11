@@ -1,5 +1,5 @@
-# any%5 merge queue CI. Copy to .github/workflows/anyp5-ci.yml in your project and put your test command in
-# the last step (see docs/GITMODE.md). With this file on the project branch, the coordinator stops pushing
+# any%5 merge queue CI. `anyp5 setup --test "CMD"` writes it with your test command; or copy it to
+# .github/workflows/anyp5-ci.yml and put the command in the last step (see docs/GITMODE.md). With this file on the project branch, the coordinator stops pushing
 # approved changes straight to it: it pushes each batch to the anyp5-queue branch, starts this workflow there,
 # and fast-forwards the project branch only to a candidate whose `anyp5-ci` check run succeeded.
 #
