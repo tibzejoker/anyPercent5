@@ -112,22 +112,63 @@ fixed and covered by tests:
   it can read the state, including which reviews are canaries.
 - `admit` (maintainers only, listed in `anyp5.json`) adds a member who has no GitHub account, such as a bot.
 
-## Set up (maintainer, about 5 minutes)
+## Set up (maintainer)
+
+From the project's checkout, on its default branch, with `gh` logged in as an admin of the repository:
 
 ```sh
 pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
+anyp5 setup --test "make test" --dry-run      # prints every step, changes nothing
+anyp5 setup --test "make test"
+git push origin main                          # gh needs the workflow scope: gh auth refresh -s workflow
+```
+
+Options: `--test "CMD"` writes the merge queue workflow with that command (without it there is no merge queue:
+approved changes land on `main` directly). The workflow only checks out the code and runs the command; add the
+project's own setup steps (toolchain, dependencies) before its Test step. `--push` also pushes the commit.
+`--admin LOGIN` (repeatable, default: your `gh` login), `--architects LOGIN ...`, `--repo`, `--branch`.
+Setup refuses to run when `anyp5-ledger` already exists. `--force-new-key` starts over: a new key, a new
+ledger, the `anyp5-state` branch deleted, so no members, tasks or calibration are kept.
+
+An agent can do this with the [maintainer skill](../skills/maintainer/SKILL.md): it checks the prerequisites,
+finds the test command, runs setup and asks before pushing.
+
+What `anyp5 setup` does:
+
+1. Checks that the checkout is on the default branch, that your `gh` login is an admin, and that origin has no
+   `anyp5-ledger` branch.
+2. Reuses the open "anyp5 inbox" issue opened by an admin, or creates one.
+3. Generates the coordinator key and pipes it to `gh secret set ANYP5_COORDINATOR_KEY` on stdin. The key is
+   never printed and never written to disk.
+4. Builds the first commit of the orphan `anyp5-ledger` branch (`anyp5.json`, `.gitignore`) with git plumbing
+   and pushes it. Your working tree, index and current branch are not touched.
+5. Writes `.github/workflows/anyp5-coordinator.yml`, `anyp5-wanted.yml` and, with `--test`, `anyp5-ci.yml`,
+   from [templates/](../templates/) (shipped in the package). `pip install` in them is pinned to the commit of
+   the installed release tag, resolved with `gh api repos/tibzejoker/anyPercent5/git/ref/tags/v<version>`; if
+   that fails, it uses the tag and prints a warning. Existing workflow files are kept.
+6. Adds the `<!-- anyp5:wanted -->` `<!-- /anyp5:wanted -->` markers to README.md if they are missing.
+7. Commits these files on the default branch. It pushes only with `--push`.
+
+The same steps by hand:
+
+```sh
 gh issue create --title "anyp5 inbox" --body "Sealed any%5 commands."           # note its number N
 git checkout --orphan anyp5-ledger && git rm -rq --cached . && git clean -fdq
 anyp5 init-ledger --ledger . --project owner/name --issue N --admin your-login | tail -1 \
   | gh secret set ANYP5_COORDINATOR_KEY
 git add anyp5.json && git commit -m "anyp5 ledger" && git push origin anyp5-ledger
 git checkout main
-cp <anyPercent5>/templates/anyp5-coordinator.yml .github/workflows/ && git commit -am "ci: any%5 coordinator"
+mkdir -p .github/workflows && cp <anyPercent5>/templates/anyp5-coordinator.yml .github/workflows/
+git add .github && git commit -m "ci: any%5 coordinator"
 # merge queue (recommended when the project has tests): set the test command in the last step first
 cp <anyPercent5>/templates/anyp5-ci.yml .github/workflows/ && git add .github && git commit -m "ci: any%5 merge queue"
 ```
 
 If `main` is protected, give the Action a bot token that can push to it.
+
+Alone, you keep pushing to `main` directly: nobody could review your changes. Outside changes go through
+any%5 from the first newcomer on, and reviewer counts follow the team size
+([small projects](METHOD.md#small-projects-one-maintainer-then-the-first-newcomers)).
 
 To give the project direction owners, add `"architects": ["login", ...]` to `config` in `anyp5.json`. Their
 box then lists the task proposals waiting for them, and they answer with `anyp5 direct TASK approve` or
