@@ -23,7 +23,12 @@ project fast for everyone.
    reviewer pool but does not keep a task. If you stop, the task goes back to the pool with your branch.
    That is expected, not a failure.
    Declare once what you can run (`anyp5 caps windows gpu ...`): `anyp5 tasks` then shows what you can claim.
-   Missing a task? `anyp5 task "title" --requires ... --deps ...` proposes it; a reviewer opens it.
+   Missing a task? `anyp5 task "title" --requires ... --deps ...` proposes it; a reviewer opens it for
+   anyone. Add `--mine` only if you will do it yourself (it is then reserved for you for 48 h).
+   **Never work on a task you have not claimed.** If what you wanted is taken (`state: taken` in
+   `anyp5 tasks`), pick another task instead of doing the same work in parallel; it comes back to the board
+   if its holder stops. If `anyp5 me` shows `overlaps` on one of your changes, another pending change touches
+   the same files: compare before spending more time on yours.
 4. **Push partial work early.** Push to a branch named `task/<id>-<slug>` and record it:
    `anyp5 handover <id> <branch>`. Whoever takes the task after you resumes from that branch, so commit in
    small, explained steps.

@@ -327,7 +327,7 @@ class Coordinator:
         elif cmd == "task":
             admin = login in self.meta.get("admins", [])
             e.add_task(args["title"], args.get("tier", "green"), at, args.get("requires", []), args.get("deps", []),
-                       bool(args.get("critical")) and admin, None if admin else login)
+                       bool(args.get("critical")) and admin, None if admin else login, bool(args.get("mine")))
         elif cmd == "direct":
             e.direct(login, int(args["task"]), args["decision"], at, str(args.get("reason", "")))
         elif cmd == "caps":
@@ -592,9 +592,18 @@ class Coordinator:
             for r in e.q("select * from ci_failed where change_id >= ?", first):
                 reasons.setdefault(r["change_id"], []).append(
                     f'CI failed with this change alone on commit {r["sha"]}' + (f': {r["url"]}' if r["url"] else ""))
+        # Pending changes that touch the same files: shown to their authors (by change id only, never by author)
+        # so two people who did the same work find out before both wait on review.
+        from .tiers import parse_diff
+        files = {r["id"]: set(parse_diff(r["diff"] or "")[0])
+                 for r in e.q("select id, diff from changes where kind='pr' and state in ('review', 'approved')")}
         for c in rows:
-            mine.setdefault(c["author"], []).append({"change": c["id"], "tier": c["tier"], "state": c["state"],
-                                                     "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])})
+            entry = {"change": c["id"], "tier": c["tier"], "state": c["state"],
+                     "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])}
+            overlaps = sorted(o for o, f in files.items() if o != c["id"] and f & files.get(c["id"], set()))
+            if overlaps:
+                entry["overlaps"] = overlaps
+            mine.setdefault(c["author"], []).append(entry)
         proposals = {}
         for t in e.q("select id, title, state, proposer, direction from tasks where proposer is not null "
                      "and state in ('proposed', 'rejected', 'off-direction') order by id desc limit 1000"):
@@ -647,8 +656,10 @@ class Coordinator:
                 body = json.dumps({**view, "updated": int(now)}, sort_keys=True)
                 (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], body.encode()))
                 e.db.execute("insert or replace into boxes(login, digest) values(?,?)", (k["login"], digest))
-        tasks = [{k: t[k] for k in ("id", "title", "tier", "branch", "requires", "critical", "waiting")}
+        tasks = [{**{k: t[k] for k in ("id", "title", "tier", "branch", "requires", "critical", "waiting")}, "state": "open"}
                  for t in e.open_tasks(limit=500)]
+        tasks += [{**{k: t[k] for k in ("id", "title", "tier", "branch", "requires")}, "state": "taken",
+                   "lease_until": int(t["lease_until"] or 0)} for t in e.taken_tasks()]
         (root / "tasks.json").write_text(json.dumps(tasks, indent=1))
         board = e.wanted(now)
         (root / "wanted.json").write_text(json.dumps({"updated": int(now), "capabilities": board}, indent=1))

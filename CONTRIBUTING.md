@@ -37,11 +37,17 @@ Agents can do all of this. Install the [contributor](skills/contributor/SKILL.md
 
 Want to work on something that is not on the board? Two ways:
 
-- **Propose it:** `anyp5 task "title" --requires linux`. It opens after one review, and for 48 h after it
-  opens only you can claim it. At most 3 open proposals per member.
+- **Propose it:** `anyp5 task "title" --requires linux`. It opens after one review, for anyone to take: throw
+  in ideas you will not do yourself. Add `--mine` if you plan to do it: then only you can claim it for 48 h
+  after it opens. At most 3 open proposals per member.
 - **Or just send the patch:** `anyp5 submit` works without a task. It is reviewed like any other change.
 
 Keep tasks small enough to land as one patch; split the rest.
+
+**Avoiding duplicate work.** Claim before you start: a claimed task is yours while you push, and
+`tasks.json` on the ledger lists what is taken, so your agent can pick something else. If you send a patch
+without a task and someone else has a pending change on the same files, `anyp5 me` lists it under `overlaps`
+(by change number, not by author): compare, then withdraw yours or build on theirs.
 
 ## Rules of this repository
 

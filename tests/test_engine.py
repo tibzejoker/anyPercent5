@@ -216,24 +216,28 @@ class TaskGraphTest(Base):
         self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
         self.assertEqual(self.state(task), "open")
 
-    def test_the_proposer_gets_the_first_claim_on_an_opened_proposal(self):
-        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
-        self.e.tick(H)
-        a = self.e.one("select * from assignments where kind='review'")
-        self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
-        other = next(m["login"] for m in self.e.q("select login from members") if m["login"] not in ("dave", a["reviewer"]))
+    def open_proposal(self, title, now, reserve):
+        task = self.e.add_task(title, "green", now, proposer="dave", reserve=reserve)
+        self.e.tick(now + H)
+        a = self.e.one("select * from assignments a join changes c on c.id=a.change_id "
+                       "where c.kind='task' and c.source=? and a.verdict is null", task)
+        self.e.verdict(a["reviewer"], a["id"], "approve", now + 2 * H)
+        return task, next(m["login"] for m in self.e.q("select login from members")
+                          if m["login"] not in ("dave", a["reviewer"]))
+
+    def test_a_proposer_who_wants_the_task_gets_the_first_claim(self):
+        task, other = self.open_proposal("split the parser", 0, reserve=True)
         with self.assertRaises(ValueError):
             self.e.claim(other, task, 3 * H)
         self.e.claim("dave", task, 3 * H)
         self.assertEqual(self.e.one("select holder from tasks where id=?", task)["holder"], "dave")
 
-    def test_an_unclaimed_proposal_opens_to_everyone_after_the_reservation(self):
-        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
-        self.e.tick(H)
-        a = self.e.one("select * from assignments where kind='review'")
-        self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
-        other = next(m["login"] for m in self.e.q("select login from members") if m["login"] not in ("dave", a["reviewer"]))
-        self.e.claim(other, task, 2 * H + 49 * H)
+    def test_an_idea_is_open_to_everyone_and_a_reservation_expires(self):
+        idea, other = self.open_proposal("port the renderer", 0, reserve=False)
+        self.e.claim(other, idea, 3 * H)
+        task, other = self.open_proposal("split the parser", 4 * H, reserve=True)
+        self.e.claim(other, task, 6 * H + 49 * H)
+        self.assertEqual([t["id"] for t in self.e.taken_tasks()], [idea, task])
 
     def test_wanted_board_shows_the_scarce_capability(self):
         for i in range(3):

@@ -113,7 +113,7 @@ class Engine:
                                  ("members", "caps", "text default '[]'"), ("changes", "task", "int"),
                                  ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0"),
                                  ("tasks", "architect", "text"), ("tasks", "direction", "text"),
-                                 ("tasks", "opened", "real")):
+                                 ("tasks", "opened", "real"), ("tasks", "reserved", "int default 0")):
             if col not in {r["name"] for r in self.q(f"pragma table_info({table})")}:
                 self.db.execute(f"alter table {table} add column {col} {kind}")
 
@@ -166,7 +166,7 @@ class Engine:
         self.db.commit()
 
     # ------------------------------------------------------------ tasks (work is leased, never owned)
-    def add_task(self, title, tier, now, requires=(), deps=(), critical=False, proposer=None):
+    def add_task(self, title, tier, now, requires=(), deps=(), critical=False, proposer=None, reserve=False):
         """A task from a maintainer opens at once; one proposed by a member is reviewed first, like a change."""
         if proposer and self.one("select count(*) n from tasks where proposer=? and state='proposed'",
                                  proposer)["n"] >= self.cfg["max_open_proposals"]:
@@ -174,9 +174,10 @@ class Engine:
         state = "proposed" if proposer else "open"
         architect = proposer if proposer in self.cfg["architects"] else None
         cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer, "
-                              "architect) values(?,?,?,?,?,?,?,?,?)",
+                              "architect, reserved) values(?,?,?,?,?,?,?,?,?,?)",
                               (title, tier, now, json.dumps(sorted(set(requires))),
-                               json.dumps(sorted(set(map(int, deps)))), int(critical), state, proposer, architect))
+                               json.dumps(sorted(set(map(int, deps)))), int(critical), state, proposer, architect,
+                               int(bool(reserve and proposer))))
         if proposer:
             text = (f"Proposed task: {title}\ntier: {tier}\nrequires: {', '.join(requires) or 'nothing'}\n"
                     f"depends on tasks: {', '.join(map(str, deps)) or 'none'}\n")
@@ -201,6 +202,11 @@ class Engine:
         caps = set(json.loads(self.member(login=login)["caps"] or "[]"))
         return set(json.loads(task["requires"] or "[]")) <= caps
 
+    def taken_tasks(self, limit=500):
+        """Tasks someone holds right now, so nobody starts the same work on their side."""
+        return self.q("select id, title, tier, branch, requires, lease_until from tasks where state='leased' "
+                      "order by id limit ?", limit)
+
     def open_tasks(self, login=None, limit=50):
         """Claimable tasks, the ones others wait on first. With a login: only those this member can do."""
         rows = [t for t in self.q("select * from tasks where state='open'") if not self.blocked(t)]
@@ -220,9 +226,10 @@ class Engine:
             raise ValueError("task waits on unfinished tasks")
         if not self.can_do(login, task):
             raise ValueError("task needs capabilities you have not declared: " + task["requires"])
-        # Whoever proposed a task gets the first claim on it for a while: proposing work you want to do is the
-        # normal way to start on a subject, and nobody should take it from under you the minute it opens.
-        if task["proposer"] and task["proposer"] != login and task["opened"] and                 now < task["opened"] + self.hours(self.cfg["proposer_first_hours"]):
+        # A proposer who said they want the task (`anyp5 task --mine`) gets the first claim on it for a while, so
+        # nobody takes it from under them the minute it opens. Ideas thrown in for others are open to all at once.
+        if task["reserved"] and task["proposer"] != login and task["opened"] and \
+                now < task["opened"] + self.hours(self.cfg["proposer_first_hours"]):
             raise ValueError("task is reserved for its proposer for a while after it opens; try again later")
         lease = self.cfg["lease_hours"]
         self.db.execute("update tasks set state='leased', holder=?, lease_until=?, claimed=?, cap_until=? where id=?",

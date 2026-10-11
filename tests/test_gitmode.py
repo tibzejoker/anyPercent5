@@ -396,6 +396,24 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(self.box("carol")["direction"], [])
         self.assertEqual(json.loads((self.ledger / "tasks.json").read_text()), [])
 
+    def test_authors_see_pending_changes_that_touch_the_same_files(self):
+        self.post("alice", "submit", patch=self.patch())
+        work = self.tmp / "bob-work"
+        git(self.tmp, "clone", "-q", "project.git", work.name)
+        (work / "src" / "buf.c").write_text(FIXED.replace("return -1;", "return -2;"))
+        git(work, "commit", "-qam", "fix: other bound check in put")
+        self.now += 60
+        self.post("bob", "submit", patch=git(work, "format-patch", "-1", "--stdout"))
+        self.post("carol", "submit", patch=self.second_patch("carol"))
+        self.run_coordinator(config={"canary_every": 1e9})
+        alice, bob = self.box("alice")["changes"][0], self.box("bob")["changes"][0]
+        self.assertEqual(alice["overlaps"], [bob["change"]])
+        self.assertEqual(bob["overlaps"], [alice["change"]])
+        self.assertNotIn("overlaps", self.box("carol")["changes"][0])
+        self.assertNotIn("alice", json.dumps(self.box("bob")))
+        tasks = json.loads((self.ledger / "tasks.json").read_text())
+        self.assertTrue(all(t["state"] in ("open", "taken") for t in tasks))
+
     def test_a_ban_is_logged_once(self):
         self.run_coordinator()
         c = Coordinator(self.ledger, self.keys["coord"], self.inbox, Project(str(self.tmp / "coordinator")))

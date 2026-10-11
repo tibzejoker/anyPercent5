@@ -86,7 +86,8 @@ def git_main(a, client):
     elif a.cmd == "alive":
         client.send("alive")
     elif a.cmd == "task":
-        client.send("task", title=a.title, tier=a.tier, requires=a.requires, deps=a.deps, critical=a.critical)
+        client.send("task", title=a.title, tier=a.tier, requires=a.requires, deps=a.deps, critical=a.critical,
+                    mine=a.mine)
     elif a.cmd == "caps":
         client.send("caps", caps=a.caps)
     elif a.cmd == "away":
@@ -121,6 +122,7 @@ def main(argv=None):
     s = sub.add_parser("task"); s.add_argument("title"); s.add_argument("tier", nargs="?", default="green")
     s.add_argument("--requires", nargs="*", default=[]); s.add_argument("--deps", nargs="*", type=int, default=[])
     s.add_argument("--critical", action="store_true", help="maintainers: relays to whoever is online")
+    s.add_argument("--mine", action="store_true", help="you plan to do it: only you can claim it for 48 h after it opens")
     s = sub.add_parser("caps", help="declare what you can run, e.g. windows gpu game"); s.add_argument("caps", nargs="*")
     s = sub.add_parser("away", help="freeze your lease while absent (after a first push)")
     s.add_argument("task", type=int); s.add_argument("days", type=float)
