@@ -72,9 +72,12 @@ Details and rationale: [docs/METHOD.md](docs/METHOD.md).
 server. Contributors send sealed, signed commands as issue comments. Changes are sent privately as
 `git format-patch` output, so canaries can be copies of pending changes that nothing public tells apart. The
 Action applies approved patches and pushes them. Tested end to end on GitHub. See [docs/GITMODE.md](docs/GITMODE.md).
+With the CI workflow installed, approved patches go through a merge queue. They are tested in batches on
+`anyp5-queue`, and `main` only moves to a green batch. A red batch is bisected, and the change that fails alone
+goes back to its author as `ci_failed`.
 
 ```
-contributor + agent ──(anyp5 CLI: sealed comment)──> inbox issue ──> Action "coordinator" ──> main
+contributor + agent ──(anyp5 CLI: sealed comment)──> inbox issue ──> Action "coordinator" ──> anyp5-queue ──(CI green)──> main
         ▲                                                                │
         └──────────── anyp5-ledger branch: your sealed box ──────────────┘
 ```
@@ -85,7 +88,8 @@ canaries, or prefer git mode.
 
 - `anyp5/`: engine (SQLite ledger), git mode (`gitmode.py`, `seal.py`), HTTP server, GitHub adapter (`gh` CLI)
   and CLI. The only dependency is `cryptography`.
-- `templates/anyp5-coordinator.yml`: the git mode coordinator Action.
+- `templates/anyp5-coordinator.yml`: the git mode coordinator Action. `templates/anyp5-ci.yml`: the merge
+  queue CI, which runs your tests.
 - `skills/`: agent skills ([contributor](skills/contributor/SKILL.md), [reviewer](skills/reviewer/SKILL.md))
   that teach an agent the loop.
 - `evidence/`: evidence bundles for a PR. The tests fail before the change and pass after it, the bundle

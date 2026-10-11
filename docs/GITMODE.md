@@ -10,11 +10,54 @@ contributor + agent ──(anyp5 CLI: sealed, signed issue comment)──> "anyp
                                                                       ▼
                          GitHub Action "any%5 coordinator" (holds the coordinator key as a secret)
                            │ reads commands, runs the engine, applies approved patches with git am
-                           ├──> main: approved changes (and reverts)
+                           ├──> anyp5-queue: a batch of approved changes on top of main
+                           │      └─> workflow "anyp5-ci" runs the project's tests on it
+                           ├──> main: fast-forwarded to a green batch (and reverts)
                            └──> anyp5-ledger branch: boxes/<login>.sealed, tasks.json, status.json,
                                                       log.jsonl, members/, state.sealed
 contributor + agent <──(anyp5 reviews / me: read and open your own sealed box)──┘
 ```
+
+## Merge queue: nothing reaches `main` without CI
+
+Reviewers check intent; tests check behaviour. With the CI workflow installed, approved changes go through a
+merge queue run by the coordinator itself (git mode has no pull requests, so GitHub's merge queue does not
+apply). There is one lane and it advances once per coordinator pass:
+
+1. Approved changes are batched, up to `ci.batch` (default 16, see [bench/RUNNERS.md](../bench/RUNNERS.md)).
+   The batch is applied on top of `main`, one commit per change with the same checks as before (exactly one
+   commit, same lines as reviewed, author rewritten). The result is force-pushed to `anyp5-queue`, and the
+   coordinator starts `anyp5-ci.yml` there with `workflow_dispatch`. A push made with the Action's own token
+   starts no workflow; a dispatch does.
+2. A later pass reads the `anyp5-ci` check run of that exact commit (`gh api .../commits/<sha>/check-runs`,
+   GitHub Actions runs only).
+   - **Green**: `main` is fast-forwarded to the candidate. What lands is the tree that passed.
+   - **Red**: the batch is split in halves and the first half is tested first, then the second, down to the
+     change that fails alone. That change goes to state `ci_failed`. Its author sees it in their box with the
+     failing commit and the run link. It is not a ban and costs no calibration: an honest bug never costs
+     membership. The author fixes it and submits again. The other changes land.
+   - **No result** after `ci.timeout_minutes` (default 60), or a cancelled run: the batch is rebuilt and
+     tested again.
+   - **Stale**: if `main` moved, the queue branch was overwritten, or a change of the batch was withdrawn
+     (its author was banned), the remaining changes are rebuilt on the new `main` and tested again.
+3. Everything a pass moves (`main` and `anyp5-queue`) goes in one atomic push. If it is refused, nothing is
+   recorded and the next pass starts over. Reverts after a ban are still pushed to `main` directly: they undo
+   code that should not be there, and waiting for CI would keep it there longer.
+
+Changes under `.github/` still wait for a maintainer. So a batch never changes the workflow that tests it:
+`anyp5-ci.yml` always runs as it is on `main`.
+
+**Default: `ci.required` is `auto`.** The queue is on when `main` holds `.github/workflows/anyp5-ci.yml`, and
+off otherwise. Off means approved changes are pushed to `main` directly, as before. A project with tests gets
+the gate as soon as it installs the workflow. A project without tests gets no queue: no result would ever come
+and nothing would land. Set `ci.required` to `true` to stop instead of pushing directly if the workflow
+disappears, or to `false` to turn the queue off. Settings go in `anyp5.json` under `config.ci`: `required`,
+`batch`, `timeout_minutes`, `branch` (`anyp5-queue`), `workflow` (`anyp5-ci.yml`), `check` (`anyp5-ci`).
+`status.json` shows the candidate under test and how many changes wait.
+
+Cost: one CI run per batch while it stays green, plus about 2 log2(batch) runs to isolate one culprit. The
+model in [bench/RUNNERS.md](../bench/RUNNERS.md) gives 0.29-0.37 runs per landed change at 3 % breakage. One
+lane lands about `batch x runs/day` changes. Past that, shard by area.
 
 ## Why it keeps canaries blind
 
@@ -54,7 +97,8 @@ fixed and covered by tests:
 - Commands carry the project name, and a login that already has keys cannot be re-keyed by posting a new
   join.
 - **The Action never runs contributor code.** Comments are parsed as data, and patches are applied with
-  `git am`.
+  `git am`. Contributor code runs only in the separate `anyp5-ci` workflow, which has no secrets and a
+  read-only token.
 - **The coordinator key is the trust root.** Keep it only in the `ANYP5_COORDINATOR_KEY` secret. Whoever holds
   it can read the state, including which reviews are canaries.
 - `admit` (maintainers only, listed in `anyp5.json`) adds a member who has no GitHub account, such as a bot.
@@ -70,6 +114,8 @@ anyp5 init-ledger --ledger . --project owner/name --issue N --admin your-login |
 git add anyp5.json && git commit -m "anyp5 ledger" && git push origin anyp5-ledger
 git checkout main
 cp <anyPercent5>/templates/anyp5-coordinator.yml .github/workflows/ && git commit -am "ci: any%5 coordinator"
+# merge queue (recommended when the project has tests): set the test command in the last step first
+cp <anyPercent5>/templates/anyp5-ci.yml .github/workflows/ && git add .github && git commit -m "ci: any%5 merge queue"
 ```
 
 If `main` is protected, give the Action a bot token that can push to it.

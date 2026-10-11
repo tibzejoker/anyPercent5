@@ -65,9 +65,11 @@ Windows, where minutes count double. Larger runners are always billed, even for 
      `merges x 5 min / batch < 24 h`. So batches of at least 9 at 2,400/day.
    - At 24,000/day even batches of 32 need several lanes. Shard the queue by area (directory), like monorepos
      do.
-   - Git mode has no pull requests, so GitHub's own merge queue does not apply. The coordinator would do it
-     itself: apply the approved batch to a temporary branch, wait for its CI, push if green, bisect if red.
-     **Not implemented yet.** Today the coordinator pushes approved patches without a CI gate.
+   - Git mode has no pull requests, so GitHub's own merge queue does not apply. The coordinator does it
+     itself: it applies the approved batch to `anyp5-queue`, starts the project's CI there, fast-forwards
+     `main` if green and bisects if red ([docs/GITMODE.md](../docs/GITMODE.md#merge-queue-nothing-reaches-main-without-ci)).
+     **Implemented, with one lane.** It moves once per coordinator pass, so a batch takes at least one pass
+     plus its CI run. Sharding by area is not implemented.
 3. **Evidence bundles + spot checks**. The contributor runs fail-before/pass-after locally and submits a
    signed bundle ([evidence/](../evidence)). CI re-runs a random sample.
    - A lie does not pay when the spot-check rate q > G / (G + L), where G is the gain from lying and L the loss
