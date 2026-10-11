@@ -190,11 +190,13 @@ def main(argv=None):
         print("store this as the ANYP5_COORDINATOR_KEY secret, nowhere else:")
         print(json.dumps(key))
     elif a.cmd == "coordinate":
-        from .gitmode import Coordinator, GitHubInbox, Project
+        from .gitmode import CI, Coordinator, GitHubCI, GitHubInbox, Project
         key = json.loads(os.environ["ANYP5_COORDINATOR_KEY"])
         meta = json.loads((Path(a.ledger) / "anyp5.json").read_text())
         inbox = GitHubInbox(a.repo, meta["inbox_issue"], trusted=meta.get("admins", []))
-        c = Coordinator(a.ledger, key, inbox, Project(a.project, meta.get("branch", "main"), push=not a.no_push))
+        ci = {**CI, **(meta.get("config", {}).get("ci") or {})}
+        c = Coordinator(a.ledger, key, inbox, Project(a.project, meta.get("branch", "main"), push=not a.no_push),
+                        ci=GitHubCI(a.repo, ci["workflow"], ci["check"]))
         try:
             c.run()
         finally:

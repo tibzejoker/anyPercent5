@@ -1,0 +1,27 @@
+# any%5 merge queue CI. Copy to .github/workflows/anyp5-ci.yml in your project and put your test command in
+# the last step (see docs/GITMODE.md). With this file on the project branch, the coordinator stops pushing
+# approved changes straight to it: it pushes each batch to the anyp5-queue branch, starts this workflow there,
+# and fast-forwards the project branch only to a candidate whose `anyp5-ci` check run succeeded.
+#
+# Started with workflow_dispatch because a push made with the coordinator's GITHUB_TOKEN starts no workflow.
+# This runs contributor code: it gets no secrets and a read-only token. Batches never hold changes under
+# .github/, so the workflow that runs is always the one already on the project branch.
+name: anyp5-ci
+on:
+  workflow_dispatch:
+concurrency:
+  group: anyp5-ci
+  cancel-in-progress: true   # a newer candidate replaces the old one; a cancelled run is retried
+permissions:
+  contents: read
+jobs:
+  anyp5-ci:                  # the check run name the coordinator reads (ci.check in anyp5.json)
+    runs-on: ubuntu-latest
+    timeout-minutes: 50      # keep under ci.timeout_minutes (default 60)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      # Replace with the project's own build and tests. A missing command fails, so nothing lands by mistake.
+      - name: Test
+        run: ./ci/test.sh

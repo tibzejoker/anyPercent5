@@ -19,6 +19,22 @@ def git(cwd, *args, stdin=None):
                           input=stdin, capture_output=True, text=True, check=True).stdout
 
 
+class FakeCI:
+    """CI of the pushed candidate: red when its tree holds the word BROKEN, pending while `hold` is set."""
+
+    def __init__(self, repo):
+        self.repo, self.started, self.hold = repo, [], False
+
+    def start(self, branch, sha):
+        self.started.append((branch, sha))
+
+    def status(self, sha):
+        if self.hold:
+            return "pending", None
+        broken = subprocess.run(["git", "grep", "-q", "BROKEN", sha], cwd=self.repo).returncode == 0
+        return ("failure" if broken else "success"), f"https://ci.example/{sha[:7]}"
+
+
 class GitModeTest(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="anyp5-test-"))
@@ -50,10 +66,10 @@ class GitModeTest(unittest.TestCase):
         body = command(key or self.keys[name], name, cmd, project=meta["project"], **args)
         self.inbox.post(author or name, seal.seal(meta["coordinator"]["box"], body.encode()), self.now)
 
-    def run_coordinator(self, config=None, hours=1, project=None):
+    def run_coordinator(self, config=None, hours=1, project=None, ci=None):
         self.now += hours * H
         c = Coordinator(self.ledger, self.keys["coord"], self.inbox,
-                        project or Project(str(self.tmp / "coordinator")), config=config)
+                        project or Project(str(self.tmp / "coordinator")), config=config, ci=ci)
         try:
             c.run(self.now)
             return c.e.q("select id, state, patch is null pruned from changes where kind='pr' order by id")
@@ -152,10 +168,10 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(sorted(rows), [(0, 0), (1, 1)])
         self.assertEqual(self.box("alice")["changes"][0]["state"], "review")
 
-    def second_patch(self, name):
+    def second_patch(self, name, body="    return 1;"):
         work = self.tmp / f"{name}-work"
         git(self.tmp, "clone", "-q", "project.git", work.name)
-        (work / "src" / f"{name}.c").write_text("int one(void)\n{\n    return 1;\n}\n")
+        (work / "src" / f"{name}.c").write_text("int one(void)\n{\n" + body + "\n}\n")
         git(work, "add", ".")
         git(work, "commit", "-qm", f"feat: add {name}.c")
         return git(work, "format-patch", "-1", "--stdout")
@@ -221,6 +237,93 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(self.box("alice")["changes"][0]["state"], "maintainer")
         self.assertNotIn("ci", git(self.tmp / "project.git", "log", "--format=%s", "main").split())
 
+    def queued(self, names, broken=(), config=None, ci=None):
+        for n in names:
+            self.post(n, "submit", patch=self.second_patch(n, "    return BROKEN;" if n in broken else "    return 1;"))
+        self.run_coordinator(config=config, ci=ci)
+        self.approve_all()
+        return self.run_coordinator(config=config, ci=ci)
+
+    def log_of(self, branch="main"):
+        return git(self.tmp / "project.git", "log", "--format=%an %s", branch)
+
+    def test_merge_queue_lands_a_green_batch_only_after_its_ci(self):
+        work = self.tmp / "install-ci"
+        git(self.tmp, "clone", "-q", "project.git", work.name)
+        (work / ".github" / "workflows").mkdir(parents=True)
+        (work / ".github" / "workflows" / "anyp5-ci.yml").write_text("on: workflow_dispatch\n")
+        git(work, "add", ".")
+        git(work, "commit", "-qm", "ci: any%5 merge queue")
+        git(work, "push", "-q", "origin", "main")
+        ci = FakeCI(self.tmp / "project.git")
+        rows = self.queued(["alice", "bob", "carol"], ci=ci)
+        self.assertEqual([r["state"] for r in rows], ["approved"] * 3)
+        self.assertEqual(len(ci.started), 1)
+        branch, candidate = ci.started[0]
+        self.assertEqual(branch, "anyp5-queue")
+        for n in ("alice", "bob", "carol"):
+            self.assertIn(f"{n} feat: add {n}.c", self.log_of("anyp5-queue"))
+            self.assertNotIn(f"add {n}.c", self.log_of())
+
+        class Refused(Project):
+            def publish_refs(self, refs):
+                git(self.dir, "checkout", "-q", "-B", self.branch, f"origin/{self.branch}")
+                return False
+        rows = self.run_coordinator(ci=ci, project=Refused(str(self.tmp / "coordinator")))
+        self.assertEqual([r["state"] for r in rows], ["approved"] * 3)
+        self.assertNotIn("add alice.c", self.log_of())
+
+        pushes = []
+
+        class Counted(Project):
+            def publish_refs(self, refs):
+                pushes.append(refs)
+                return super().publish_refs(refs)
+        rows = self.run_coordinator(ci=ci, project=Counted(str(self.tmp / "coordinator")))
+        self.assertEqual([r["state"] for r in rows], ["merged"] * 3)
+        self.assertEqual(pushes, [{"main": candidate}])
+        self.assertEqual(git(self.tmp / "project.git", "rev-parse", "main").strip(), candidate)
+        self.assertEqual(len(ci.started), 1)
+        status = json.loads((self.ledger / "status.json").read_text())
+        self.assertEqual(status["queue"], {"candidate": None, "queued": 0})
+
+    def test_red_batch_is_bisected_to_the_change_that_fails_alone(self):
+        ci, config = FakeCI(self.tmp / "project.git"), {"ci": {"required": True}}
+        self.queued(["alice", "bob", "carol", "dave"], broken=["carol"], config=config, ci=ci)
+        for _ in range(8):
+            rows = self.run_coordinator(config=config, ci=ci)
+            if not any(r["state"] == "approved" for r in rows):
+                break
+        self.assertEqual([r["state"] for r in rows], ["merged", "merged", "ci_failed", "merged"])
+        self.assertEqual(git(self.tmp / "project.git", "rev-list", "--count", ci.started[0][1]).strip(), "5")
+        self.assertEqual(len(ci.started), 5)    # abcd red, ab green, cd red, c red alone, d green
+        log = self.log_of()
+        self.assertNotIn("add carol.c", log)
+        for n in ("alice", "bob", "dave"):
+            self.assertIn(f"{n} feat: add {n}.c", log)
+        carol = self.box("carol")
+        self.assertFalse(carol["banned"])
+        self.assertEqual(carol["changes"][0]["state"], "ci_failed")
+        self.assertIn("CI failed with this change alone", carol["changes"][0]["reasons"][0])
+        self.assertEqual(self.state().execute("select patch from changes where author='carol'").fetchone(), (None,))
+
+    def test_a_candidate_without_ci_result_times_out_and_is_retried(self):
+        ci, config = FakeCI(self.tmp / "project.git"), {"ci": {"required": True, "timeout_minutes": 30, "batch": 1}}
+        ci.hold = True
+        self.queued(["alice", "bob"], config=config, ci=ci)
+        self.assertEqual(len(ci.started), 1)
+        self.run_coordinator(config=config, ci=ci, hours=0.1)
+        self.assertEqual(len(ci.started), 1)
+        self.run_coordinator(config=config, ci=ci)
+        self.assertEqual(len(ci.started), 2)
+        self.assertIn(("ci-retry",), self.state().execute("select what from events").fetchall())
+        ci.hold = False
+        rows = self.run_coordinator(config=config, ci=ci)
+        self.assertEqual([r["state"] for r in rows], ["merged", "approved"])
+        rows = self.run_coordinator(config=config, ci=ci)
+        self.assertEqual([r["state"] for r in rows], ["merged", "merged"])
+        self.assertEqual(len(ci.started), 3)
+
     def test_capability_board_and_member_task_proposals(self):
         self.post("maint", "task", title="capture shader dumps", requires=["game", "windows"])
         self.post("maint", "task", title="replay dumped shaders")
@@ -274,6 +377,30 @@ class GitHubInboxTest(unittest.TestCase):
         ids = [i[0] for i in items]
         self.assertEqual(ids, [i for i in range(121, 260) if i < 150 or i % 5])
         self.assertEqual(sum(1 for c in calls if "search/issues" not in c), 2)
+
+
+class GitHubCITest(unittest.TestCase):
+    def test_reads_the_latest_actions_check_run_of_a_commit(self):
+        from anyp5.gitmode import GitHubCI
+        runs, calls = [], []
+
+        def gh(*args):
+            calls.append(args)
+            return json.dumps({"check_runs": runs})
+        ci = GitHubCI("o/r", gh=gh)
+        self.assertEqual(ci.status("abc"), ("pending", None))
+        runs.append({"id": 1, "status": "completed", "conclusion": "success", "html_url": "u1",
+                     "app": {"slug": "someone-else"}})
+        self.assertEqual(ci.status("abc"), ("pending", None))
+        runs.append({"id": 2, "status": "completed", "conclusion": "failure", "html_url": "u2",
+                     "app": {"slug": "github-actions"}})
+        self.assertEqual(ci.status("abc"), ("failure", "u2"))
+        runs.append({"id": 3, "status": "completed", "conclusion": "cancelled", "html_url": "u3",
+                     "app": {"slug": "github-actions"}})
+        self.assertEqual(ci.status("abc")[0], "error")
+        self.assertIn("repos/o/r/commits/abc/check-runs?check_name=anyp5-ci&filter=latest", calls[0])
+        ci.start("anyp5-queue", "abc")
+        self.assertEqual(calls[-1], ("workflow", "run", "anyp5-ci.yml", "--repo", "o/r", "--ref", "anyp5-queue"))
 
 
 if __name__ == "__main__":

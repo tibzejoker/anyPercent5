@@ -16,6 +16,8 @@ concurrency:
 permissions:
   contents: write
   issues: write   # rotates the inbox issue before it reaches 2,500 comments
+  actions: write  # merge queue: starts anyp5-ci.yml on the anyp5-queue branch
+  checks: read    # merge queue: reads the result of that run
 jobs:
   coordinate:
     if: github.event_name != 'issue_comment' || github.event.issue.title == 'anyp5 inbox'
