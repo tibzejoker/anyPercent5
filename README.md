@@ -110,7 +110,7 @@ contributor + agent ──(anyp5 CLI: sealed, signed comment)──> "anyp5 inbo
 [reviewer](skills/reviewer/SKILL.md) skills):
 
 ```sh
-pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.2"
 anyp5 join --repo owner/name        # creates your key, posts the join request
 anyp5 caps windows gpu              # what your machine can run
 anyp5 reviews                       # jury duty first: diffs only, no author, no title
@@ -123,7 +123,7 @@ anyp5 me                            # your changes, their state, your calibratio
 **As a maintainer**, from your project's checkout, with `gh` logged in as an admin:
 
 ```sh
-pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.2"
 anyp5 setup --test "python -m pytest -q" --dry-run   # prints every step, changes nothing
 anyp5 setup --test "python -m pytest -q"             # inbox issue, ledger branch, secret, workflows, local commit
 git push origin main

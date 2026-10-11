@@ -117,7 +117,7 @@ fixed and covered by tests:
 From the project's checkout, on its default branch, with `gh` logged in as an admin of the repository:
 
 ```sh
-pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.2"
 anyp5 setup --test "make test" --dry-run      # prints every step, changes nothing
 anyp5 setup --test "make test"
 git push origin main                          # gh needs the workflow scope: gh auth refresh -s workflow
