@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from anyp5.canary import plant
@@ -228,6 +229,67 @@ class TaskGraphTest(Base):
         return self.e.one("select state from tasks where id=?", task)["state"]
 
 
+class ArchitectTest(unittest.TestCase):
+    def setUp(self):
+        self.e = Engine(config={"canary_every": 1e9, "architects": ["carol"]})
+        for login in ("alice", "bob", "carol", "dave", "erin"):
+            self.e.join(login, 0)
+
+    def state(self, task):
+        return self.e.one("select state from tasks where id=?", task)["state"]
+
+    def review(self, task, verdict, now):
+        a = self.e.one("select a.* from assignments a join changes c on c.id=a.change_id "
+                       "where c.kind='task' and c.source=? and a.verdict is null", task)
+        self.e.verdict(a["reviewer"], a["id"], verdict, now)
+
+    def test_a_proposal_opens_after_the_review_and_one_architect_in_any_order(self):
+        first = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        second = self.e.add_task("port the renderer", "green", 0, proposer="bob")
+        self.e.tick(H)
+        self.review(first, "approve", 2 * H)
+        self.assertEqual(self.state(first), "proposed")
+        self.assertEqual([p["title"] for p in self.e.awaiting_direction()], ["split the parser", "port the renderer"])
+        self.assertNotIn("dave", json.dumps(self.e.awaiting_direction()))
+        self.e.direct("carol", first, "approve", 3 * H)
+        self.assertEqual(self.state(first), "open")
+        self.e.direct("carol", second, "approve", 3 * H)
+        self.assertEqual(self.state(second), "proposed")
+        self.review(second, "approve", 4 * H)
+        self.assertEqual(self.state(second), "open")
+
+    def test_an_architect_closes_off_direction_with_a_reason_and_the_review_is_withdrawn(self):
+        task = self.e.add_task("rewrite it in another language", "green", 0, proposer="dave")
+        self.e.tick(H)
+        a = self.e.one("select * from assignments where verdict is null")
+        with self.assertRaises(ValueError):
+            self.e.direct("carol", task, "close", 2 * H)
+        self.e.direct("carol", task, "close", 2 * H, reason="the roadmap keeps C++ for the recompiler")
+        row = self.e.one("select * from tasks where id=?", task)
+        self.assertEqual((row["state"], row["direction"]), ("off-direction", "the roadmap keeps C++ for the recompiler"))
+        with self.assertRaises(ValueError):
+            self.e.verdict(a["reviewer"], a["id"], "approve", 3 * H)
+        with self.assertRaises(ValueError):
+            self.e.direct("carol", task, "approve", 3 * H)
+
+    def test_architects_have_no_say_over_code_and_others_none_over_direction(self):
+        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        with self.assertRaises(ValueError):
+            self.e.direct("dave", task, "approve", H)
+        cid = change_of(self.e, "alice")
+        opened = self.e.add_task("maintainer task", "green", 0)
+        for target in (cid, opened):
+            with self.assertRaises(ValueError):
+                self.e.direct("carol", target, "close", H, reason="no")
+        self.assertEqual(self.e.one("select state from changes where id=?", cid)["state"], "review")
+
+    def test_an_architects_own_proposal_needs_only_the_review(self):
+        task = self.e.add_task("plan the next milestone", "green", 0, proposer="carol")
+        self.e.tick(H)
+        self.review(task, "approve", 2 * H)
+        self.assertEqual(self.state(task), "open")
+
+
 class BanTest(Base):
     def test_confirmed_backdoor_bans_reverts_and_audits_approvers(self):
         first = change_of(self.e, "alice", pr=1)
@@ -342,3 +404,107 @@ class SeedTest(unittest.TestCase):
                 e.tick(1)
             picks.append([r["reviewer"] for r in e.q("select reviewer from assignments order by id")])
         self.assertNotEqual(picks[0], picks[1])
+
+
+class TimingTest(unittest.TestCase):
+    def test_draw_order_in_a_pass_follows_the_seed_not_submission_and_hides_the_canary(self):
+        """Assignment ids are visible to reviewers: within a pass they must not follow the order in which
+        changes arrived, and the canary must not always be the last review drawn."""
+        orders, canary_last = [], []
+        for _ in range(4):
+            e = Engine(config={"canary_every": 1, "clean_canary_share": 0})
+            for login in [f"m{i}" for i in range(30)]:
+                e.join(login, 0)
+            submitted = [change_of(e, f"m{i}", pr=i, head=f"h{i}") for i in range(8)]
+            e.tick(1)
+            rows = e.q("select a.change_id, c.kind from assignments a join changes c on c.id=a.change_id order by a.id")
+            orders.append([r["change_id"] for r in rows if r["kind"] == "pr"])
+            canary_last.append(rows[-1]["kind"] == "canary")
+            self.assertEqual(sorted(orders[-1]), submitted)
+            self.assertEqual(len({r["change_id"] for r in rows if r["kind"] == "canary"}), 1)
+            self.assertEqual({r["drawn_at"] for r in e.q("select drawn_at from assignments")}, {1})
+        self.assertTrue(any(order != sorted(order) for order in orders))
+        self.assertFalse(all(canary_last))
+
+    def test_shuffled_depends_on_the_hidden_seed(self):
+        items = [(i, f"login{i}") for i in range(50)]
+        a, b = Engine(), Engine()
+        self.assertNotEqual(a.shuffled(items, 1, "x"), items)
+        self.assertNotEqual(a.shuffled(items, 1, "x"), b.shuffled(items, 1, "x"))
+        self.assertEqual(sorted(a.shuffled(items, 1, "x")), items)
+
+
+RECIPE = {"name": "buffer not cleared", "glob": "src/*.c", "match": r"b->data\[k\] = 0;",
+          "replace": "b->data[k] = 1;", "defect": "fills the buffer with ones instead of clearing it"}
+
+
+def double_write_hook(line, path, seed):
+    if "b->data[i] = c;" in line:
+        return line.replace("b->data[i]", "b->data[i + 1]"), "writes one slot past the index"
+    return None
+
+
+class ProjectCanaryTest(unittest.TestCase):
+    def test_a_project_recipe_goes_first_and_names_its_line(self):
+        from anyp5.canary import names_line
+        for seed in map(str, range(6)):
+            diff, defect = plant(DIFF, seed, recipes=[RECIPE])
+            self.assertIn("+        b->data[k] = 1;", diff)
+            self.assertTrue(defect.startswith("buffer not cleared: fills the buffer"))
+            self.assertTrue(defect.endswith("(src/buf.c:13)"))
+            self.assertTrue(names_line(defect, "src/buf.c:13 sets ones"))
+            self.assertFalse(names_line(defect, "src/buf.c:40 style"))
+
+    def test_recipes_that_do_not_apply_fall_back_to_built_in_mutations(self):
+        elsewhere = dict(RECIPE, glob="lib/*.py")
+        unmatched = dict(RECIPE, match="never present")
+        for recipe in (elsewhere, unmatched):
+            self.assertEqual(plant(DIFF, "3", recipes=[recipe]), plant(DIFF, "3"))
+
+    def test_drop_and_hook_recipes(self):
+        drop = {"name": "guard removed", "match": r"^\s*if \(i >= b->size\)", "drop": True,
+                "defect": "removed the bound check"}
+        diff, defect = plant(DIFF, "1", recipes=[drop])
+        self.assertNotIn("if (i >= b->size)", diff)
+        self.assertIn("@@ -10,3 +10,6 @@", diff)
+        self.assertTrue(defect.endswith("(src/buf.c:11)"))
+        hook = {"name": "off by one write", "hook": f"{__name__}:double_write_hook"}
+        diff, defect = plant(DIFF, "1", recipes=[hook])
+        self.assertIn("+    b->data[i + 1] = c;", diff)
+        self.assertEqual(defect, "off by one write: writes one slot past the index (src/buf.c:14)")
+
+    def test_recipes_from_a_directory_plain_or_sealed_and_hooks_refused(self):
+        import json, shutil, tempfile
+        from pathlib import Path
+        from anyp5 import seal
+        from anyp5.canary import load_recipes
+        root = Path(tempfile.mkdtemp(prefix="anyp5-canaries-"))
+        try:
+            key = seal.keygen()
+            (root / "a.json").write_text(json.dumps([RECIPE]))
+            (root / "b.sealed").write_text(seal.seal(seal.public(key)["box"], json.dumps(dict(RECIPE, name="x")).encode()))
+            (root / "README.md").write_text("ignored")
+            self.assertEqual([r["name"] for r in load_recipes(root)], ["buffer not cleared"])
+            self.assertEqual([r["name"] for r in load_recipes(root, key=key)], ["buffer not cleared", "x"])
+            (root / "c.json").write_text(json.dumps({"name": "h", "hook": "os:system"}))
+            with self.assertRaises(ValueError):
+                load_recipes(root)
+            with self.assertRaises(ValueError):
+                Engine(config={"canaries": [{"name": "no defect", "match": "x", "replace": "y"}]})
+        finally:
+            shutil.rmtree(root, ignore_errors=True)
+
+    def test_engine_plants_project_canaries_and_keeps_clean_ones_clean(self):
+        for share, planted in ((0, True), (1, False)):
+            e = Engine(config={"canary_every": 1, "clean_canary_share": share, "canaries": [RECIPE]})
+            for login in ("alice", "bob", "carol", "dave"):
+                e.join(login, 0)
+            change_of(e, "alice")
+            e.tick(1)
+            canary = e.one("select * from changes where kind='canary'")
+            if planted:
+                self.assertIn("buffer not cleared", canary["defect"])
+                self.assertIn("b->data[k] = 1;", canary["diff"])
+            else:
+                self.assertIsNone(canary["defect"])
+                self.assertEqual(canary["diff"], DIFF)

@@ -265,7 +265,12 @@ class Coordinator:
         sealed = self.ledger / "state.sealed"
         if sealed.exists():
             Path(db).write_bytes(seal.unseal(key, sealed.read_text()))
-        self.e = Engine(db, config={**self.meta.get("config", {}), **(config or {})})
+        merged = {**self.meta.get("config", {}), **(config or {})}
+        # Project canaries are data here (no script hooks: the Action never runs code from the ledger).
+        from .canary import check_recipe, load_recipes
+        merged["canaries"] = [check_recipe(r, hooks=False) for r in merged.get("canaries", [])] + \
+            load_recipes(self.ledger / "canaries", key=key)
+        self.e = Engine(db, config=merged)
         self.e.db.executescript(EXTRA)
         self.public_log = []
         self.joined = set()
@@ -323,6 +328,8 @@ class Coordinator:
             admin = login in self.meta.get("admins", [])
             e.add_task(args["title"], args.get("tier", "green"), at, args.get("requires", []), args.get("deps", []),
                        bool(args.get("critical")) and admin, None if admin else login)
+        elif cmd == "direct":
+            e.direct(login, int(args["task"]), args["decision"], at, str(args.get("reason", "")))
         elif cmd == "caps":
             e.set_caps(login, args["caps"], at)
         elif cmd == "away":
@@ -588,10 +595,22 @@ class Coordinator:
         for c in rows:
             mine.setdefault(c["author"], []).append({"change": c["id"], "tier": c["tier"], "state": c["state"],
                                                      "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])})
-        return {m["login"]: {"login": m["login"], "banned": bool(m["banned"]),
-                             "reviews": reviews.get(m["login"], []),
-                             "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
-                for m in e.q("select * from members")}
+        proposals = {}
+        for t in e.q("select id, title, state, proposer, direction from tasks where proposer is not null "
+                     "and state in ('proposed', 'rejected', 'off-direction') order by id desc limit 1000"):
+            proposals.setdefault(t["proposer"], []).append({"task": t["id"], "title": t["title"], "state": t["state"],
+                                                            "reason": t["direction"]})
+        direction = e.awaiting_direction()
+        views = {}
+        for m in e.q("select * from members"):
+            view = {"login": m["login"], "banned": bool(m["banned"]), "reviews": reviews.get(m["login"], []),
+                    "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
+            if m["login"] in proposals:
+                view["proposals"] = proposals[m["login"]]
+            if m["login"] in e.cfg["architects"]:
+                view["direction"] = direction
+            views[m["login"]] = view
+        return views
 
     def seeds(self, now, reveal_after=4 * 7 * 24 * 3600):
         """Commit to this week's draw seed now, reveal it once it is old: draws are unpredictable while they
@@ -615,15 +634,18 @@ class Coordinator:
         e, root = self.e, self.ledger
         (root / "members").mkdir(exist_ok=True)
         (root / "boxes").mkdir(exist_ok=True)
-        for k in e.q("select * from keys"):
+        # Boxes are written in a seeded order and stamped with the pass time only: neither the write order nor a
+        # timestamp follows the order in which commands arrived.
+        for k in e.shuffled(e.q("select * from keys"), now, "boxes", key=lambda k: k["login"]):
             card = root / "members" / f'{k["login"]}.json'
             if k["login"] in self.joined or not card.exists():
                 card.write_text(json.dumps({"box": k["box"], "sign": k["sign"]}))
-            view = json.dumps(self.view(k["login"], now), sort_keys=True)
-            digest = hashlib.sha256(view.encode()).hexdigest()
+            view = self.view(k["login"], now)
+            digest = hashlib.sha256(json.dumps(view, sort_keys=True).encode()).hexdigest()
             old = e.one("select digest from boxes where login=?", k["login"])
             if old is None or old["digest"] != digest:
-                (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], view.encode()))
+                body = json.dumps({**view, "updated": int(now)}, sort_keys=True)
+                (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], body.encode()))
                 e.db.execute("insert or replace into boxes(login, digest) values(?,?)", (k["login"], digest))
         tasks = [{k: t[k] for k in ("id", "title", "tier", "branch", "requires", "critical", "waiting")}
                  for t in e.open_tasks(limit=500)]
@@ -645,7 +667,7 @@ class Coordinator:
                 self.public_log.append(entry)
         if self.public_log:
             with open(root / "log.jsonl", "a", encoding="utf-8") as f:
-                for entry in self.public_log:
+                for entry in e.shuffled(self.public_log, now, "log", key=lambda x: json.dumps(x, sort_keys=True)):
                     f.write(json.dumps(entry) + "\n")
             self.public_log = []
         e.db.commit()

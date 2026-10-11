@@ -30,6 +30,8 @@ DEFAULTS = {
     "max_extensions": 2,
     "max_open_proposals": 3,
     "ban_needs_admin_below": 100,
+    "canaries": [],
+    "architects": [],
 }
 
 SCHEMA = """
@@ -87,6 +89,10 @@ class Engine:
         for key, value in (config or {}).items():
             self.cfg[key] = value
         self.rules = rules
+        from .canary import check_recipe, load_recipes
+        recipes = self.cfg["canaries"]
+        self.cfg["canaries"] = load_recipes(recipes, hooks=True) if isinstance(recipes, str) else \
+            [check_recipe(r) for r in recipes]
         self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
@@ -98,7 +104,8 @@ class Engine:
                                  ("tasks", "requires", "text default '[]'"), ("tasks", "deps", "text default '[]'"),
                                  ("tasks", "critical", "int default 0"), ("tasks", "proposer", "text"),
                                  ("members", "caps", "text default '[]'"), ("changes", "task", "int"),
-                                 ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0")):
+                                 ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0"),
+                                 ("tasks", "architect", "text"), ("tasks", "direction", "text")):
             if col not in {r["name"] for r in self.q(f"pragma table_info({table})")}:
                 self.db.execute(f"alter table {table} add column {col} {kind}")
 
@@ -157,10 +164,11 @@ class Engine:
                                  proposer)["n"] >= self.cfg["max_open_proposals"]:
             raise ValueError("too many proposals waiting for review")
         state = "proposed" if proposer else "open"
-        cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer) "
-                              "values(?,?,?,?,?,?,?,?)", (title, tier, now, json.dumps(sorted(set(requires))),
-                                                          json.dumps(sorted(set(map(int, deps)))), int(critical),
-                                                          state, proposer))
+        architect = proposer if proposer in self.cfg["architects"] else None
+        cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer, "
+                              "architect) values(?,?,?,?,?,?,?,?,?)",
+                              (title, tier, now, json.dumps(sorted(set(requires))),
+                               json.dumps(sorted(set(map(int, deps)))), int(critical), state, proposer, architect))
         if proposer:
             text = (f"Proposed task: {title}\ntier: {tier}\nrequires: {', '.join(requires) or 'nothing'}\n"
                     f"depends on tasks: {', '.join(map(str, deps)) or 'none'}\n")
@@ -264,6 +272,43 @@ class Engine:
     def finish_task(self, task_id, now):
         self.db.execute("update tasks set state='done' where id=?", (task_id,))
         self.db.commit()
+
+    # ------------------------------------------------------------ direction (optional architects)
+    def direct(self, login, task_id, decision, now, reason=""):
+        """Architects (config `architects`) own direction, not code: a member's task proposal also needs one
+        architect's approval to open, and an architect can close it as off-direction, with a reason. They
+        have no say over reviews or merges."""
+        if login not in self.cfg["architects"]:
+            raise ValueError("only architects decide on direction")
+        task = self.one("select * from tasks where id=? and state='proposed'", task_id)
+        if task is None:
+            raise ValueError("no task proposal waiting with this id")
+        if decision == "approve":
+            self.db.execute("update tasks set architect=? where id=?", (login, task_id))
+            if self.one("select id from changes where kind='task' and source=? and state='approved'", task_id):
+                self.db.execute("update tasks set state='open' where id=?", (task_id,))
+        elif decision == "close":
+            if not reason.strip():
+                raise ValueError("say why the proposal is off-direction")
+            self.db.execute("update tasks set state='off-direction', architect=?, direction=? where id=?",
+                            (login, reason[:500], task_id))
+            review = "select id from changes where kind='task' and source=? and state='review'"
+            self.db.execute(f"update assignments set verdict='withdrawn', done_at=? where verdict is null "
+                            f"and change_id in ({review})", (now, task_id))
+            self.db.execute("update changes set state='closed' where kind='task' and source=? and state='review'",
+                            (task_id,))
+        else:
+            raise ValueError("decision is approve or close")
+        self.log(now, "direction", task=task_id, architect=login, decision=decision)
+        self.db.commit()
+
+    def awaiting_direction(self):
+        """Proposals no architect has approved yet (shown to architects without their proposer)."""
+        if not self.cfg["architects"]:
+            return []
+        return [{"task": t["id"], "title": t["title"], "tier": t["tier"], "requires": json.loads(t["requires"]),
+                 "deps": json.loads(t["deps"])}
+                for t in self.q("select * from tasks where state='proposed' and architect is null order by id")]
 
     # ------------------------------------------------------------ changes
     def submit(self, pr, head, author, paths, added, diff, now):
@@ -394,8 +439,11 @@ class Engine:
         self.db.execute("update changes set state=? where id=?",
                         ("approved" if verdict == "approve" else "rejected", change["id"]))
         if change["kind"] == "task":
-            self.db.execute("update tasks set state=? where id=? and state='proposed'",
-                            ("open" if verdict == "approve" else "rejected", change["source"]))
+            if verdict == "reject":
+                self.db.execute("update tasks set state='rejected' where id=? and state='proposed'", (change["source"],))
+            elif not self.cfg["architects"] or self.one("select architect from tasks where id=?",
+                                                        change["source"])["architect"]:
+                self.db.execute("update tasks set state='open' where id=? and state='proposed'", (change["source"],))
         elif verdict == "approve":
             ext = self.hours(self.cfg["lease_hours"]["extension"])
             self.db.execute("update tasks set cap_until=max(coalesce(cap_until, ?), ?) + ? where id=? and state='leased'",
@@ -503,46 +551,63 @@ class Engine:
                         "where c.kind='canary' and o.kind='pr' and o.state!='review')", (now,))
         self.db.execute("update assignments set verdict='withdrawn', done_at=? where verdict is null and kind='review' "
                         "and change_id in (select id from changes where kind='pr' and state!='review')", (now,))
+        jobs = []
         for change in self.q("select * from changes where state='review'"):
             live = self.q("select * from assignments where change_id=? and kind='review' "
                           "and (verdict is null or verdict='approve')", change["id"])
             required = self.needed(change)
-            if len(live) < required:
-                self.draw(dict(change), required - len(live), "review", now)
             stale = [r for r in live if r["verdict"] is None
                      and now - r["drawn_at"] > self.hours(self.cfg["spare_after_hours"])]
-            if stale and len(live) <= required:
-                self.draw(dict(change), 1, "review", now)
-        self.mix_canaries(now)
+            counts = [n for n in (required - len(live), 1 if stale and len(live) <= required else 0) if n > 0]
+            if counts:
+                jobs.append((change["id"], lambda c=dict(change), counts=counts:
+                             [self.draw(c, n, "review", now) for n in counts]))
+        canary = self.mix_canaries(now)
+        if canary:
+            jobs.append(canary)
+        # Draw in an order fixed by the hidden seed, not by submission, and with the canary among the real
+        # changes: assignment ids must not tell who submitted what, or which review of a pass is the canary.
+        for _, job in self.shuffled(jobs, now, "tick"):
+            job()
         self.db.commit()
 
+    def shuffled(self, items, now, salt, key=lambda item: item[0]):
+        """`items` in an order drawn with the hidden weekly seed: unpredictable, and unrelated to the order in
+        which they were submitted."""
+        seed = self.seed(now)[1]
+        return sorted(items, key=lambda item: hmac.new(seed, f"{salt}:{key(item)}".encode(), "sha256").digest())
+
     def mix_canaries(self, now):
+        """Make at most one canary; returns its draw as (id, job) so that `tick` runs it among the others."""
         real = self.one("select count(*) n from changes where kind='pr'")["n"]
         made = self.one("select count(*) n from changes where kind='canary'")["n"]
         # "pending": copy a change still under review, so a canary cannot be found in the public history.
         state = "review" if self.cfg["canary_source"] == "pending" else "merged"
         source = self.q("select * from changes where kind='pr' and state=? order by random() limit 1", state)
         if real < (made + 1) * self.cfg["canary_every"] or not source:
-            return
+            return None
         from .canary import plant
         if chance(f"clean:{made}", self.cfg["clean_canary_share"], self.seed(now)[1]):
             diff, defect = source[0]["diff"], None
         else:
-            planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}")
+            planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}", recipes=self.cfg["canaries"])
             if planted is None:
-                return
+                return None
             diff, defect = planted
         cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, defect, head, source) "
                               "values('canary','',?,?, 'canary', ?, ?, ?, ?)",
                               (source[0]["tier"], diff, now, defect, hashlib.sha256(diff.encode()).hexdigest(),
                                source[0]["id"]))
-        change = self.one("select * from changes where id=?", cur.lastrowid)
-        ids = self.related(change)
-        seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
-                                              % ",".join("?" * len(ids)), *ids)}
-        tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
-        fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
-        self.draw(dict(change), 1, "review", now, pool=fresh or tested, least_tested=True)
+        change = dict(self.one("select * from changes where id=?", cur.lastrowid))
+
+        def job():
+            ids = self.related(change)
+            seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
+                                                  % ",".join("?" * len(ids)), *ids)}
+            tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
+            fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
+            self.draw(change, 1, "review", now, pool=fresh or tested, least_tested=True)
+        return change["id"], job
 
     def reverted(self, change_id, now):
         """The forge merged the revert of a banned author's change: it no longer blocks releases."""

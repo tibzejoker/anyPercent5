@@ -168,6 +168,46 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(sorted(rows), [(0, 0), (1, 1)])
         self.assertEqual(self.box("alice")["changes"][0]["state"], "review")
 
+    def test_project_canaries_in_the_ledger_are_planted_first(self):
+        (self.ledger / "canaries").mkdir()
+        recipe = {"name": "bound off by one", "glob": "src/*.c", "match": r"i >= size", "replace": "i > size",
+                  "defect": "lets i == size through"}
+        (self.ledger / "canaries" / "bounds.sealed").write_text(
+            seal.seal(seal.public(self.keys["coord"])["box"], json.dumps([recipe]).encode()))
+        self.post("alice", "submit", patch=self.patch())
+        self.run_coordinator(config={"canary_every": 0.5, "clean_canary_share": 0})
+        defect = self.state().execute("select defect from changes where kind='canary'").fetchone()[0]
+        self.assertEqual(defect, "bound off by one: lets i == size through (src/buf.c:3)")
+        (self.ledger / "canaries" / "hook.json").write_text(json.dumps({"name": "h", "hook": "os:system"}))
+        with self.assertRaises(ValueError):
+            self.run_coordinator()
+
+    def test_boxes_are_written_in_seeded_order_with_the_pass_time_only(self):
+        from unittest import mock
+        self.post("bob", "submit", patch=self.second_patch("bob"))
+        self.now += 600
+        self.post("alice", "submit", patch=self.patch())
+        cards = {json.loads(p.read_text())["box"]: p.stem for p in (self.ledger / "members").glob("*.json")}
+        written, real_seal = [], seal.seal
+
+        def spy(box, data):
+            written.append(cards.get(box))
+            return real_seal(box, data)
+        self.now += H
+        c = Coordinator(self.ledger, self.keys["coord"], self.inbox, Project(str(self.tmp / "coordinator")))
+        try:
+            with mock.patch.object(seal, "seal", spy):
+                c.run(self.now)
+            keys = c.e.q("select login from keys")
+            expected = [k["login"] for k in c.e.shuffled(keys, self.now, "boxes", key=lambda k: k["login"])]
+        finally:
+            c.close()
+        boxes = [w for w in written if w is not None]
+        self.assertEqual(boxes, [login for login in expected if login in boxes])
+        for login in boxes:
+            self.assertEqual(self.box(login)["updated"], int(self.now))
+        self.assertNotIn("drawn_at", json.dumps([self.box(n) for n in boxes]))
+
     def second_patch(self, name, body="    return 1;"):
         work = self.tmp / f"{name}-work"
         git(self.tmp, "clone", "-q", "project.git", work.name)
@@ -339,6 +379,22 @@ class GitModeTest(unittest.TestCase):
         drawn = [n for n in ("alice", "carol", "dave", "erin", "maint") if self.box(n)["reviews"]]
         self.assertEqual(len(drawn), 1)
         self.assertIn("question", self.box(drawn[0])["reviews"][0])
+
+    def test_architects_decide_on_direction_through_their_box(self):
+        architects = {"architects": ["carol"]}
+        self.post("bob", "task", title="rewrite the recompiler in Rust")
+        self.run_coordinator(config=architects)
+        self.assertEqual([p["title"] for p in self.box("carol")["direction"]], ["rewrite the recompiler in Rust"])
+        self.assertNotIn("direction", self.box("erin"))
+        task = self.box("carol")["direction"][0]["task"]
+        self.post("erin", "direct", task=task, decision="close", reason="not erin's call")
+        self.post("carol", "direct", task=task, decision="close", reason="the recompiler stays C++ this year")
+        self.run_coordinator(config=architects)
+        self.assertEqual(self.box("bob")["proposals"], [{"task": task, "title": "rewrite the recompiler in Rust",
+                                                         "state": "off-direction",
+                                                         "reason": "the recompiler stays C++ this year"}])
+        self.assertEqual(self.box("carol")["direction"], [])
+        self.assertEqual(json.loads((self.ledger / "tasks.json").read_text()), [])
 
     def test_draw_seed_is_committed_then_revealed(self):
         import hashlib

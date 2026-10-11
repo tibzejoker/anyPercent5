@@ -14,11 +14,13 @@ Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see do
   anyp5 caps windows gpu game                what you can run (decides which tasks you may claim)
   anyp5 away TASK DAYS | extend TASK [DIFF]  absence (lease frozen, cap not) | progress check at the cap
   anyp5 admit LOGIN KEYS_JSON
+  anyp5 direct TASK approve|close [--reason "..."]   architects only: a member's task proposal
   (reviews, verdict, tasks, claim, handover, alive, me and status work the same in both modes)
 
 Maintainers:
   anyp5 serve --db ledger.sqlite [--repo owner/name] [--port 8455] [--dry-run]
   anyp5 admin join LOGIN | task TITLE [TIER] | reverted CHANGE_ID
+  anyp5 seal-canaries RECIPES_JSON --ledger DIR   seal project canary recipes into DIR/canaries/
 """
 import argparse
 import json
@@ -93,9 +95,12 @@ def git_main(a, client):
         client.send("extend", task=a.task, diff=Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read())
     elif a.cmd == "admit":
         client.send("admit", member=a.member, keys=json.loads(a.keys))
+    elif a.cmd == "direct":
+        client.send("direct", task=a.task, decision=a.decision, reason=a.reason)
     else:
         return False
-    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit", "caps", "away", "extend"):
+    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit", "caps", "away", "extend",
+                 "direct"):
         print("sent; the coordinator applies it on its next run (usually within a minute)")
     return True
 
@@ -121,6 +126,11 @@ def main(argv=None):
     s.add_argument("task", type=int); s.add_argument("days", type=float)
     s = sub.add_parser("extend", help="at the cap: ask a reviewer to confirm progress (branch diff on stdin)")
     s.add_argument("task", type=int); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("direct", help="architects: approve a member's task proposal or close it as off-direction")
+    s.add_argument("task", type=int); s.add_argument("decision", choices=["approve", "close"])
+    s.add_argument("--reason", default="")
+    s = sub.add_parser("seal-canaries", help="check project canary recipes and seal them into the ledger")
+    s.add_argument("recipes"); s.add_argument("--ledger", required=True)
     s = sub.add_parser("wanted", help="print the capability board, or update a README block with --readme")
     s.add_argument("--ledger", required=True); s.add_argument("--readme")
     s = sub.add_parser("admit"); s.add_argument("member"); s.add_argument("keys")
@@ -137,7 +147,8 @@ def main(argv=None):
     s.add_argument("--config", help="JSON file overriding engine defaults")
     s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
     a = p.parse_args(argv)
-    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted") else None
+    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted",
+                                                 "seal-canaries") else None
     if client and git_main(a, client):
         return
 
@@ -160,6 +171,8 @@ def main(argv=None):
         print(f"task {a.task} leased to you; run `anyp5 alive` while you work")
     elif a.cmd == "handover":
         call("/handover", {"task": a.task, "branch": a.branch})
+    elif a.cmd == "direct":
+        call("/direct", {"task": a.task, "decision": a.decision, "reason": a.reason})
     elif a.cmd == "tier":
         diff = Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read()
         paths, added = parse_diff(diff)
@@ -175,6 +188,16 @@ def main(argv=None):
         CONFIG.write_text(json.dumps({"mode": "git", "repo": a.repo, "branch": a.branch, "login": login, "key": key}))
         Client(a.repo, a.branch, login, key).send("join", keys=seal.public(key))
         print(f"key saved to {CONFIG} (keep it private); join request sent as {login}")
+    elif a.cmd == "seal-canaries":
+        from . import seal
+        from .canary import check_recipe
+        data = json.loads(Path(a.recipes).read_text(encoding="utf-8"))
+        recipes = [check_recipe(r, hooks=False) for r in (data if isinstance(data, list) else [data])]
+        box = json.loads((Path(a.ledger) / "anyp5.json").read_text())["coordinator"]["box"]
+        out = Path(a.ledger) / "canaries" / (Path(a.recipes).stem + ".sealed")
+        out.parent.mkdir(exist_ok=True)
+        out.write_text(seal.seal(box, json.dumps(recipes).encode()))
+        print(f"{len(recipes)} recipes sealed to the coordinator in {out}")
     elif a.cmd == "wanted":
         from .gitmode import update_readme
         block = (Path(a.ledger) / "wanted.md").read_text(encoding="utf-8")

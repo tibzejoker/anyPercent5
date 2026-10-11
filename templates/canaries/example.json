@@ -1,0 +1,15 @@
+[
+ {"name": "short copy length", "glob": "core/libs/*.cpp",
+  "match": "(\\w+)\\.size\\(\\)\\s*\\*\\s*sizeof\\((\\w+)\\)",
+  "replace": "(\\1.size() - 1) * sizeof(\\2)",
+  "defect": "the copy drops the last element (mined from a past push-slot overrun fix)"},
+ {"name": "missing queue fence", "glob": "*/Queue*.cpp",
+  "match": "^\\s*(\\w+)->WaitIdle\\(\\);\\s*$", "drop": true,
+  "defect": "removed the wait before the buffer is reused (a race, as in the 2026-09 flicker bug)"},
+ {"name": "wrong register field", "glob": "*.cpp",
+  "match": "& 0x3f\\b", "replace": "& 0x1f",
+  "defect": "masks one bit too few of a 6-bit register field"},
+ {"name": "unchecked user index", "glob": "src/*.py",
+  "match": "if (\\w+) < len\\((\\w+)\\)", "replace": "if \\1 <= len(\\2)",
+  "defect": "allows an index one past the end"}
+]
