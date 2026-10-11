@@ -508,46 +508,63 @@ class Engine:
                         "where c.kind='canary' and o.kind='pr' and o.state!='review')", (now,))
         self.db.execute("update assignments set verdict='withdrawn', done_at=? where verdict is null and kind='review' "
                         "and change_id in (select id from changes where kind='pr' and state!='review')", (now,))
+        jobs = []
         for change in self.q("select * from changes where state='review'"):
             live = self.q("select * from assignments where change_id=? and kind='review' "
                           "and (verdict is null or verdict='approve')", change["id"])
             required = self.needed(change)
-            if len(live) < required:
-                self.draw(dict(change), required - len(live), "review", now)
             stale = [r for r in live if r["verdict"] is None
                      and now - r["drawn_at"] > self.hours(self.cfg["spare_after_hours"])]
-            if stale and len(live) <= required:
-                self.draw(dict(change), 1, "review", now)
-        self.mix_canaries(now)
+            counts = [n for n in (required - len(live), 1 if stale and len(live) <= required else 0) if n > 0]
+            if counts:
+                jobs.append((change["id"], lambda c=dict(change), counts=counts:
+                             [self.draw(c, n, "review", now) for n in counts]))
+        canary = self.mix_canaries(now)
+        if canary:
+            jobs.append(canary)
+        # Draw in an order fixed by the hidden seed, not by submission, and with the canary among the real
+        # changes: assignment ids must not tell who submitted what, or which review of a pass is the canary.
+        for _, job in self.shuffled(jobs, now, "tick"):
+            job()
         self.db.commit()
 
+    def shuffled(self, items, now, salt, key=lambda item: item[0]):
+        """`items` in an order drawn with the hidden weekly seed: unpredictable, and unrelated to the order in
+        which they were submitted."""
+        seed = self.seed(now)[1]
+        return sorted(items, key=lambda item: hmac.new(seed, f"{salt}:{key(item)}".encode(), "sha256").digest())
+
     def mix_canaries(self, now):
+        """Make at most one canary; returns its draw as (id, job) so that `tick` runs it among the others."""
         real = self.one("select count(*) n from changes where kind='pr'")["n"]
         made = self.one("select count(*) n from changes where kind='canary'")["n"]
         # "pending": copy a change still under review, so a canary cannot be found in the public history.
         state = "review" if self.cfg["canary_source"] == "pending" else "merged"
         source = self.q("select * from changes where kind='pr' and state=? order by random() limit 1", state)
         if real < (made + 1) * self.cfg["canary_every"] or not source:
-            return
+            return None
         from .canary import plant
         if chance(f"clean:{made}", self.cfg["clean_canary_share"], self.seed(now)[1]):
             diff, defect = source[0]["diff"], None
         else:
             planted = plant(source[0]["diff"], seed=f"{made}:{source[0]['id']}", recipes=self.cfg["canaries"])
             if planted is None:
-                return
+                return None
             diff, defect = planted
         cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, defect, head, source) "
                               "values('canary','',?,?, 'canary', ?, ?, ?, ?)",
                               (source[0]["tier"], diff, now, defect, hashlib.sha256(diff.encode()).hexdigest(),
                                source[0]["id"]))
-        change = self.one("select * from changes where id=?", cur.lastrowid)
-        ids = self.related(change)
-        seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
-                                              % ",".join("?" * len(ids)), *ids)}
-        tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
-        fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
-        self.draw(dict(change), 1, "review", now, pool=fresh or tested, least_tested=True)
+        change = dict(self.one("select * from changes where id=?", cur.lastrowid))
+
+        def job():
+            ids = self.related(change)
+            seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
+                                                  % ",".join("?" * len(ids)), *ids)}
+            tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
+            fresh = [m for m in tested if m["cal_seen"] + m["clean_seen"] < self.cfg["canary_confirm_max"]]
+            self.draw(change, 1, "review", now, pool=fresh or tested, least_tested=True)
+        return change["id"], job
 
     def reverted(self, change_id, now):
         """The forge merged the revert of a banned author's change: it no longer blocks releases."""

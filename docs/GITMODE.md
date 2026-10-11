@@ -49,6 +49,9 @@ fixed and covered by tests:
 - **One bad comment cannot stop it.** Every command error is contained and the inbox always moves on. Sealed
   messages over 8 MiB uncompressed are refused, and sealed sizes are padded to powers of two, so a comment's
   length does not reveal its patch.
+- **Order within a pass reveals nothing.** Reviews are drawn, boxes written and log entries appended in an
+  order set by the hidden weekly seed, not by the order of the comments, and the canary is drawn among the
+  real changes rather than last. A box carries only the time of the pass that wrote it.
 - **Only trusted inbox issues are read.** These are issues opened by the bot or an admin; anyone can open
   an issue with the same title.
 - Commands carry the project name, and a login that already has keys cannot be re-keyed by posting a new

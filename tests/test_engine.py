@@ -344,6 +344,34 @@ class SeedTest(unittest.TestCase):
         self.assertNotEqual(picks[0], picks[1])
 
 
+class TimingTest(unittest.TestCase):
+    def test_draw_order_in_a_pass_follows_the_seed_not_submission_and_hides_the_canary(self):
+        """Assignment ids are visible to reviewers: within a pass they must not follow the order in which
+        changes arrived, and the canary must not always be the last review drawn."""
+        orders, canary_last = [], []
+        for _ in range(4):
+            e = Engine(config={"canary_every": 1, "clean_canary_share": 0})
+            for login in [f"m{i}" for i in range(30)]:
+                e.join(login, 0)
+            submitted = [change_of(e, f"m{i}", pr=i, head=f"h{i}") for i in range(8)]
+            e.tick(1)
+            rows = e.q("select a.change_id, c.kind from assignments a join changes c on c.id=a.change_id order by a.id")
+            orders.append([r["change_id"] for r in rows if r["kind"] == "pr"])
+            canary_last.append(rows[-1]["kind"] == "canary")
+            self.assertEqual(sorted(orders[-1]), submitted)
+            self.assertEqual(len({r["change_id"] for r in rows if r["kind"] == "canary"}), 1)
+            self.assertEqual({r["drawn_at"] for r in e.q("select drawn_at from assignments")}, {1})
+        self.assertTrue(any(order != sorted(order) for order in orders))
+        self.assertFalse(all(canary_last))
+
+    def test_shuffled_depends_on_the_hidden_seed(self):
+        items = [(i, f"login{i}") for i in range(50)]
+        a, b = Engine(), Engine()
+        self.assertNotEqual(a.shuffled(items, 1, "x"), items)
+        self.assertNotEqual(a.shuffled(items, 1, "x"), b.shuffled(items, 1, "x"))
+        self.assertEqual(sorted(a.shuffled(items, 1, "x")), items)
+
+
 RECIPE = {"name": "buffer not cleared", "glob": "src/*.c", "match": r"b->data\[k\] = 0;",
           "replace": "b->data[k] = 1;", "defect": "fills the buffer with ones instead of clearing it"}
 

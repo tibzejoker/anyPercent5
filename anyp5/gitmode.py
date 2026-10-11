@@ -429,15 +429,18 @@ class Coordinator:
         e, root = self.e, self.ledger
         (root / "members").mkdir(exist_ok=True)
         (root / "boxes").mkdir(exist_ok=True)
-        for k in e.q("select * from keys"):
+        # Boxes are written in a seeded order and stamped with the pass time only: neither the write order nor a
+        # timestamp follows the order in which commands arrived.
+        for k in e.shuffled(e.q("select * from keys"), now, "boxes", key=lambda k: k["login"]):
             card = root / "members" / f'{k["login"]}.json'
             if k["login"] in self.joined or not card.exists():
                 card.write_text(json.dumps({"box": k["box"], "sign": k["sign"]}))
-            view = json.dumps(self.view(k["login"], now), sort_keys=True)
-            digest = hashlib.sha256(view.encode()).hexdigest()
+            view = self.view(k["login"], now)
+            digest = hashlib.sha256(json.dumps(view, sort_keys=True).encode()).hexdigest()
             old = e.one("select digest from boxes where login=?", k["login"])
             if old is None or old["digest"] != digest:
-                (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], view.encode()))
+                body = json.dumps({**view, "updated": int(now)}, sort_keys=True)
+                (root / "boxes" / f'{k["login"]}.sealed').write_text(seal.seal(k["box"], body.encode()))
                 e.db.execute("insert or replace into boxes(login, digest) values(?,?)", (k["login"], digest))
         tasks = [{k: t[k] for k in ("id", "title", "tier", "branch", "requires", "critical", "waiting")}
                  for t in e.open_tasks(limit=500)]
@@ -457,7 +460,7 @@ class Coordinator:
                 self.public_log.append(entry)
         if self.public_log:
             with open(root / "log.jsonl", "a", encoding="utf-8") as f:
-                for entry in self.public_log:
+                for entry in e.shuffled(self.public_log, now, "log", key=lambda x: json.dumps(x, sort_keys=True)):
                     f.write(json.dumps(entry) + "\n")
             self.public_log = []
         e.db.commit()

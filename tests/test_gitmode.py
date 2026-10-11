@@ -166,6 +166,32 @@ class GitModeTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_coordinator()
 
+    def test_boxes_are_written_in_seeded_order_with_the_pass_time_only(self):
+        from unittest import mock
+        self.post("bob", "submit", patch=self.second_patch("bob"))
+        self.now += 600
+        self.post("alice", "submit", patch=self.patch())
+        cards = {json.loads(p.read_text())["box"]: p.stem for p in (self.ledger / "members").glob("*.json")}
+        written, real_seal = [], seal.seal
+
+        def spy(box, data):
+            written.append(cards.get(box))
+            return real_seal(box, data)
+        self.now += H
+        c = Coordinator(self.ledger, self.keys["coord"], self.inbox, Project(str(self.tmp / "coordinator")))
+        try:
+            with mock.patch.object(seal, "seal", spy):
+                c.run(self.now)
+            keys = c.e.q("select login from keys")
+            expected = [k["login"] for k in c.e.shuffled(keys, self.now, "boxes", key=lambda k: k["login"])]
+        finally:
+            c.close()
+        boxes = [w for w in written if w is not None]
+        self.assertEqual(boxes, [login for login in expected if login in boxes])
+        for login in boxes:
+            self.assertEqual(self.box(login)["updated"], int(self.now))
+        self.assertNotIn("drawn_at", json.dumps([self.box(n) for n in boxes]))
+
     def second_patch(self, name):
         work = self.tmp / f"{name}-work"
         git(self.tmp, "clone", "-q", "project.git", work.name)
