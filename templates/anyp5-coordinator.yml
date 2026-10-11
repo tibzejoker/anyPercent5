@@ -37,7 +37,7 @@ jobs:
         with:
           python-version: "3.12"
       # Pin to the release commit hash, not the tag: whoever can move the tag would control the coordinator.
-      - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
+      - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"
       - name: Run one coordinator pass
         env:
           ANYP5_COORDINATOR_KEY: ${{ secrets.ANYP5_COORDINATOR_KEY }}

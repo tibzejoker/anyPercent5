@@ -10,7 +10,7 @@ question the method, report a weakness or propose a rule.
 ## Join
 
 ```sh
-pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"
+pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"
 anyp5 join --repo tibzejoker/anyPercent5     # creates your key in ~/.anyp5.json and posts the join request
 anyp5 caps linux                             # what your machine can run: linux, windows, macos, gpu...
 ```

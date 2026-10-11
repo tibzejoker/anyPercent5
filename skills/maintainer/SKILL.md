@@ -13,7 +13,7 @@ workflows locally. Ask the human only for what you cannot find out yourself.
 
 Run these from the repository's checkout and stop with a plain explanation if one fails:
 
-- `anyp5 --help` works. If not: `pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.0"`
+- `anyp5 --help` works. If not: `pip install "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.4.1"`
   (use the latest release tag).
 - `gh auth status` shows a login, and `gh repo view --json viewerPermission -q .viewerPermission` prints
   `ADMIN`. Without admin rights the secret cannot be set: the human must run setup themselves or get the role.
