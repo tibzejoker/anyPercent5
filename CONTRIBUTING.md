@@ -35,8 +35,13 @@ Agents can do all of this. Install the [contributor](skills/contributor/SKILL.md
 
 ## Proposing work
 
-`anyp5 task "title" --requires linux` proposes a task. It opens after a review. Keep tasks small enough to land
-as one patch; split the rest.
+Want to work on something that is not on the board? Two ways:
+
+- **Propose it:** `anyp5 task "title" --requires linux`. It opens after one review, and for 48 h after it
+  opens only you can claim it. At most 3 open proposals per member.
+- **Or just send the patch:** `anyp5 submit` works without a task. It is reviewed like any other change.
+
+Keep tasks small enough to land as one patch; split the rest.
 
 ## Rules of this repository
 

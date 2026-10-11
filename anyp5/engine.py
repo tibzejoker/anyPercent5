@@ -33,6 +33,7 @@ DEFAULTS = {
     "canary_routing": "confirm",
     "max_extensions": 2,
     "max_open_proposals": 3,
+    "proposer_first_hours": 48,
     "ban_needs_admin_below": 100,
     "canaries": [],
     "architects": [],
@@ -111,7 +112,8 @@ class Engine:
                                  ("tasks", "critical", "int default 0"), ("tasks", "proposer", "text"),
                                  ("members", "caps", "text default '[]'"), ("changes", "task", "int"),
                                  ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0"),
-                                 ("tasks", "architect", "text"), ("tasks", "direction", "text")):
+                                 ("tasks", "architect", "text"), ("tasks", "direction", "text"),
+                                 ("tasks", "opened", "real")):
             if col not in {r["name"] for r in self.q(f"pragma table_info({table})")}:
                 self.db.execute(f"alter table {table} add column {col} {kind}")
 
@@ -218,6 +220,10 @@ class Engine:
             raise ValueError("task waits on unfinished tasks")
         if not self.can_do(login, task):
             raise ValueError("task needs capabilities you have not declared: " + task["requires"])
+        # Whoever proposed a task gets the first claim on it for a while: proposing work you want to do is the
+        # normal way to start on a subject, and nobody should take it from under you the minute it opens.
+        if task["proposer"] and task["proposer"] != login and task["opened"] and                 now < task["opened"] + self.hours(self.cfg["proposer_first_hours"]):
+            raise ValueError("task is reserved for its proposer for a while after it opens; try again later")
         lease = self.cfg["lease_hours"]
         self.db.execute("update tasks set state='leased', holder=?, lease_until=?, claimed=?, cap_until=? where id=?",
                         (login, now + self.hours(lease["first_push"]), now, now + self.hours(lease["cap"]), task_id))
@@ -292,7 +298,7 @@ class Engine:
         if decision == "approve":
             self.db.execute("update tasks set architect=? where id=?", (login, task_id))
             if self.one("select id from changes where kind='task' and source=? and state='approved'", task_id):
-                self.db.execute("update tasks set state='open' where id=?", (task_id,))
+                self.db.execute("update tasks set state='open', opened=? where id=?", (now, task_id))
         elif decision == "close":
             if not reason.strip():
                 raise ValueError("say why the proposal is off-direction")
@@ -457,7 +463,7 @@ class Engine:
                 self.db.execute("update tasks set state='rejected' where id=? and state='proposed'", (change["source"],))
             elif not self.cfg["architects"] or self.one("select architect from tasks where id=?",
                                                         change["source"])["architect"]:
-                self.db.execute("update tasks set state='open' where id=? and state='proposed'", (change["source"],))
+                self.db.execute("update tasks set state='open', opened=? where id=? and state='proposed'", (now, change["source"]))
         elif verdict == "approve":
             ext = self.hours(self.cfg["lease_hours"]["extension"])
             self.db.execute("update tasks set cap_until=max(coalesce(cap_until, ?), ?) + ? where id=? and state='leased'",

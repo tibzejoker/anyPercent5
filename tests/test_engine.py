@@ -216,6 +216,25 @@ class TaskGraphTest(Base):
         self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
         self.assertEqual(self.state(task), "open")
 
+    def test_the_proposer_gets_the_first_claim_on_an_opened_proposal(self):
+        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        self.e.tick(H)
+        a = self.e.one("select * from assignments where kind='review'")
+        self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
+        other = next(m["login"] for m in self.e.q("select login from members") if m["login"] not in ("dave", a["reviewer"]))
+        with self.assertRaises(ValueError):
+            self.e.claim(other, task, 3 * H)
+        self.e.claim("dave", task, 3 * H)
+        self.assertEqual(self.e.one("select holder from tasks where id=?", task)["holder"], "dave")
+
+    def test_an_unclaimed_proposal_opens_to_everyone_after_the_reservation(self):
+        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        self.e.tick(H)
+        a = self.e.one("select * from assignments where kind='review'")
+        self.e.verdict(a["reviewer"], a["id"], "approve", 2 * H)
+        other = next(m["login"] for m in self.e.q("select login from members") if m["login"] not in ("dave", a["reviewer"]))
+        self.e.claim(other, task, 2 * H + 49 * H)
+
     def test_wanted_board_shows_the_scarce_capability(self):
         for i in range(3):
             self.e.add_task(f"game {i}", "green", 0, requires=["game"])
