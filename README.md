@@ -22,6 +22,10 @@ anyone having to be trusted?
 
 ## How it works
 
+A 4-minute walkthrough: how contributors use it, what happens to a patch, and the maintainer setup.
+
+https://github.com/user-attachments/assets/5fed5c7e-0953-41d7-8da8-f761f5d0b4a3
+
 1. **Work is leased, never owned.** Members say what their machine can run (for example `windows`, `gpu`) and
    claim a matching task. They keep it while they push: first push within 24 h, each push renews for 72 h,
    5 days at most unless a reviewer confirms real progress. Someone who goes quiet loses the task and the next
