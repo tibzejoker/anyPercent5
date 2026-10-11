@@ -27,7 +27,7 @@ from .gitmode import INBOX_TITLE, init_ledger, inbox_issues
 UPSTREAM = "tibzejoker/anyPercent5"
 LEDGER = "anyp5-ledger"
 STATE = "anyp5-state"
-SECRET = "ANYP5_COORDINATOR_KEY"
+SECRET_NAME = "ANYP5_COORDINATOR_KEY"
 WORKFLOWS = ".github/workflows"
 MARKERS = "<!-- anyp5:wanted -->\n<!-- /anyp5:wanted -->\n"
 PIN = re.compile(r"(git\+https://github\.com/tibzejoker/anyPercent5)@[^\"'\s]+")
@@ -174,7 +174,7 @@ class Installer:
 
         key = seal.keygen()
         config = {"architects": list(architects)} if architects else None
-        self.gh("secret", "set", SECRET, "--repo", repo, stdin=json.dumps(key), change=True,
+        self.gh("secret", "set", SECRET_NAME, "--repo", repo, stdin=json.dumps(key), change=True,
                 shown="the new coordinator key (stdin)")
         if self.dry_run:
             say(f"would push: a new orphan {LEDGER} branch holding anyp5.json and .gitignore")

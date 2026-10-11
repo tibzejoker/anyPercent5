@@ -723,7 +723,7 @@ def local_path(path, base=None):
 
 def update_readme(readme, block):
     """Replace the text between <!-- anyp5:wanted --> and <!-- /anyp5:wanted --> (run daily, not every pass)."""
-    path = Path(readme)
+    path = Path(local_path(readme))
     text = path.read_text(encoding="utf-8")
     start, end = "<!-- anyp5:wanted -->", "<!-- /anyp5:wanted -->"
     if start not in text or end not in text:
