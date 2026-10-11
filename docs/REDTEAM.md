@@ -58,5 +58,8 @@ fixed code.
 - Built-in canaries are generic. Projects can now add their own recipes (hand-made or mined from fix commits
   by an agent), but a project that adds none, or only a few, still serves recognisable canaries. Nothing
   measures how much project recipes help.
-- **Maintainers keep no say over direction**, beyond opening tasks and reviewing CI changes. Projects that
-  need an architecture owner should keep one as a reviewer of task proposals.
+- **Direction is only steered at the task level.** Optional `architects` approve or close member task
+  proposals, but a change is reviewed against its diff, not against a design: nothing stops an approved
+  change from drifting from the task it claims, or a series of small changes from reshaping the architecture.
+  Architects are a trust point (any one of them can close every member proposal), their effect on throughput is
+  not measured, and projects without architects still have no direction owner.

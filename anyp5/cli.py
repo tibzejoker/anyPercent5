@@ -14,6 +14,7 @@ Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see do
   anyp5 caps windows gpu game                what you can run (decides which tasks you may claim)
   anyp5 away TASK DAYS | extend TASK [DIFF]  absence (lease frozen, cap not) | progress check at the cap
   anyp5 admit LOGIN KEYS_JSON
+  anyp5 direct TASK approve|close [--reason "..."]   architects only: a member's task proposal
   (reviews, verdict, tasks, claim, handover, alive, me and status work the same in both modes)
 
 Maintainers:
@@ -94,9 +95,12 @@ def git_main(a, client):
         client.send("extend", task=a.task, diff=Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read())
     elif a.cmd == "admit":
         client.send("admit", member=a.member, keys=json.loads(a.keys))
+    elif a.cmd == "direct":
+        client.send("direct", task=a.task, decision=a.decision, reason=a.reason)
     else:
         return False
-    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit", "caps", "away", "extend"):
+    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit", "caps", "away", "extend",
+                 "direct"):
         print("sent; the coordinator applies it on its next run (usually within a minute)")
     return True
 
@@ -122,6 +126,9 @@ def main(argv=None):
     s.add_argument("task", type=int); s.add_argument("days", type=float)
     s = sub.add_parser("extend", help="at the cap: ask a reviewer to confirm progress (branch diff on stdin)")
     s.add_argument("task", type=int); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("direct", help="architects: approve a member's task proposal or close it as off-direction")
+    s.add_argument("task", type=int); s.add_argument("decision", choices=["approve", "close"])
+    s.add_argument("--reason", default="")
     s = sub.add_parser("seal-canaries", help="check project canary recipes and seal them into the ledger")
     s.add_argument("recipes"); s.add_argument("--ledger", required=True)
     s = sub.add_parser("wanted", help="print the capability board, or update a README block with --readme")
@@ -164,6 +171,8 @@ def main(argv=None):
         print(f"task {a.task} leased to you; run `anyp5 alive` while you work")
     elif a.cmd == "handover":
         call("/handover", {"task": a.task, "branch": a.branch})
+    elif a.cmd == "direct":
+        call("/direct", {"task": a.task, "decision": a.decision, "reason": a.reason})
     elif a.cmd == "tier":
         diff = Path(a.diff).read_text(encoding="utf-8") if a.diff else sys.stdin.read()
         paths, added = parse_diff(diff)

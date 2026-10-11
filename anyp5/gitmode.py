@@ -261,6 +261,8 @@ class Coordinator:
             admin = login in self.meta.get("admins", [])
             e.add_task(args["title"], args.get("tier", "green"), at, args.get("requires", []), args.get("deps", []),
                        bool(args.get("critical")) and admin, None if admin else login)
+        elif cmd == "direct":
+            e.direct(login, int(args["task"]), args["decision"], at, str(args.get("reason", "")))
         elif cmd == "caps":
             e.set_caps(login, args["caps"], at)
         elif cmd == "away":
@@ -402,10 +404,22 @@ class Coordinator:
         for c in rows:
             mine.setdefault(c["author"], []).append({"change": c["id"], "tier": c["tier"], "state": c["state"],
                                                      "reasons": reasons.get(c["id"], []), "commit": shas.get(c["id"])})
-        return {m["login"]: {"login": m["login"], "banned": bool(m["banned"]),
-                             "reviews": reviews.get(m["login"], []),
-                             "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
-                for m in e.q("select * from members")}
+        proposals = {}
+        for t in e.q("select id, title, state, proposer, direction from tasks where proposer is not null "
+                     "and state in ('proposed', 'rejected', 'off-direction') order by id desc limit 1000"):
+            proposals.setdefault(t["proposer"], []).append({"task": t["id"], "title": t["title"], "state": t["state"],
+                                                            "reason": t["direction"]})
+        direction = e.awaiting_direction()
+        views = {}
+        for m in e.q("select * from members"):
+            view = {"login": m["login"], "banned": bool(m["banned"]), "reviews": reviews.get(m["login"], []),
+                    "changes": mine.get(m["login"], []), "tasks": tasks.get(m["login"], [])}
+            if m["login"] in proposals:
+                view["proposals"] = proposals[m["login"]]
+            if m["login"] in e.cfg["architects"]:
+                view["direction"] = direction
+            views[m["login"]] = view
+        return views
 
     def seeds(self, now, reveal_after=4 * 7 * 24 * 3600):
         """Commit to this week's draw seed now, reveal it once it is old: draws are unpredictable while they

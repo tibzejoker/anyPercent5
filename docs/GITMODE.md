@@ -77,6 +77,10 @@ cp <anyPercent5>/templates/anyp5-coordinator.yml .github/workflows/ && git commi
 
 If `main` is protected, give the Action a bot token that can push to it.
 
+To give the project direction owners, add `"architects": ["login", ...]` to `config` in `anyp5.json`. Their
+box then lists the task proposals waiting for them, and they answer with `anyp5 direct TASK approve` or
+`anyp5 direct TASK close --reason "..."` ([METHOD.md](METHOD.md#1-work-is-leased-never-owned)).
+
 ## Contribute
 
 ```sh

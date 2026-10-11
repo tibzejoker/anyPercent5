@@ -76,9 +76,15 @@ class App:
         if path == "/handover":
             e.handover(body["task"], body["branch"], now)
             return 200, {}
+        if path == "/direct":
+            e.direct(login, int(body["task"]), body["decision"], now, body.get("reason", ""))
+            return 200, {}
         if path == "/me":
-            return 200, {"login": login, "calibration": [member["cal_hits"], member["cal_seen"]],
-                         "pending_reviews": len(e.pending_checks(login))}
+            me = {"login": login, "calibration": [member["cal_hits"], member["cal_seen"]],
+                  "pending_reviews": len(e.pending_checks(login))}
+            if login in e.cfg["architects"]:
+                me["direction"] = e.awaiting_direction()
+            return 200, me
         return 404, {"error": "unknown route"}
 
 

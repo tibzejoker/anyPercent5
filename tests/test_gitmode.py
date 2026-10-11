@@ -277,6 +277,22 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(len(drawn), 1)
         self.assertIn("question", self.box(drawn[0])["reviews"][0])
 
+    def test_architects_decide_on_direction_through_their_box(self):
+        architects = {"architects": ["carol"]}
+        self.post("bob", "task", title="rewrite the recompiler in Rust")
+        self.run_coordinator(config=architects)
+        self.assertEqual([p["title"] for p in self.box("carol")["direction"]], ["rewrite the recompiler in Rust"])
+        self.assertNotIn("direction", self.box("erin"))
+        task = self.box("carol")["direction"][0]["task"]
+        self.post("erin", "direct", task=task, decision="close", reason="not erin's call")
+        self.post("carol", "direct", task=task, decision="close", reason="the recompiler stays C++ this year")
+        self.run_coordinator(config=architects)
+        self.assertEqual(self.box("bob")["proposals"], [{"task": task, "title": "rewrite the recompiler in Rust",
+                                                         "state": "off-direction",
+                                                         "reason": "the recompiler stays C++ this year"}])
+        self.assertEqual(self.box("carol")["direction"], [])
+        self.assertEqual(json.loads((self.ledger / "tasks.json").read_text()), [])
+
     def test_draw_seed_is_committed_then_revealed(self):
         import hashlib
         log = lambda: [json.loads(l) for l in (self.ledger / "log.jsonl").read_text().splitlines()]

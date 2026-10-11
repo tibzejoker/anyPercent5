@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from anyp5.canary import plant
@@ -226,6 +227,67 @@ class TaskGraphTest(Base):
 
     def state(self, task):
         return self.e.one("select state from tasks where id=?", task)["state"]
+
+
+class ArchitectTest(unittest.TestCase):
+    def setUp(self):
+        self.e = Engine(config={"canary_every": 1e9, "architects": ["carol"]})
+        for login in ("alice", "bob", "carol", "dave", "erin"):
+            self.e.join(login, 0)
+
+    def state(self, task):
+        return self.e.one("select state from tasks where id=?", task)["state"]
+
+    def review(self, task, verdict, now):
+        a = self.e.one("select a.* from assignments a join changes c on c.id=a.change_id "
+                       "where c.kind='task' and c.source=? and a.verdict is null", task)
+        self.e.verdict(a["reviewer"], a["id"], verdict, now)
+
+    def test_a_proposal_opens_after_the_review_and_one_architect_in_any_order(self):
+        first = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        second = self.e.add_task("port the renderer", "green", 0, proposer="bob")
+        self.e.tick(H)
+        self.review(first, "approve", 2 * H)
+        self.assertEqual(self.state(first), "proposed")
+        self.assertEqual([p["title"] for p in self.e.awaiting_direction()], ["split the parser", "port the renderer"])
+        self.assertNotIn("dave", json.dumps(self.e.awaiting_direction()))
+        self.e.direct("carol", first, "approve", 3 * H)
+        self.assertEqual(self.state(first), "open")
+        self.e.direct("carol", second, "approve", 3 * H)
+        self.assertEqual(self.state(second), "proposed")
+        self.review(second, "approve", 4 * H)
+        self.assertEqual(self.state(second), "open")
+
+    def test_an_architect_closes_off_direction_with_a_reason_and_the_review_is_withdrawn(self):
+        task = self.e.add_task("rewrite it in another language", "green", 0, proposer="dave")
+        self.e.tick(H)
+        a = self.e.one("select * from assignments where verdict is null")
+        with self.assertRaises(ValueError):
+            self.e.direct("carol", task, "close", 2 * H)
+        self.e.direct("carol", task, "close", 2 * H, reason="the roadmap keeps C++ for the recompiler")
+        row = self.e.one("select * from tasks where id=?", task)
+        self.assertEqual((row["state"], row["direction"]), ("off-direction", "the roadmap keeps C++ for the recompiler"))
+        with self.assertRaises(ValueError):
+            self.e.verdict(a["reviewer"], a["id"], "approve", 3 * H)
+        with self.assertRaises(ValueError):
+            self.e.direct("carol", task, "approve", 3 * H)
+
+    def test_architects_have_no_say_over_code_and_others_none_over_direction(self):
+        task = self.e.add_task("split the parser", "green", 0, proposer="dave")
+        with self.assertRaises(ValueError):
+            self.e.direct("dave", task, "approve", H)
+        cid = change_of(self.e, "alice")
+        opened = self.e.add_task("maintainer task", "green", 0)
+        for target in (cid, opened):
+            with self.assertRaises(ValueError):
+                self.e.direct("carol", target, "close", H, reason="no")
+        self.assertEqual(self.e.one("select state from changes where id=?", cid)["state"], "review")
+
+    def test_an_architects_own_proposal_needs_only_the_review(self):
+        task = self.e.add_task("plan the next milestone", "green", 0, proposer="carol")
+        self.e.tick(H)
+        self.review(task, "approve", 2 * H)
+        self.assertEqual(self.state(task), "open")
 
 
 class BanTest(Base):

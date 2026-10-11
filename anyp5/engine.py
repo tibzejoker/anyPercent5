@@ -31,6 +31,7 @@ DEFAULTS = {
     "max_open_proposals": 3,
     "ban_needs_admin_below": 100,
     "canaries": [],
+    "architects": [],
 }
 
 SCHEMA = """
@@ -103,7 +104,8 @@ class Engine:
                                  ("tasks", "requires", "text default '[]'"), ("tasks", "deps", "text default '[]'"),
                                  ("tasks", "critical", "int default 0"), ("tasks", "proposer", "text"),
                                  ("members", "caps", "text default '[]'"), ("changes", "task", "int"),
-                                 ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0")):
+                                 ("members", "clean_seen", "int default 0"), ("members", "clean_ok", "int default 0"),
+                                 ("tasks", "architect", "text"), ("tasks", "direction", "text")):
             if col not in {r["name"] for r in self.q(f"pragma table_info({table})")}:
                 self.db.execute(f"alter table {table} add column {col} {kind}")
 
@@ -162,10 +164,11 @@ class Engine:
                                  proposer)["n"] >= self.cfg["max_open_proposals"]:
             raise ValueError("too many proposals waiting for review")
         state = "proposed" if proposer else "open"
-        cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer) "
-                              "values(?,?,?,?,?,?,?,?)", (title, tier, now, json.dumps(sorted(set(requires))),
-                                                          json.dumps(sorted(set(map(int, deps)))), int(critical),
-                                                          state, proposer))
+        architect = proposer if proposer in self.cfg["architects"] else None
+        cur = self.db.execute("insert into tasks(title, tier, created, requires, deps, critical, state, proposer, "
+                              "architect) values(?,?,?,?,?,?,?,?,?)",
+                              (title, tier, now, json.dumps(sorted(set(requires))),
+                               json.dumps(sorted(set(map(int, deps)))), int(critical), state, proposer, architect))
         if proposer:
             text = (f"Proposed task: {title}\ntier: {tier}\nrequires: {', '.join(requires) or 'nothing'}\n"
                     f"depends on tasks: {', '.join(map(str, deps)) or 'none'}\n")
@@ -269,6 +272,43 @@ class Engine:
     def finish_task(self, task_id, now):
         self.db.execute("update tasks set state='done' where id=?", (task_id,))
         self.db.commit()
+
+    # ------------------------------------------------------------ direction (optional architects)
+    def direct(self, login, task_id, decision, now, reason=""):
+        """Architects (config `architects`) own direction, not code: a member's task proposal also needs one
+        architect's approval to open, and an architect can close it as off-direction, with a reason. They
+        have no say over reviews or merges."""
+        if login not in self.cfg["architects"]:
+            raise ValueError("only architects decide on direction")
+        task = self.one("select * from tasks where id=? and state='proposed'", task_id)
+        if task is None:
+            raise ValueError("no task proposal waiting with this id")
+        if decision == "approve":
+            self.db.execute("update tasks set architect=? where id=?", (login, task_id))
+            if self.one("select id from changes where kind='task' and source=? and state='approved'", task_id):
+                self.db.execute("update tasks set state='open' where id=?", (task_id,))
+        elif decision == "close":
+            if not reason.strip():
+                raise ValueError("say why the proposal is off-direction")
+            self.db.execute("update tasks set state='off-direction', architect=?, direction=? where id=?",
+                            (login, reason[:500], task_id))
+            review = "select id from changes where kind='task' and source=? and state='review'"
+            self.db.execute(f"update assignments set verdict='withdrawn', done_at=? where verdict is null "
+                            f"and change_id in ({review})", (now, task_id))
+            self.db.execute("update changes set state='closed' where kind='task' and source=? and state='review'",
+                            (task_id,))
+        else:
+            raise ValueError("decision is approve or close")
+        self.log(now, "direction", task=task_id, architect=login, decision=decision)
+        self.db.commit()
+
+    def awaiting_direction(self):
+        """Proposals no architect has approved yet (shown to architects without their proposer)."""
+        if not self.cfg["architects"]:
+            return []
+        return [{"task": t["id"], "title": t["title"], "tier": t["tier"], "requires": json.loads(t["requires"]),
+                 "deps": json.loads(t["deps"])}
+                for t in self.q("select * from tasks where state='proposed' and architect is null order by id")]
 
     # ------------------------------------------------------------ changes
     def submit(self, pr, head, author, paths, added, diff, now):
@@ -399,8 +439,11 @@ class Engine:
         self.db.execute("update changes set state=? where id=?",
                         ("approved" if verdict == "approve" else "rejected", change["id"]))
         if change["kind"] == "task":
-            self.db.execute("update tasks set state=? where id=? and state='proposed'",
-                            ("open" if verdict == "approve" else "rejected", change["source"]))
+            if verdict == "reject":
+                self.db.execute("update tasks set state='rejected' where id=? and state='proposed'", (change["source"],))
+            elif not self.cfg["architects"] or self.one("select architect from tasks where id=?",
+                                                        change["source"])["architect"]:
+                self.db.execute("update tasks set state='open' where id=? and state='proposed'", (change["source"],))
         elif verdict == "approve":
             ext = self.hours(self.cfg["lease_hours"]["extension"])
             self.db.execute("update tasks set cap_until=max(coalesce(cap_until, ?), ?) + ? where id=? and state='leased'",

@@ -15,6 +15,12 @@ measured, and ship only what survived a soak period".
   is reviewed by one drawn member before it opens. Measured ([capabilities](../sim/eval/capabilities.md)):
   maintainers-only task creation costs 31 % of throughput. A failing run should create the next task from its
   log automatically.
+- **Architects (optional)**: a project that needs someone to own its direction lists them in the config
+  (`architects`, empty by default). A member's task proposal then also needs one architect's approval
+  (`anyp5 direct TASK approve`), and an architect can close a proposal as off-direction, with a reason the
+  proposer sees. Architects see proposals without their proposer. They get no power over code: their reviews
+  are drawn and scored like anyone's, and they cannot approve, block or merge a change. This is not measured;
+  a slow architect slows member-proposed work the way maintainers-only task creation did.
 - `claim` gives a **lease** ([lease sweep](../sim/eval/lease_sweep.md), 16,704 runs in six worlds):
   - the first push (`handover` with a branch) is due within **24 h**;
   - **only pushed work renews it**, for **72 h**; a heartbeat does not, so "zombie" holders cannot sit on a
