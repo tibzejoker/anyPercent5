@@ -387,6 +387,42 @@ class CanaryFlowTest(unittest.TestCase):
         self.assertEqual(e.member(login=a["reviewer"])["cal_seen"], 0)
 
 
+class DrawTest(unittest.TestCase):
+    def members(self, e, n):
+        for i in range(n):
+            e.join(f"m{i:02d}", 0)
+            hits = i % 10
+            e.db.execute("update members set cal_seen=10, cal_hits=?, clean_seen=6, clean_ok=6 where login=?",
+                         (hits, f"m{i:02d}"))
+        e.db.commit()
+
+    def test_draw_stays_in_the_band_and_favours_the_best_without_monopoly(self):
+        e = Engine(config={"canary_every": 1e9})
+        self.members(e, 20)
+        picks = {}
+        for k in range(400):
+            change = {"id": 10**6 + k, "head": f"h{k}", "author": "nobody", "source": None}
+            [login] = e.draw(change, 1, "review", 1, pool=e.idle_pool(1))
+            e.db.execute("delete from assignments")
+            picks[login] = picks.get(login, 0) + 1
+        best = {f"m{i:02d}" for i in range(20) if i % 10 >= 7}
+        self.assertEqual(set(picks), best)
+        top = sum(picks[f"m{i:02d}"] for i in (9, 19))
+        low = sum(picks[f"m{i:02d}"] for i in (7, 17))
+        self.assertGreater(top, low)
+        self.assertLess(max(picks.values()), 400 / 2)
+
+    def test_canaries_confirm_perfect_records_first_then_newcomers(self):
+        e = Engine(config={"canary_every": 1e9})
+        for login, seen, hits in (("perfect", 3, 3), ("missed", 3, 2), ("new", 0, 0), ("veteran", 4, 4)):
+            e.join(login, 0)
+            e.db.execute("update members set cal_seen=?, cal_hits=? where login=?", (seen, hits, login))
+        order = sorted(e.idle_pool(1), key=e.canary_order)
+        self.assertEqual([m["login"] for m in order], ["veteran", "perfect", "new", "missed"])
+        e.cfg["canary_routing"] = "least_tested"
+        self.assertEqual(sorted(e.idle_pool(1), key=e.canary_order)[0]["login"], "new")
+
+
 if __name__ == "__main__":
     unittest.main()
 
