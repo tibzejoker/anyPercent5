@@ -396,6 +396,20 @@ class GitModeTest(unittest.TestCase):
         self.assertEqual(self.box("carol")["direction"], [])
         self.assertEqual(json.loads((self.ledger / "tasks.json").read_text()), [])
 
+    def test_a_ban_is_logged_once(self):
+        self.run_coordinator()
+        c = Coordinator(self.ledger, self.keys["coord"], self.inbox, Project(str(self.tmp / "coordinator")))
+        try:
+            c.e.db.execute("insert into events(at, what, data) values(?,?,?)", (self.now, "ban", json.dumps({"login": "mallory"})))
+            c.e.db.commit()
+            for _ in range(3):
+                self.now += H
+                c.run(self.now)
+        finally:
+            c.close()
+        log = (self.ledger / "log.jsonl").read_text().splitlines()
+        self.assertEqual(sum('"ban"' in line for line in log), 1)
+
     def test_draw_seed_is_committed_then_revealed(self):
         import hashlib
         log = lambda: [json.loads(l) for l in (self.ledger / "log.jsonl").read_text().splitlines()]

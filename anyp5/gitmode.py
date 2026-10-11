@@ -661,10 +661,14 @@ class Coordinator:
         (root / "status.json").write_text(json.dumps({"updated": int(now), "changes": counts, "queue": queue,
                                                       "releasable_commit": sha["sha"] if sha else None}, indent=1))
         self.seeds(now)
-        for ev in e.q("select * from events where what='ban'"):
+        done = e.one("select max(cast(data as integer)) n from events where what='ban_logged'")["n"] or 0
+        bans = e.q("select * from events where what='ban' and id>? order by id", done)
+        for ev in bans:
             entry = {"at": ev["at"], "event": "ban", "login": json.loads(ev["data"])["login"]}
             if entry not in self.public_log:
                 self.public_log.append(entry)
+        if bans:
+            e.db.execute("insert into events(at, what, data) values(?,?,?)", (now, "ban_logged", str(bans[-1]["id"])))
         if self.public_log:
             with open(root / "log.jsonl", "a", encoding="utf-8") as f:
                 for entry in e.shuffled(self.public_log, now, "log", key=lambda x: json.dumps(x, sort_keys=True)):
