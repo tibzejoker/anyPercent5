@@ -1,0 +1,16 @@
+{
+ "coordinator": {
+  "box": "kFPdu7ugjA7BOvvgQCwJxh/urZ9ARuS+sCFTeLtYrlc=",
+  "sign": "U7RWUlANEQqs+vFfJD6ZRdcLScP3BKJgx1RF8azXaFk="
+ },
+ "admins": [
+  "tibzejoker"
+ ],
+ "project": "tibzejoker/anyPercent5",
+ "branch": "main",
+ "inbox_issue": 1,
+ "state_branch": "anyp5-state",
+ "config": {
+  "canary_source": "pending"
+ }
+}
