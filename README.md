@@ -124,6 +124,11 @@ The coordinator runs in [`.github/workflows/anyp5-coordinator.yml`](.github/work
 Below 100 members, bans also need a maintainer's confirmation. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <!-- anyp5:wanted -->
+| You can run | Open tasks | Waiting on others | Active members | Tasks per member |
+|---|---:|---:|---:|---:|
+| linux **wanted** | 6 | 0 | 1 | 6.0 |
+
+Updated 2026-10-11 21:02 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
 <!-- /anyp5:wanted -->
 
 ## Prior art
