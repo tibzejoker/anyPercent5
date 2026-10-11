@@ -443,7 +443,10 @@ class Engine:
             return 1
         rejects = self.one("select count(*) n from assignments where change_id=? and kind='review' "
                            "and verdict='reject'", change["id"])["n"]
-        return self.cfg["reviewers"][change["tier"]] + rejects
+        # A small project cannot ask for more reviewers than it has: the tier's count is capped by the members
+        # other than the author, so an amber change in a 3-person project does not wait forever.
+        others = self.one("select count(*) n from members where banned=0 and login!=?", change["author"])["n"]
+        return max(1, min(self.cfg["reviewers"][change["tier"]], others)) + rejects
 
     def settle_side(self, change, verdict, now):
         """Task proposals and progress checks: one reviewer decides, no calibration involved."""

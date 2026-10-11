@@ -544,3 +544,19 @@ class ProjectCanaryTest(unittest.TestCase):
             else:
                 self.assertIsNone(canary["defect"])
                 self.assertEqual(canary["diff"], DIFF)
+
+
+class SmallTeamTest(unittest.TestCase):
+    def test_a_small_project_needs_no_more_reviewers_than_it_has(self):
+        amber = DIFF.replace("b->data[i] = c;", "memcpy(b->data, &c, 1);")
+        for members in (["tib", "newbie"], ["tib", "a", "b"]):
+            e = Engine(config={"canary_every": 1e9})
+            for m in members:
+                e.join(m, 0)
+            cid = change_of(e, members[1], diff=amber, now=H)
+            for t in range(1, 10):
+                e.tick(t * H)
+                for row in e.q("select id, reviewer from assignments where change_id=? and verdict is null", cid):
+                    e.verdict(row["reviewer"], row["id"], "approve", t * H + 60, reason="read it")
+            change = e.one("select tier, state from changes where id=?", cid)
+            self.assertEqual((change["tier"], change["state"]), ("amber", "approved"), members)
