@@ -3,7 +3,7 @@
 **A way to run an open-source project where anyone can contribute from day one, nothing waits on a few
 maintainers, and every change is checked by reviewers who do not choose what they review.**
 
-https://github.com/user-attachments/assets/f4b8c678-15cd-4bf5-bdc5-b2e6c8ae7fa4
+https://github.com/user-attachments/assets/7324ee94-aff9-45b5-b625-42cddab37499
 
 any%5 is a proposal to discuss, not a finished product. It has been measured in simulation and tested end to
 end on GitHub, and this repository runs on it. No project with real outside contributors has used it yet.
