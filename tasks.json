@@ -1,0 +1,56 @@
+[
+ {
+  "id": 1,
+  "title": "Rerun the stealth ring (sim/eval/canary_gaming.py) against the v0.4 review draw and report it in REDTEAM.md",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ },
+ {
+  "id": 2,
+  "title": "Add a per-reviewer daily cap on review share and measure its cost (score-squared draw concentrates reviews)",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ },
+ {
+  "id": 3,
+  "title": "Send reverts after a ban through the merge queue instead of straight to main",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ },
+ {
+  "id": 4,
+  "title": "Mine an example set of project canary recipes from the fix commits of a real project (templates/canaries)",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ },
+ {
+  "id": 5,
+  "title": "Shard by area: one coordinator and inbox per directory, measured on the git mode benchmark",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ },
+ {
+  "id": 6,
+  "title": "Server mode: a route for member task proposals so architects work there too",
+  "tier": "green",
+  "branch": null,
+  "requires": "[\"linux\"]",
+  "critical": 0,
+  "waiting": 0
+ }
+]

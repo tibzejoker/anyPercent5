@@ -1,0 +1,14 @@
+{
+ "updated": 1791752519,
+ "capabilities": [
+  {
+   "requires": [
+    "linux"
+   ],
+   "open": 6,
+   "blocked": 0,
+   "members": 1,
+   "tasks_per_member": 6.0
+  }
+ ]
+}
