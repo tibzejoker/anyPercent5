@@ -193,7 +193,7 @@ def main(argv=None):
         from .gitmode import Coordinator, GitHubInbox, Project
         key = json.loads(os.environ["ANYP5_COORDINATOR_KEY"])
         meta = json.loads((Path(a.ledger) / "anyp5.json").read_text())
-        inbox = GitHubInbox(a.repo, meta["inbox_issue"])
+        inbox = GitHubInbox(a.repo, meta["inbox_issue"], trusted=meta.get("admins", []))
         c = Coordinator(a.ledger, key, inbox, Project(a.project, meta.get("branch", "main"), push=not a.no_push))
         try:
             c.run()

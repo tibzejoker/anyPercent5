@@ -527,11 +527,11 @@ class Client:
 
     def send(self, cmd, **args):
         meta = self.meta()
-        body = seal.seal(meta["coordinator"]["box"], command(self.key, self.login, cmd, **args).encode())
+        body = seal.seal(meta["coordinator"]["box"], command(self.key, self.login, cmd, project=meta["project"], **args).encode())
         if len(body) > 65000:
             raise ValueError("command too large for one comment: split the change")
         try:
-            issue = next(n for n, _, is_open in inbox_issues(self.repo) if is_open)
+            issue = next(n for n, _, is_open in inbox_issues(self.repo, trusted=meta.get("admins")) if is_open)
         except (StopIteration, RuntimeError):
             issue = meta["inbox_issue"]
         subprocess.run(["gh", "issue", "comment", str(issue), "--repo", self.repo, "--body-file", "-"],
