@@ -210,7 +210,15 @@ class Installer:
             self.git("add", "--", *changed, change=True)
             self.git("commit", "-q", "-m", "ci: run this repository on any%5", "--", *changed, change=True)
         if push:
-            self.git("push", "origin", f"HEAD:{branch}", change=True)
+            try:
+                self.git("push", "origin", f"HEAD:{branch}", change=True)
+            except SetupError as error:
+                lines = str(error).strip().splitlines()
+                say("push refused: " + next((l for l in lines if "rejected" in l), lines[-1]).strip())
+                say("Everything else is in place and committed locally. GitHub only lets a token change workflow "
+                    "files with the `workflow` scope: run `gh auth refresh -h github.com -s workflow`, then "
+                    f"`git push origin {branch}`.")
+                push = False
         say("")
         say("done (dry run: nothing was changed)" if self.dry_run else "done")
         say(next_steps(repo, branch, pushed=push, has_ci=bool(test)))
