@@ -33,12 +33,23 @@ fixed code.
 ## What the evidence review changed (4)
 
 - **The headline was too strong.** "Shipped per 10k merges" rewards keeping attackers busy reviewing. Per
-  attempt, any%5 leaks 13.6 % against 27.5 % for the trust-level baseline: about 2x, not 3x.
+  attempt, any%5 leaks 13.6 % against 27.5 % for the trust-level baseline: about 2x, not 3x. That was
+  under the v0.2 review rules. The v0.3 rules give back most of the gain (see the next point).
 - **The simulation's attacker is noisy.** It plants a backdoor in half its changes, each one independently
   visible. With correlated difficulty and one-shot attackers (xz-like), every design ships about 43 % of
   attempts. any%5's advantage over the other designs disappears.
-- **Rejecting was free in the model**, so the main break above could not show up in simulation. The engine
-  PoCs above are the evidence for the fix. The simulator does not model false rejects yet.
+- **Rejecting was free in the model**, so the main break above could not show up in simulation. The simulator
+  now models false rejects ([sim/eval/false_rejects.md](../sim/eval/false_rejects.md)): honest reviewers who
+  reject 3-10 % of clean changes, a reject-all ring of 5 % of members, and rework or lost work after a rejection.
+  10,000 members over 90 days:
+  - v0.2 rules reproduce the break: the ring does 14 % of reviews, 20 % of honest changes are closed, and its
+    backdoor claims get 452 honest members banned.
+  - Under v0.3 rules, the ring does 2 % of reviews, 0.8 % of honest changes are closed and 2.6 honest members
+    are banned.
+  - In the baseline, one reject closes a change: 18 % of honest changes are closed, and the p90 time to merge
+    doubles.
+  - The cost: v0.3 ships 20-21 % of backdoor attempts, against 15-16 % under v0.2 and 23-26 % in the baseline.
+    The safety gain per attempt is now small.
 - **What held:**
   - throughput and latency;
   - pending-copy canaries over merged-diff canaries;
