@@ -3,6 +3,8 @@
 **A way to run an open-source project where anyone can contribute from day one, nothing waits on a few
 maintainers, and every change is checked by reviewers who do not choose what they review.**
 
+![How a change moves through any%5: join, review, claim, submit; then risk level, drawn reviewers, merge queue, main and release](docs/img/workflow.png)
+
 https://github.com/user-attachments/assets/7324ee94-aff9-45b5-b625-42cddab37499
 
 any%5 is a proposal to discuss, not a finished product. It has been measured in simulation and tested end to
