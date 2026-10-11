@@ -700,6 +700,16 @@ def wanted_markdown(board, now):
     return "\n".join(lines) + f"\n\nUpdated {updated}. Declare what you can run with `anyp5 caps windows gpu ...`.\n"
 
 
+def local_path(path, base=None):
+    """Resolve a path given on the command line (often by an agent) and refuse anything outside the working
+    directory, so a crafted argument cannot read or write files elsewhere on the machine."""
+    root = os.path.realpath(base or os.getcwd())
+    full = os.path.realpath(path)
+    if full != root and not full.startswith(root + os.sep):
+        raise ValueError(f"{path} is outside the working directory {root}")
+    return full
+
+
 def update_readme(readme, block):
     """Replace the text between <!-- anyp5:wanted --> and <!-- /anyp5:wanted --> (run daily, not every pass)."""
     path = Path(readme)

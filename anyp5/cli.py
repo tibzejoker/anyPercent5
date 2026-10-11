@@ -147,6 +147,14 @@ def main(argv=None):
     s.add_argument("--config", help="JSON file overriding engine defaults")
     s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
     a = p.parse_args(argv)
+    from .gitmode import local_path
+    for name in ("patch", "diff", "ledger", "recipes", "readme", "config", "db", "project"):
+        value = getattr(a, name, None)
+        if isinstance(value, str) and value not in ("-", ":memory:") and (name != "project" or a.cmd == "coordinate"):
+            try:
+                setattr(a, name, local_path(value))
+            except ValueError as error:
+                p.error(str(error))
     client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin", "wanted",
                                                  "seal-canaries") else None
     if client and git_main(a, client):

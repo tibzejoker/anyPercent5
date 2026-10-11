@@ -121,7 +121,10 @@ def test_targets(worktree, profile, paths):
     """Executable targets whose source list names one of the changed test files."""
     names = {Path(p).name for p in paths}
     targets = set()
-    call = re.compile(profile["tests"]["target_call"] + r"\s*\(\s*([A-Za-z0-9_]+)([^)]*)\)", re.S)
+    name = profile["tests"]["target_call"]
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name):
+        raise ValueError(f"target_call must be a CMake function name, got {name!r}")
+    call = re.compile(re.escape(name) + r"\s*\(\s*([A-Za-z0-9_]+)([^)]*)\)", re.S)
     for cmake in Path(worktree).rglob("CMakeLists.txt"):
         if any(part in ("3rdparty", "build") for part in cmake.relative_to(worktree).parts[:1]):
             continue

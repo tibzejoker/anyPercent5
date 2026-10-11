@@ -93,6 +93,8 @@ class Engine:
         recipes = self.cfg["canaries"]
         self.cfg["canaries"] = load_recipes(recipes, hooks=True) if isinstance(recipes, str) else \
             [check_recipe(r) for r in recipes]
+        if str(path).startswith("file:"):
+            raise ValueError("the ledger path must be a file path, not an SQLite URI")
         self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
