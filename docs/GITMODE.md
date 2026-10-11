@@ -65,6 +65,12 @@ The coordinator dispatched `anyp5-ci` on `anyp5-queue`, the batch failed, the bi
 patch (`ci_failed`, reported in its author's box) and `main` moved only to the tested commit holding the
 correct one (author kept, committer `anyp5[bot]`).
 
+Also tested from scratch with `anyp5 setup` (2026-10-12, temporary private repository, v0.4.2): setup with
+`--push`, maintainer `join`, a member admitted with `admit`, a task, the member's claim and patch, a review,
+`anyp5-ci` green on `anyp5-queue`, and the patch on `main` with its author kept. The run found two bugs, fixed
+in v0.4.2: a task proposal's reviewer was barred from reviewing the change with the same number, and a
+refused workflow push ended with a raw git error.
+
 ## Why it keeps canaries blind
 
 The [canary gaming simulation](../sim/eval/canary_gaming.md) shows the rule. Never build a canary from anything
