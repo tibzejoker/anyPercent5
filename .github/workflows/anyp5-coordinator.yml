@@ -1,0 +1,67 @@
+# any%5 git mode coordinator. Copy to .github/workflows/ in your project (see docs/GITMODE.md).
+# It never runs contributor code: comments are read as sealed data, patches are applied with `git am`.
+# Branches: main (code), anyp5-ledger (public ledger, small history), anyp5-state (sealed state and boxes,
+# one commit, force-pushed: it is rewritten every pass and would otherwise grow the repo by GBs per year).
+name: any%5 coordinator
+on:
+  # Fine up to about 1,000 members. Above that, keep only the schedule: every comment would start a run.
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: anyp5-coordinator
+  cancel-in-progress: false
+permissions:
+  contents: write
+  issues: write   # rotates the inbox issue before it reaches 2,500 comments
+  actions: write  # merge queue: starts anyp5-ci.yml on the anyp5-queue branch
+  checks: read    # merge queue: reads the result of that run
+jobs:
+  coordinate:
+    if: github.event_name != 'issue_comment' || github.event.issue.title == 'anyp5 inbox'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: project
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/checkout@v4
+        with:
+          ref: anyp5-ledger
+          path: ledger
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Pin to the release commit hash, not the tag: whoever can move the tag would control the coordinator.
+      - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@e4ba9bb2c553c89419332929b27c5b63a4eda4be"
+      - name: Run one coordinator pass
+        env:
+          ANYP5_COORDINATOR_KEY: ${{ secrets.ANYP5_COORDINATOR_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for d in project ledger; do
+            git -C $d config user.name "anyp5[bot]"
+            git -C $d config user.email "anyp5-bot@users.noreply.github.com"
+          done
+          mkdir state
+          if git -C ledger ls-remote --exit-code origin anyp5-state > /dev/null; then
+            git -C ledger fetch -q --depth 1 origin anyp5-state
+            git -C ledger archive FETCH_HEAD | tar -x -C state
+            cp -r state/. ledger/
+          fi
+          anyp5 coordinate --ledger ledger --project project --repo "$GITHUB_REPOSITORY"
+          cd ledger
+          printf 'state.sealed\nboxes/\n' > .gitignore
+          git rm -r -q --cached --ignore-unmatch state.sealed boxes
+          git add -A
+          git diff --cached --quiet || { git commit -q -m "anyp5: coordinator pass" && git push -q origin HEAD:anyp5-ledger; }
+          rm -rf ../state && mkdir ../state && cp -r state.sealed boxes ../state/
+          cd ../state
+          git init -q -b anyp5-state
+          git add -A
+          git -c user.name="anyp5[bot]" -c user.email="anyp5-bot@users.noreply.github.com" commit -q -m "anyp5 state"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:anyp5-state
