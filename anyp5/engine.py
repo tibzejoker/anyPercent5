@@ -8,7 +8,7 @@ import json
 import secrets
 import sqlite3
 
-from .tiers import classify
+from .tiers import classify, parse_diff
 
 DEFAULTS = {
     "reviewers": {"green": 1, "amber": 3, "red": 2},
@@ -21,6 +21,7 @@ DEFAULTS = {
     "canary_confirm_max": 5,
     "active_hours": 48,
     "escalation_auditors": 2,
+    "canary_source": "merged",
 }
 
 SCHEMA = """
@@ -29,7 +30,7 @@ create table if not exists members(login text primary key, token text unique, jo
 create table if not exists tasks(id integer primary key, title text, tier text, state text default 'open',
     holder text, lease_until real, branch text, created real);
 create table if not exists changes(id integer primary key, kind text, pr int, head text, author text, tier text,
-    diff text, state text, created real, merged_at real, defect text);
+    diff text, state text, created real, merged_at real, defect text, source int, patch text);
 create table if not exists assignments(id integer primary key, change_id int, reviewer text, kind text,
     drawn_at real, lease_until real, verdict text, severity text, reason text, done_at real);
 create table if not exists events(id integer primary key, at real, what text, data text);
@@ -54,6 +55,10 @@ class Engine:
         self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.executescript(SCHEMA)
+        cols = {r["name"] for r in self.q("pragma table_info(changes)")}
+        for col, kind in (("source", "int"), ("patch", "text")):
+            if col not in cols:
+                self.db.execute(f"alter table changes add column {col} {kind}")
 
     # ------------------------------------------------------------ helpers
     def q(self, sql, *args):
@@ -129,6 +134,29 @@ class Engine:
         self.db.commit()
         return cur.lastrowid
 
+    def submit_patch(self, author, patch, now):
+        """A change sent privately (git mode): reviewers see only its diff, never the author or the message."""
+        head = hashlib.sha256(patch.encode()).hexdigest()[:40]
+        old = self.one("select id from changes where kind='pr' and head=?", head)
+        if old:
+            return old["id"]
+        start = patch.find("diff --git")
+        diff = patch[start:] if start >= 0 else patch
+        diff = diff.split("\n-- \n")[0] + "\n"
+        paths, added = parse_diff(diff)
+        tier = classify(paths, added, self.rules)
+        cur = self.db.execute("insert into changes(kind, head, author, tier, diff, state, created, patch) "
+                              "values('pr',?,?,?,?,'review',?,?)", (head, author, tier, diff, now, patch))
+        self.log(now, "submit", change=cur.lastrowid, tier=tier)
+        self.db.commit()
+        return cur.lastrowid
+
+    def related(self, change):
+        """The same change in several versions (a pending change and its canary copies): one reviewer each,
+        so nobody can compare two versions and spot the planted defect."""
+        root = change["source"] or change["id"]
+        return [r["id"] for r in self.q("select id from changes where id=? or source=?", root, root)]
+
     def pending_checks(self, login):
         return self.q("select * from assignments where reviewer=? and verdict is null", login)
 
@@ -140,7 +168,9 @@ class Engine:
 
     def draw(self, change, count, kind, now, pool=None, least_tested=False):
         """Ranked by calibration score; ties broken by a hash anyone can recompute."""
-        taken = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id=?", change["id"])}
+        ids = self.related(change)
+        taken = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
+                                               % ",".join("?" * len(ids)), *ids)}
         pool = pool if pool is not None else self.idle_pool(now, exclude=taken | {change["author"]})
         salt = f'{change["id"]}:{change["head"]}:{kind}:{len(taken)}'
         tie = lambda m: hashlib.sha256(f'{salt}:{m["login"]}'.encode()).hexdigest()
@@ -268,7 +298,9 @@ class Engine:
     def mix_canaries(self, now):
         real = self.one("select count(*) n from changes where kind='pr'")["n"]
         made = self.one("select count(*) n from changes where kind='canary'")["n"]
-        source = self.q("select * from changes where kind='pr' and state='merged' order by random() limit 1")
+        # "pending": copy a change still under review, so a canary cannot be found in the public history.
+        state = "review" if self.cfg["canary_source"] == "pending" else "merged"
+        source = self.q("select * from changes where kind='pr' and state=? order by random() limit 1", state)
         if real < made * self.cfg["canary_every"] or not source:
             return
         from .canary import plant
@@ -276,11 +308,15 @@ class Engine:
         if planted is None:
             return
         diff, defect = planted
-        cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, defect, head) "
-                              "values('canary','',?,?, 'canary', ?, ?, ?)",
-                              (source[0]["tier"], diff, now, defect, hashlib.sha256(diff.encode()).hexdigest()))
+        cur = self.db.execute("insert into changes(kind, author, tier, diff, state, created, defect, head, source) "
+                              "values('canary','',?,?, 'canary', ?, ?, ?, ?)",
+                              (source[0]["tier"], diff, now, defect, hashlib.sha256(diff.encode()).hexdigest(),
+                               source[0]["id"]))
         change = self.one("select * from changes where id=?", cur.lastrowid)
-        tested = self.idle_pool(now)
+        ids = self.related(change)
+        seen = {r["reviewer"] for r in self.q("select reviewer from assignments where change_id in (%s)"
+                                              % ",".join("?" * len(ids)), *ids)}
+        tested = self.idle_pool(now, exclude=seen | {source[0]["author"]})
         fresh = [m for m in tested if m["cal_seen"] < self.cfg["canary_confirm_max"]]
         self.draw(dict(change), 1, "review", now, pool=fresh or tested, least_tested=True)
 

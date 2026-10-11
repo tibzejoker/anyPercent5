@@ -1,9 +1,10 @@
 [project]
 name = "anyp5"
-version = "0.1.0"
+version = "0.2.0"
 description = "any%5: leased tasks, blind calibrated review, soak-gated releases for projects with thousands of agent-assisted contributors"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+dependencies = ["cryptography>=42"]
 
 [project.scripts]
 anyp5 = "anyp5.cli:main"

@@ -7,6 +7,12 @@ Contributors and their agents:
   anyp5 tasks | claim ID | handover ID BRANCH | alive | me | status
   anyp5 tier [DIFF_FILE]                     risk tier of a diff (stdin by default)
 
+Git mode (no server: a ledger branch, an inbox issue and a GitHub Action, see docs/GITMODE.md):
+  anyp5 join --repo owner/name [--branch anyp5-ledger]   create your key and ask to join
+  anyp5 submit [PATCH_FILE]                  send `git format-patch` output privately for review
+  anyp5 task TITLE [TIER] | admit LOGIN KEYS_JSON
+  (reviews, verdict, tasks, claim, handover, alive, me and status work the same in both modes)
+
 Maintainers:
   anyp5 serve --db ledger.sqlite [--repo owner/name] [--port 8455] [--dry-run]
   anyp5 admin join LOGIN | task TITLE [TIER] | reverted CHANGE_ID
@@ -43,6 +49,48 @@ def call(path, body=None, token=None):
         sys.exit(f"anyp5: {err.code} {json.loads(err.read() or b'{}').get('error', '')}")
 
 
+def git_client():
+    data = json.loads(CONFIG.read_text()) if CONFIG.exists() else {}
+    if data.get("mode") != "git":
+        return None
+    from .gitmode import Client
+    return Client(data["repo"], data["branch"], data["login"], data["key"])
+
+
+def git_main(a, client):
+    if a.cmd == "reviews":
+        for job in client.box().get("reviews", []):
+            print(f"=== assignment {job['assignment']}\n{job['diff']}")
+    elif a.cmd == "me":
+        box = client.box()
+        box.pop("reviews", None)
+        print(json.dumps(box, indent=2))
+    elif a.cmd == "tasks":
+        print(client.read("tasks.json"))
+    elif a.cmd == "status":
+        print(client.read("status.json"))
+    elif a.cmd == "verdict":
+        client.send("verdict", assignment=a.assignment, verdict=a.verdict,
+                    severity="backdoor" if a.backdoor else "none", reason=a.reason)
+    elif a.cmd == "submit":
+        client.send("submit", patch=Path(a.patch).read_text(encoding="utf-8") if a.patch else sys.stdin.read())
+    elif a.cmd == "claim":
+        client.send("claim", task=a.task)
+    elif a.cmd == "handover":
+        client.send("handover", task=a.task, branch=a.branch)
+    elif a.cmd == "alive":
+        client.send("alive")
+    elif a.cmd == "task":
+        client.send("task", title=a.title, tier=a.tier)
+    elif a.cmd == "admit":
+        client.send("admit", member=a.member, keys=json.loads(a.keys))
+    else:
+        return False
+    if a.cmd in ("verdict", "submit", "claim", "handover", "alive", "task", "admit"):
+        print("sent; the coordinator applies it on its next run (usually within a minute)")
+    return True
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(prog="anyp5", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -53,12 +101,27 @@ def main(argv=None):
     s = sub.add_parser("claim"); s.add_argument("task", type=int)
     s = sub.add_parser("handover"); s.add_argument("task", type=int); s.add_argument("branch")
     s = sub.add_parser("tier"); s.add_argument("diff", nargs="?")
+    s = sub.add_parser("join"); s.add_argument("--repo", required=True); s.add_argument("--branch", default="anyp5-ledger")
+    s.add_argument("--login", help="your GitHub login (default: gh's)")
+    s = sub.add_parser("submit"); s.add_argument("patch", nargs="?")
+    s = sub.add_parser("task"); s.add_argument("title"); s.add_argument("tier", nargs="?", default="green")
+    s = sub.add_parser("admit"); s.add_argument("member"); s.add_argument("keys")
+    s = sub.add_parser("coordinate", help="run one coordinator pass (in the GitHub Action)")
+    s.add_argument("--ledger", required=True); s.add_argument("--project", required=True)
+    s.add_argument("--repo", required=True); s.add_argument("--no-push", action="store_true")
+    s = sub.add_parser("init-ledger", help="create anyp5.json and the coordinator key")
+    s.add_argument("--ledger", required=True); s.add_argument("--project", required=True)
+    s.add_argument("--branch", default="main"); s.add_argument("--issue", type=int, required=True)
+    s.add_argument("--admin", action="append", default=[])
     s = sub.add_parser("serve"); s.add_argument("--db", default="ledger.sqlite"); s.add_argument("--repo")
     s.add_argument("--host", default="127.0.0.1"); s.add_argument("--port", type=int, default=8455)
     s.add_argument("--dry-run", action="store_true", help="log forge actions without running them")
     s.add_argument("--config", help="JSON file overriding engine defaults")
     s = sub.add_parser("admin"); s.add_argument("action", choices=["join", "task", "reverted"]); s.add_argument("args", nargs="+")
     a = p.parse_args(argv)
+    client = git_client() if a.cmd not in ("join", "coordinate", "init-ledger", "tier", "serve", "admin") else None
+    if client and git_main(a, client):
+        return
 
     if a.cmd == "login":
         CONFIG.write_text(json.dumps({"server": a.server, "token": a.token}))
@@ -85,6 +148,32 @@ def main(argv=None):
         print(classify(paths, added))
         for level, path, line, why in findings(paths, added):
             print(f"  {level:5} {path}{':' + str(line) if line else ''}  {why}")
+    elif a.cmd == "join":
+        from . import seal
+        from .forge import gh
+        from .gitmode import Client
+        login = a.login or gh("api", "user", "--jq", ".login").strip()
+        key = seal.keygen()
+        CONFIG.write_text(json.dumps({"mode": "git", "repo": a.repo, "branch": a.branch, "login": login, "key": key}))
+        Client(a.repo, a.branch, login, key).send("join", keys=seal.public(key))
+        print(f"key saved to {CONFIG} (keep it private); join request sent as {login}")
+    elif a.cmd == "init-ledger":
+        from . import seal
+        from .gitmode import init_ledger
+        key = seal.keygen()
+        init_ledger(a.ledger, key, a.admin, a.project, a.branch, a.issue)
+        print("store this as the ANYP5_COORDINATOR_KEY secret, nowhere else:")
+        print(json.dumps(key))
+    elif a.cmd == "coordinate":
+        from .gitmode import Coordinator, GitHubInbox, Project
+        key = json.loads(os.environ["ANYP5_COORDINATOR_KEY"])
+        meta = json.loads((Path(a.ledger) / "anyp5.json").read_text())
+        c = Coordinator(a.ledger, key, GitHubInbox(a.repo, meta["inbox_issue"]),
+                        Project(a.project, meta.get("branch", "main"), push=not a.no_push))
+        try:
+            c.run()
+        finally:
+            c.close()
     elif a.cmd == "serve":
         from .forge import GitHub
         from .server import serve

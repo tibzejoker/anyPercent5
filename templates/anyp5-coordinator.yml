@@ -1,0 +1,45 @@
+# any%5 git mode coordinator. Copy to .github/workflows/ in your project (see docs/GITMODE.md).
+# It never runs contributor code: comments are read as sealed data, patches are applied with `git am`.
+name: any%5 coordinator
+on:
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: anyp5-coordinator
+  cancel-in-progress: false
+permissions:
+  contents: write
+  issues: read
+jobs:
+  coordinate:
+    if: github.event_name != 'issue_comment' || github.event.issue.title == 'anyp5 inbox'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: project
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          ref: anyp5-ledger
+          path: ledger
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "cryptography>=42" "anyp5 @ git+https://github.com/tibzejoker/anyPercent5@v0.2.0"
+      - name: Run one coordinator pass
+        env:
+          ANYP5_COORDINATOR_KEY: ${{ secrets.ANYP5_COORDINATOR_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for d in project ledger; do
+            git -C $d config user.name "anyp5[bot]"
+            git -C $d config user.email "anyp5-bot@users.noreply.github.com"
+          done
+          anyp5 coordinate --ledger ledger --project project --repo "$GITHUB_REPOSITORY"
+          cd ledger
+          git add -A
+          git diff --cached --quiet || git commit -q -m "anyp5: coordinator pass" && git push -q origin HEAD:anyp5-ledger
