@@ -148,7 +148,7 @@ Below 100 members, bans also need a maintainer's confirmation. See [CONTRIBUTING
 |---|---:|---:|---:|---:|
 | linux **wanted** | 6 | 0 | 1 | 6.0 |
 
-Updated 2026-10-11 21:02 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
+Updated 2026-10-12 06:26 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
 <!-- /anyp5:wanted -->
 
 ## Prior art
