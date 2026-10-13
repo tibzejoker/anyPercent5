@@ -1,5 +1,5 @@
 {
- "updated": 1791914587,
+ "updated": 1791931191,
  "capabilities": [
   {
    "requires": [
@@ -7,7 +7,7 @@
    ],
    "open": 6,
    "blocked": 0,
-   "members": 1,
+   "members": 0,
    "tasks_per_member": 6.0
   }
  ]

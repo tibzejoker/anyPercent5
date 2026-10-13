@@ -1,5 +1,5 @@
 | You can run | Open tasks | Waiting on others | Active members | Tasks per member |
 |---|---:|---:|---:|---:|
-| linux **wanted** | 6 | 0 | 1 | 6.0 |
+| linux **wanted** | 6 | 0 | 0 | 6.0 |
 
-Updated 2026-10-13 18:03 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
+Updated 2026-10-13 22:39 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
