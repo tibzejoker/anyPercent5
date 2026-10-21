@@ -2,4 +2,4 @@
 |---|---:|---:|---:|---:|
 | linux **wanted** | 6 | 0 | 0 | 6.0 |
 
-Updated 2026-10-21 09:41 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
+Updated 2026-10-21 14:41 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
