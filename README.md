@@ -128,7 +128,7 @@ are 100 members, a ban also needs a maintainer's confirmation. See [CONTRIBUTING
 |---|---:|---:|---:|---:|
 | linux **wanted** | 6 | 0 | 0 | 6.0 |
 
-Updated 2026-10-20 07:39 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
+Updated 2026-10-21 09:41 UTC. Declare what you can run with `anyp5 caps windows gpu ...`.
 <!-- /anyp5:wanted -->
 
 ## Prior art
