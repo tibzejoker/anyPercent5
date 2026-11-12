@@ -4,3 +4,5 @@
 {"at": 1792629909.3403912, "event": "seed-commit", "epoch": 2964, "sha256": "d4384b969787831613d829ad32d77852fa674c6173a0caf7687db278e9309037"}
 {"at": 1793242194.7396472, "event": "seed-commit", "epoch": 2965, "sha256": "d162b9d7aec0102e32c50c6114ad00e00a98f760f4758f0bb594da8953d40cbf"}
 {"at": 1793847469.5021422, "event": "seed-commit", "epoch": 2966, "sha256": "b752033dbe68884f9c29cc3e3e03352f3fc81f16529d5b0dcf359a2343f6706f"}
+{"at": 1794455270.5098038, "event": "seed-reveal", "epoch": 2962, "seed": "89d1dd3f1617474f16a471ca770df74a6d872c1e1162b5b8becceaf686386916"}
+{"at": 1794455270.5098038, "event": "seed-commit", "epoch": 2967, "sha256": "d99fbcd41304e818b0bbcd47604687a3b16a9c4ddd5424bd8093bfaea49d1783"}
