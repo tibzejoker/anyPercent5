@@ -8,3 +8,5 @@
 {"at": 1794455270.5098038, "event": "seed-commit", "epoch": 2967, "sha256": "d99fbcd41304e818b0bbcd47604687a3b16a9c4ddd5424bd8093bfaea49d1783"}
 {"at": 1795050393.4838514, "event": "seed-commit", "epoch": 2968, "sha256": "44baa8d7db1e7f58dded4191b00353636b3d46d35a4306c5695c8c091f2dd619"}
 {"at": 1795050393.4838514, "event": "seed-reveal", "epoch": 2963, "seed": "650c0be3814bc464d0021c7f5f31462b00352f63d113268b7cb0227bdabd6a22"}
+{"at": 1795657476.2930284, "event": "seed-reveal", "epoch": 2964, "seed": "140f1bc6e99d19274c630861f2c9af6cd7af8764302e3c5ce31a532908f4f45f"}
+{"at": 1795657476.2930284, "event": "seed-commit", "epoch": 2969, "sha256": "bbe3b5dc538ebbaeda5e61fc35de783b48dfb86155f95cc378ce7a51f6fd667b"}
